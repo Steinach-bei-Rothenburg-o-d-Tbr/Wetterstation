@@ -24,8 +24,7 @@ jobs:
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-           <h1>🌦 Bastians Wetterstation</h1>
-           <p class="ort">📍 Steinach bei Rothenburg ob der Tauber</p>
+           <title>Bastians Wetterstation | Steinach bei Rothenburg</title>
             <style>
               body {
                 font-family: Arial, sans-serif;
