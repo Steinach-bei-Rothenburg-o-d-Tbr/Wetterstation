@@ -1,0 +1,45 @@
+name: Wetter-Webseite bauen
+on:
+  repository_dispatch:
+    types: [wetter_update]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: HTML-Datei erstellen
+        run: |
+          cat <<EOF > index.html
+          <!DOCTYPE html>
+          <html lang="de">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Garten Wetterstation</title>
+              <style>
+                  body { font-family: sans-serif; text-align: center; background: #f4f7f6; margin-top: 50px; }
+                  .card { background: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+                  h1 { color: #333; }
+                  .temp { font-size: 48px; color: #ff5722; font-weight: bold; margin: 15px 0; }
+                  .info { font-size: 18px; color: #555; margin: 5px 0; }
+              </style>
+          </head>
+          <body>
+              <div class="card">
+                  <h1>Garten Wetterstation</h1>
+                  <div class="temp">${{ github.event.client_payload.temperatur }}°C</div>
+                  <div class="info">💧 Luftfeuchtigkeit: ${{ github.event.client_payload.luftfeuchtigkeit }}%</div>
+                  <div class="info">💨 Windgeschwindigkeit: ${{ github.event.client_payload.windgeschwindigkeit }} km/h</div>
+              </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Auf GitHub Pages veroeffentlichen
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Wetter-Update von HAOS"
+          file_pattern: 'index.html'
