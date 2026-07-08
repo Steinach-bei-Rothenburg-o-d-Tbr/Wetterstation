@@ -79,7 +79,7 @@ jobs:
 
               <div class="info">
                 Letzte Aktualisierung:
-                $(date '+%d.%m.%Y %H:%M:%S')
+                $(TZ='Europe/Berlin' date '+%d.%m.%Y %H:%M Uhr')
               </div>
             </div>
           </body>
