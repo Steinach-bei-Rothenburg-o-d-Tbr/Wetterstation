@@ -91,4 +91,3 @@ jobs:
         with:
           commit_message: "Wetter-Update von HAOS"
           file_pattern: index.html
-`
