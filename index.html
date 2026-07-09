@@ -10,16 +10,14 @@
       font-family: Arial, sans-serif;
       background: #f4f7f6;
       text-align: center;
-      padding: 30px;
-      margin: 0;
+      padding: 50px;
     }
 
     .card {
       background: white;
       padding: 30px;
       border-radius: 15px;
-      max-width: 650px;
-      margin: auto;
+      display: inline-block;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
@@ -31,45 +29,21 @@
     .ort {
       color: #666;
       font-size: 18px;
+      margin-top: 0;
       margin-bottom: 25px;
     }
 
     .temp {
-      font-size: 54px;
+      font-size: 48px;
       color: #ff5722;
       font-weight: bold;
       margin: 20px 0;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
     .info {
-      background: #f7f8fa;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 18px;
-      color: #444;
-    }
-
-    .stand {
-      margin-top: 25px;
-      color: #666;
-      font-size: 16px;
-    }
-
-    @media (max-width: 600px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .temp {
-        font-size: 42px;
-      }
+      font-size: 20px;
+      color: #555;
+      margin: 10px 0;
     }
   </style>
 </head>
@@ -81,55 +55,22 @@
     <p class="ort">📍 Steinach bei Rothenburg ob der Tauber</p>
 
     <div class="temp">
-      28.2 °C
+      27.2 °C
     </div>
 
-    <div class="grid">
-
-      <div class="info">
-        💧 Luftfeuchtigkeit<br>
-        <strong>37 %</strong>
-      </div>
-
-      <div class="info">
-        🌬 Wind<br>
-        <strong>6.12 km/h</strong>
-      </div>
-
-      <div class="info">
-        🌪 Böen<br>
-        <strong>12.7 km/h</strong>
-      </div>
-
-      <div class="info">
-        🧭 Windrichtung<br>
-        <strong>NO</strong>
-      </div>
-
-      <div class="info">
-        📈 Luftdruck<br>
-        <strong>1018 hPa</strong>
-      </div>
-
-      <div class="info">
-        ☀️ UV-Index<br>
-        <strong>4</strong>
-      </div>
-
-      <div class="info">
-        💡 Helligkeit<br>
-        <strong>18500 lx</strong>
-      </div>
-
-      <div class="info">
-        🌧 Regen heute<br>
-        <strong>2.8 mm</strong>
-      </div>
-
+    <div class="info">
+      💧 Luftfeuchtigkeit:
+      40.0 %
     </div>
 
-    <div class="stand">
-      🕒 Stand: 09.07.2026 16:45 Uhr
+    <div class="info">
+      💨 Wind:
+      4.32 km/h
+    </div>
+
+    <div class="info">
+      Stand:
+      09.07.2026 17:00 Uhr
     </div>
 
   </div>
