@@ -26,7 +26,7 @@ jobs:
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Bastians Wetterstation | Steinach bei Rothenburg</title>
 
-            /style.css">
+            css/style.css
           </head>
 
           <body>
@@ -105,20 +105,8 @@ jobs:
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
 
-                projekte/Wetterstation.html
+                projekte/Wetterstation.html="projekt-link">
                   🌦 Wetterstation
-                </a>
-
-                jekte/smart-home.html" class="projekt-link">
-                  🏠 Smart Home
-                </a>
-
-                v-anlage.html" class="projekt-link">
-                  ☀️ PV-Anlage
-                </a>
-
-                otos.html" class="projekt-link">
-                  📷 Bildergalerie
                 </a>
               </div>
 
