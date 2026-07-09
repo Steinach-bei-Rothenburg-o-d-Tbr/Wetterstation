@@ -26,82 +26,14 @@ jobs:
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Bastians Wetterstation | Steinach bei Rothenburg</title>
 
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                background: #f4f7f6;
-                margin: 0;
-                padding: 30px;
-                text-align: center;
-              }
-
-              .card {
-                max-width: 700px;
-                margin: auto;
-                background: white;
-                border-radius: 15px;
-                padding: 30px;
-                box-shadow: 0 4px 12px rgba(0,0,0,.15);
-              }
-
-              h1 {
-                margin-bottom: 5px;
-                color: #333;
-              }
-
-              .ort {
-                color: #666;
-                margin-bottom: 25px;
-              }
-
-              .temp {
-                font-size: 56px;
-                font-weight: bold;
-                color: #ff5722;
-                margin-bottom: 30px;
-              }
-
-              .grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-              }
-
-              .info {
-                background: #f7f8fa;
-                border-radius: 10px;
-                padding: 15px;
-                font-size: 18px;
-              }
-
-              .label {
-                color: #666;
-                margin-bottom: 5px;
-              }
-
-              .value {
-                font-weight: bold;
-                color: #222;
-              }
-
-              .stand {
-                margin-top: 25px;
-                color: #666;
-                font-size: 16px;
-              }
-
-              @media (max-width: 600px) {
-                .grid {
-                  grid-template-columns: 1fr;
-                }
-              }
-            </style>
+            css/style.css
           </head>
 
           <body>
             <div class="card">
 
               <h1>🌦 Bastians Wetterstation</h1>
+
               <div class="ort">
                 📍 Steinach bei Rothenburg ob der Tauber
               </div>
@@ -168,6 +100,22 @@ jobs:
                   </div>
                 </div>
 
+              </div>
+
+              <div class="projekte">
+                <h2>🚀 Weitere Projekte</h2>
+
+                " class="projekt-link">
+                  🏠 Smart Home
+                </a>
+
+                projekte/pv-anlage.html class="projekt-link">
+                  ☀️ PV-Anlage
+                </a>
+
+                projekte/fotos.htmlprojekt-link">
+                  📷 Bildergalerie
+                </a>
               </div>
 
               <div class="stand">
