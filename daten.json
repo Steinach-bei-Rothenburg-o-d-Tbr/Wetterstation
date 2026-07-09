@@ -1,7 +1,12 @@
-
 {
-  "temperatur": 22.5,
-  "luftfeuchtigkeit": 58,
-  "windgeschwindigkeit": 12.3,
-  "zeit": "2026-07-09 15:00"
+  "temperatur": "22.8",
+  "luftfeuchtigkeit": "61",
+  "windgeschwindigkeit": "8.4",
+  "boengeschwindigkeit": "12.7",
+  "windrichtung": "SW",
+  "druck": "1018",
+  "uv_index": "4",
+  "beleuchtungsstarke": "18500",
+  "regen_heute": "2.8",
+  "zeit": "09.07.2026 16:30 Uhr"
 }
