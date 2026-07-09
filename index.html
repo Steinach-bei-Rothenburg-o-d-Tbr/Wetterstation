@@ -10,14 +10,16 @@
       font-family: Arial, sans-serif;
       background: #f4f7f6;
       text-align: center;
-      padding: 50px;
+      padding: 30px;
+      margin: 0;
     }
 
     .card {
       background: white;
       padding: 30px;
       border-radius: 15px;
-      display: inline-block;
+      max-width: 650px;
+      margin: auto;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
@@ -29,21 +31,45 @@
     .ort {
       color: #666;
       font-size: 18px;
-      margin-top: 0;
       margin-bottom: 25px;
     }
 
     .temp {
-      font-size: 48px;
+      font-size: 54px;
       color: #ff5722;
       font-weight: bold;
       margin: 20px 0;
     }
 
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
     .info {
-      font-size: 20px;
-      color: #555;
-      margin: 10px 0;
+      background: #f7f8fa;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 18px;
+      color: #444;
+    }
+
+    .stand {
+      margin-top: 25px;
+      color: #666;
+      font-size: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .temp {
+        font-size: 42px;
+      }
     }
   </style>
 </head>
@@ -58,19 +84,52 @@
       28.2 °C
     </div>
 
-    <div class="info">
-      💧 Luftfeuchtigkeit:
-      37.0 %
+    <div class="grid">
+
+      <div class="info">
+        💧 Luftfeuchtigkeit<br>
+        <strong>37 %</strong>
+      </div>
+
+      <div class="info">
+        🌬 Wind<br>
+        <strong>6.12 km/h</strong>
+      </div>
+
+      <div class="info">
+        🌪 Böen<br>
+        <strong>12.7 km/h</strong>
+      </div>
+
+      <div class="info">
+        🧭 Windrichtung<br>
+        <strong>NO</strong>
+      </div>
+
+      <div class="info">
+        📈 Luftdruck<br>
+        <strong>1018 hPa</strong>
+      </div>
+
+      <div class="info">
+        ☀️ UV-Index<br>
+        <strong>4</strong>
+      </div>
+
+      <div class="info">
+        💡 Helligkeit<br>
+        <strong>18500 lx</strong>
+      </div>
+
+      <div class="info">
+        🌧 Regen heute<br>
+        <strong>2.8 mm</strong>
+      </div>
+
     </div>
 
-    <div class="info">
-      💨 Wind:
-      6.12 km/h
-    </div>
-
-    <div class="info">
-      Stand:
-      09.07.2026 16:45 Uhr
+    <div class="stand">
+      🕒 Stand: 09.07.2026 16:45 Uhr
     </div>
 
   </div>
