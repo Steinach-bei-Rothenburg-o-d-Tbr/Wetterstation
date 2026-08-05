@@ -74,8 +74,8 @@ jobs:
           </html>
           EOF
 
-          # 2. HIER WIRD DEINE API-DATEI (JSON) JETZT MIT ECHTEN DATEN GEFÜLLT
-          cat > wetterapi.json << EOF
+          # 2. HIER WIRD DIE API-DATEI ABSOLUT STABIL UND AUSFALLSICHER GENERIERT
+          cat > wetterapi.json << 'EOF'
           {
             "station": "Bastians Wetterstation Steinach",
             "stand": "${{ github.event.client_payload.zeit }}",
