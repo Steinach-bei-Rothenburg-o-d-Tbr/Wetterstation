@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Code auschecken
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Holt die gesamte Git-Historie für ein sauberes Update
 
       - name: Test-Webseite mit Vorhersage bauen
         run: |
@@ -58,11 +56,12 @@ jobs:
           git config --local user.name "GitHub Action"
           git add prognose-test.html
           
-          # Holt erst die Live-Änderungen der Wetterstation ab, bevor es speichert
-          git fc
-          git pull --rebase origin main
+          # Wir holen erst den aktuellen Stand der echten Wetterstation
+          git fetch origin main
+          git reset --soft origin/main
           
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Test-Prognoseseite mit Pull-Rebase gefixt" && git push)
+          # Speichern und mit Gewalt pushen, falls Home Assistant zeitgleich gesendet hat
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Test-Prognoseseite mit Force-Push" && git push --force origin main)
 
       - name: Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
