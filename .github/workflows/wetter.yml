@@ -4,7 +4,7 @@ on:
   repository_dispatch:
     types:
       - wetter_update
-  workflow_dispatch: 
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,125 +20,425 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     runs-on: ubuntu-latest
 
     steps:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: HTML-Datei erstellen
+      - name: Wetter-Webseite erstellen
+        shell: bash
+        env:
+          TEMPERATUR: ${{ github.event.client_payload.temperatur }}
+          LUFTFEUCHTIGKEIT: ${{ github.event.client_payload.luftfeuchtigkeit }}
+          WINDGESCHWINDIGKEIT: ${{ github.event.client_payload.windgeschwindigkeit }}
+          BOENGESCHWINDIGKEIT: ${{ github.event.client_payload.boengeschwindigkeit }}
+          WINDRICHTUNG: ${{ github.event.client_payload.windrichtung }}
+          LUFTDRUCK: ${{ github.event.client_payload.druck }}
+          UV_INDEX: ${{ github.event.client_payload.uv_index }}
+          HELLIGKEIT: ${{ github.event.client_payload.beleuchtungsstarke }}
+          REGEN_HEUTE: ${{ github.event.client_payload.regen_heute }}
+          REGEN_14_TAGE: ${{ github.event.client_payload.regenvierzehntage }}
+          REGEN_MONAT: ${{ github.event.client_payload.regenmonat }}
+          REGEN_JAHR: ${{ github.event.client_payload.regenjahr }}
+          ZEIT: ${{ github.event.client_payload.zeit }}
+
         run: |
-          cat > index.html << 'EOF'
+          ist_gueltig() {
+            local wert
+            wert="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | xargs)"
+
+            [ -n "$wert" ] &&
+            [ "$wert" != "unknown" ] &&
+            [ "$wert" != "unavailable" ] &&
+            [ "$wert" != "none" ] &&
+            [ "$wert" != "null" ] &&
+            [ "$wert" != "nan" ]
+          }
+
+          html_escape() {
+            printf '%s' "$1" |
+              sed \
+                -e 's/&/\&amp;/g' \
+                -e 's/</\&lt;/g' \
+                -e 's/>/\&gt;/g' \
+                -e 's/"/\&quot;/g' \
+                -e "s/'/\&#39;/g"
+          }
+
+          anzeige_wert() {
+            if ist_gueltig "$1"; then
+              html_escape "$1"
+            else
+              printf '%s' "--"
+            fi
+          }
+
+          TEMPERATUR_ANZEIGE="$(anzeige_wert "$TEMPERATUR")"
+          LUFTFEUCHTIGKEIT_ANZEIGE="$(anzeige_wert "$LUFTFEUCHTIGKEIT")"
+          WINDGESCHWINDIGKEIT_ANZEIGE="$(anzeige_wert "$WINDGESCHWINDIGKEIT")"
+          BOENGESCHWINDIGKEIT_ANZEIGE="$(anzeige_wert "$BOENGESCHWINDIGKEIT")"
+          WINDRICHTUNG_ANZEIGE="$(anzeige_wert "$WINDRICHTUNG")"
+          LUFTDRUCK_ANZEIGE="$(anzeige_wert "$LUFTDRUCK")"
+          UV_INDEX_ANZEIGE="$(anzeige_wert "$UV_INDEX")"
+          HELLIGKEIT_ANZEIGE="$(anzeige_wert "$HELLIGKEIT")"
+          REGEN_HEUTE_ANZEIGE="$(anzeige_wert "$REGEN_HEUTE")"
+          ZEIT_ANZEIGE="$(anzeige_wert "$ZEIT")"
+
+          REGEN_DETAILS=""
+
+          if ist_gueltig "$REGEN_14_TAGE"; then
+            REGEN_14_TAGE_ANZEIGE="$(html_escape "$REGEN_14_TAGE")"
+            REGEN_DETAILS="${REGEN_DETAILS}
+              <div class=\"regen-zeile\">
+                <span>📅 Letzte 14 Tage</span>
+                <strong>${REGEN_14_TAGE_ANZEIGE} L/m²</strong>
+              </div>"
+          fi
+
+          if ist_gueltig "$REGEN_MONAT"; then
+            REGEN_MONAT_ANZEIGE="$(html_escape "$REGEN_MONAT")"
+            REGEN_DETAILS="${REGEN_DETAILS}
+              <div class=\"regen-zeile\">
+                <span>📅 Dieser Monat</span>
+                <strong>${REGEN_MONAT_ANZEIGE} L/m²</strong>
+              </div>"
+          fi
+
+          if ist_gueltig "$REGEN_JAHR"; then
+            REGEN_JAHR_ANZEIGE="$(html_escape "$REGEN_JAHR")"
+            REGEN_DETAILS="${REGEN_DETAILS}
+              <div class=\"regen-zeile\">
+                <span>📅 Dieses Jahr</span>
+                <strong>${REGEN_JAHR_ANZEIGE} L/m²</strong>
+              </div>"
+          fi
+
+          if [ -n "$REGEN_DETAILS" ]; then
+            REGEN_BOX="
+              <details class=\"info regen-box\">
+                <summary>
+                  <span class=\"label\">🌧 Regen heute</span>
+                  <span class=\"value\">${REGEN_HEUTE_ANZEIGE} L/m²</span>
+                  <span class=\"hinweis\">Weitere Regenwerte anzeigen</span>
+                </summary>
+
+                <div class=\"regen-details\">
+                  ${REGEN_DETAILS}
+                </div>
+              </details>"
+          else
+            REGEN_BOX="
+              <div class=\"info\">
+                <div class=\"label\">🌧 Regen heute</div>
+                <div class=\"value\">${REGEN_HEUTE_ANZEIGE} L/m²</div>
+              </div>"
+          fi
+
+          cat > index.html <<EOF
           <!DOCTYPE html>
           <html lang="de">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="description" content="Aktuelle Wetterdaten aus Steinach bei Rothenburg ob der Tauber">
+            <meta http-equiv="refresh" content="300">
+
             <title>Bastians Wetterstation | Steinach bei Rothenburg</title>
-            <link rel="stylesheet" href="css/style.css">
+
+            <style>
+              * {
+                box-sizing: border-box;
+              }
+
+              :root {
+                color-scheme: light dark;
+                --hintergrund-oben: #dff3ff;
+                --hintergrund-unten: #eef7ed;
+                --karte: rgba(255, 255, 255, 0.92);
+                --box: rgba(255, 255, 255, 0.8);
+                --text: #19324a;
+                --sekundaer: #5d7185;
+                --akzent: #1976d2;
+                --rand: rgba(25, 118, 210, 0.15);
+                --schatten: rgba(25, 50, 74, 0.16);
+              }
+
+              body {
+                min-height: 100vh;
+                margin: 0;
+                padding: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                color: var(--text);
+                background:
+                  radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 35%),
+                  linear-gradient(145deg, var(--hintergrund-oben), var(--hintergrund-unten));
+              }
+
+              .card {
+                width: min(920px, 100%);
+                padding: clamp(22px, 5vw, 44px);
+                border: 1px solid var(--rand);
+                border-radius: 28px;
+                background: var(--karte);
+                box-shadow: 0 20px 60px var(--schatten);
+                backdrop-filter: blur(12px);
+              }
+
+              h1 {
+                margin: 0;
+                text-align: center;
+                font-size: clamp(1.8rem, 5vw, 3rem);
+                line-height: 1.15;
+              }
+
+              .ort {
+                margin-top: 10px;
+                text-align: center;
+                color: var(--sekundaer);
+                font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+              }
+
+              .temp {
+                margin: 26px 0 30px;
+                text-align: center;
+                color: var(--akzent);
+                font-size: clamp(3.5rem, 13vw, 7rem);
+                font-weight: 800;
+                line-height: 1;
+                letter-spacing: -0.06em;
+              }
+
+              .grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+              }
+
+              .info {
+                min-width: 0;
+                padding: 20px;
+                border: 1px solid var(--rand);
+                border-radius: 20px;
+                background: var(--box);
+                box-shadow: 0 8px 24px rgba(25, 50, 74, 0.08);
+              }
+
+              .label {
+                display: block;
+                margin-bottom: 8px;
+                color: var(--sekundaer);
+                font-size: 0.95rem;
+                font-weight: 600;
+              }
+
+              .value {
+                display: block;
+                overflow-wrap: anywhere;
+                font-size: clamp(1.25rem, 4vw, 1.75rem);
+                font-weight: 750;
+              }
+
+              details.regen-box {
+                cursor: pointer;
+              }
+
+              details.regen-box summary {
+                list-style: none;
+              }
+
+              details.regen-box summary::-webkit-details-marker {
+                display: none;
+              }
+
+              details.regen-box summary::after {
+                content: "▾";
+                float: right;
+                margin-top: -32px;
+                color: var(--akzent);
+                font-size: 1.4rem;
+                transition: transform 0.2s ease;
+              }
+
+              details.regen-box[open] summary::after {
+                transform: rotate(180deg);
+              }
+
+              .hinweis {
+                display: block;
+                margin-top: 8px;
+                color: var(--sekundaer);
+                font-size: 0.78rem;
+              }
+
+              .regen-details {
+                margin-top: 16px;
+                padding-top: 12px;
+                border-top: 1px solid var(--rand);
+              }
+
+              .regen-zeile {
+                display: flex;
+                gap: 16px;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 0;
+                font-size: 0.95rem;
+              }
+
+              .regen-zeile strong {
+                white-space: nowrap;
+              }
+
+              .projekte {
+                margin-top: 28px;
+                padding-top: 22px;
+                border-top: 1px solid var(--rand);
+                text-align: center;
+              }
+
+              .projekte h2 {
+                margin: 0 0 14px;
+                font-size: 1.2rem;
+              }
+
+              .projekt-link {
+                display: inline-block;
+                padding: 11px 18px;
+                border-radius: 999px;
+                color: white;
+                background: var(--akzent);
+                text-decoration: none;
+                font-weight: 700;
+                transition: transform 0.2s ease, filter 0.2s ease;
+              }
+
+              .projekt-link:hover {
+                transform: translateY(-2px);
+                filter: brightness(1.08);
+              }
+
+              .stand {
+                margin-top: 24px;
+                text-align: center;
+                color: var(--sekundaer);
+                font-size: 0.9rem;
+              }
+
+              @media (max-width: 640px) {
+                body {
+                  padding: 12px;
+                  align-items: flex-start;
+                }
+
+                .card {
+                  padding: 24px 16px;
+                  border-radius: 22px;
+                }
+
+                .grid {
+                  grid-template-columns: 1fr;
+                }
+
+                .info {
+                  padding: 18px;
+                }
+              }
+
+              @media (prefers-color-scheme: dark) {
+                :root {
+                  --hintergrund-oben: #102536;
+                  --hintergrund-unten: #13291f;
+                  --karte: rgba(20, 35, 48, 0.94);
+                  --box: rgba(34, 52, 66, 0.9);
+                  --text: #eef7ff;
+                  --sekundaer: #b4c7d8;
+                  --akzent: #65b5ff;
+                  --rand: rgba(101, 181, 255, 0.2);
+                  --schatten: rgba(0, 0, 0, 0.35);
+                }
+              }
+            </style>
           </head>
+
           <body>
-            <div class="card">
+            <main class="card">
               <h1>🌦 Bastians Wetterstation</h1>
+
               <div class="ort">
                 📍 Steinach bei Rothenburg ob der Tauber
               </div>
+
               <div class="temp">
-                ${{ github.event.client_payload.temperatur }} °C
+                ${TEMPERATUR_ANZEIGE} °C
               </div>
+
               <div class="grid">
                 <div class="info">
                   <div class="label">💧 Luftfeuchtigkeit</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.luftfeuchtigkeit }} %
-                  </div>
+                  <div class="value">${LUFTFEUCHTIGKEIT_ANZEIGE} %</div>
                 </div>
+
                 <div class="info">
                   <div class="label">🌬 Wind</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.windgeschwindigkeit }} km/h
-                  </div>
+                  <div class="value">${WINDGESCHWINDIGKEIT_ANZEIGE} km/h</div>
                 </div>
+
                 <div class="info">
                   <div class="label">🌪 Böen</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.boengeschwindigkeit }} km/h
-                  </div>
+                  <div class="value">${BOENGESCHWINDIGKEIT_ANZEIGE} km/h</div>
                 </div>
+
                 <div class="info">
                   <div class="label">🧭 Windrichtung</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.windrichtung }}
-                  </div>
+                  <div class="value">${WINDRICHTUNG_ANZEIGE}</div>
                 </div>
+
                 <div class="info">
                   <div class="label">📈 Luftdruck</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.druck }} hPa
-                  </div>
+                  <div class="value">${LUFTDRUCK_ANZEIGE} hPa</div>
                 </div>
+
                 <div class="info">
                   <div class="label">☀️ UV-Index</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.uv_index }}
-                  </div>
+                  <div class="value">${UV_INDEX_ANZEIGE}</div>
                 </div>
+
                 <div class="info">
                   <div class="label">💡 Helligkeit</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.beleuchtungsstarke }} lx
-                  </div>
+                  <div class="value">${HELLIGKEIT_ANZEIGE} lx</div>
                 </div>
-                <!-- Box: Regen heute -->
-                <div class="info">
-                  <div class="label">🌧 Regen heute</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regen_heute }} L/m²
-                  </div>
-                </div>
-                <!-- Box: Regen 14 Tage -->
-                <div class="info">
-                  <div class="label">📅 Regen 14 Tage</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regenvierzehntage }} L/m²
-                  </div>
-                </div>
-                <!-- Box: Regen Monat -->
-                <div class="info">
-                  <div class="label">📅 Regen Monat</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regenmonat }} L/m²
-                  </div>
-                </div>
-                <!-- Box: Regen Jahr -->
-                <div class="info" style="grid-column: span 2;">
-                  <div class="label">📅 Regen dieses Jahr</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regenjahr }} L/m²
-                  </div>
-                </div>
+
+                ${REGEN_BOX}
               </div>
+
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
-                <a href="projekte/Wetterstation.html" class="projekt-link">
+
+                projekte/Wetterstation.html
                   🌦 Wetterstation
                 </a>
               </div>
+
               <div class="stand">
-                🕒 ${{ github.event.client_payload.zeit }}
+                🕒 ${ZEIT_ANZEIGE}
               </div>
-            </div>
+            </main>
           </body>
           </html>
           EOF
 
-      - name: Webseiten-Ordner für Pages vorbereiten
+      - name: GitHub Pages konfigurieren
         uses: actions/configure-pages@v5
 
-      - name: Artefakt hochladen
+      - name: Webseiten-Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.' 
+          path: "."
 
       - name: Auf GitHub Pages veröffentlichen
         id: deployment
