@@ -63,6 +63,14 @@ jobs:
             fi
           }
 
+          einheit() {
+            if [ "$1" = "Keine Daten" ]; then
+              printf ''
+            else
+              printf '%s' "$2"
+            fi
+          }
+
           TEMPERATUR="$(wert_pruefen "$TEMPERATUR")"
           LUFTFEUCHTIGKEIT="$(wert_pruefen "$LUFTFEUCHTIGKEIT")"
           WINDGESCHWINDIGKEIT="$(wert_pruefen "$WINDGESCHWINDIGKEIT")"
@@ -76,14 +84,6 @@ jobs:
           REGEN_MONAT="$(wert_pruefen "$REGEN_MONAT")"
           REGEN_JAHR="$(wert_pruefen "$REGEN_JAHR")"
           ZEIT="$(wert_pruefen "$ZEIT")"
-
-          einheit() {
-            if [ "$1" = "Keine Daten" ]; then
-              printf ''
-            else
-              printf '%s' "$2"
-            fi
-          }
 
           TEMPERATUR_EINHEIT="$(einheit "$TEMPERATUR" " °C")"
           LUFTFEUCHTIGKEIT_EINHEIT="$(einheit "$LUFTFEUCHTIGKEIT" " %")"
@@ -436,8 +436,8 @@ jobs:
                 <h2>🚀 Weitere Projekte</h2>
 
                 <a
-                  href="projekte/Wetterstation.html"
-                  class="a>
+                  href="projekte/Wetter    🌦 Wetterstation
+                </a>
               </div>
 
               <div class="stand">
