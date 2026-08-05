@@ -4,7 +4,7 @@ on:
   repository_dispatch:
     types:
       - wetter_update
-  workflow_dispatch: 
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,125 +20,172 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     runs-on: ubuntu-latest
 
     steps:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: HTML-Datei erstellen
+      - name: Empfangene Wetterdaten anzeigen
         run: |
-          cat > index.html << 'EOF'
+          echo "Temperatur: '${{ github.event.client_payload.temperatur }}'"
+          echo "Luftfeuchtigkeit: '${{ github.event.client_payload.luftfeuchtigkeit }}'"
+          echo "Windgeschwindigkeit: '${{ github.event.client_payload.windgeschwindigkeit }}'"
+          echo "Boengeschwindigkeit: '${{ github.event.client_payload.boengeschwindigkeit }}'"
+          echo "Windrichtung: '${{ github.event.client_payload.windrichtung }}'"
+          echo "Luftdruck: '${{ github.event.client_payload.druck }}'"
+          echo "UV-Index: '${{ github.event.client_payload.uv_index }}'"
+          echo "Helligkeit: '${{ github.event.client_payload.beleuchtungsstarke }}'"
+          echo "Regen heute: '${{ github.event.client_payload.regen_heute }}'"
+          echo "Regen 14 Tage: '${{ github.event.client_payload.regenvierzehntage }}'"
+          echo "Regen Monat: '${{ github.event.client_payload.regenmonat }}'"
+          echo "Regen Jahr: '${{ github.event.client_payload.regenjahr }}'"
+          echo "Zeit: '${{ github.event.client_payload.zeit }}'"
+
+      - name: Veröffentlichungsordner vorbereiten
+        run: |
+          rm -rf public
+          mkdir -p public
+
+          if [ -d "css" ]; then
+            cp -r css public/css
+          fi
+
+          if [ -d "projekte" ]; then
+            cp -r projekte public/projekte
+          fi
+
+      - name: HTML-Datei mit Wetterwerten erstellen
+        env:
+          TEMPERATUR: ${{ github.event.client_payload.temperatur || '--' }}
+          LUFTFEUCHTIGKEIT: ${{ github.event.client_payload.luftfeuchtigkeit || '--' }}
+          WINDGESCHWINDIGKEIT: ${{ github.event.client_payload.windgeschwindigkeit || '--' }}
+          BOENGESCHWINDIGKEIT: ${{ github.event.client_payload.boengeschwindigkeit || '--' }}
+          WINDRICHTUNG: ${{ github.event.client_payload.windrichtung || '--' }}
+          LUFTDRUCK: ${{ github.event.client_payload.druck || '--' }}
+          UV_INDEX: ${{ github.event.client_payload.uv_index || '--' }}
+          HELLIGKEIT: ${{ github.event.client_payload.beleuchtungsstarke || '--' }}
+          REGEN_HEUTE: ${{ github.event.client_payload.regen_heute || '0.0' }}
+          REGENVIERZEHNTAGE: ${{ github.event.client_payload.regenvierzehntage || '0.0' }}
+          REGENMONAT: ${{ github.event.client_payload.regenmonat || '0.0' }}
+          REGENJAHR: ${{ github.event.client_payload.regenjahr || '0.0' }}
+          ZEIT: ${{ github.event.client_payload.zeit || 'Keine Aktualisierungszeit vorhanden' }}
+        run: |
+          cat > public/index.html <<EOF
           <!DOCTYPE html>
           <html lang="de">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="description" content="Aktuelle Wetterdaten aus Steinach bei Rothenburg ob der Tauber">
             <title>Bastians Wetterstation | Steinach bei Rothenburg</title>
-            <link rel="stylesheet" href="css/style.css">
+            css/style.css
           </head>
+
           <body>
-            <div class="card">
+            <main class="card">
               <h1>🌦 Bastians Wetterstation</h1>
+
               <div class="ort">
                 📍 Steinach bei Rothenburg ob der Tauber
               </div>
+
               <div class="temp">
-                ${{ github.event.client_payload.temperatur }} °C
+                ${TEMPERATUR} °C
               </div>
+
               <div class="grid">
                 <div class="info">
                   <div class="label">💧 Luftfeuchtigkeit</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.luftfeuchtigkeit }} %
-                  </div>
+                  <div class="value">${LUFTFEUCHTIGKEIT} %</div>
                 </div>
+
                 <div class="info">
                   <div class="label">🌬 Wind</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.windgeschwindigkeit }} km/h
-                  </div>
+                  <div class="value">${WINDGESCHWINDIGKEIT} km/h</div>
                 </div>
+
                 <div class="info">
                   <div class="label">🌪 Böen</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.boengeschwindigkeit }} km/h
-                  </div>
+                  <div class="value">${BOENGESCHWINDIGKEIT} km/h</div>
                 </div>
+
                 <div class="info">
                   <div class="label">🧭 Windrichtung</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.windrichtung }}
-                  </div>
+                  <div class="value">${WINDRICHTUNG}</div>
                 </div>
+
                 <div class="info">
                   <div class="label">📈 Luftdruck</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.druck }} hPa
-                  </div>
+                  <div class="value">${LUFTDRUCK} hPa</div>
                 </div>
+
                 <div class="info">
                   <div class="label">☀️ UV-Index</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.uv_index }}
-                  </div>
+                  <div class="value">${UV_INDEX}</div>
                 </div>
+
                 <div class="info">
                   <div class="label">💡 Helligkeit</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.beleuchtungsstarke }} lx
-                  </div>
+                  <div class="value">${HELLIGKEIT} lx</div>
                 </div>
-                <!-- Box: Regen heute -->
+
                 <div class="info">
                   <div class="label">🌧 Regen heute</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regen_heute }} L/m²
-                  </div>
+                  <div class="value">${REGEN_HEUTE} L/m²</div>
                 </div>
-                <!-- Box: Regen 14 Tage -->
+
                 <div class="info">
                   <div class="label">📅 Regen 14 Tage</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regenvierzehntage }} L/m²
-                  </div>
+                  <div class="value">${REGENVIERZEHNTAGE} L/m²</div>
                 </div>
-                <!-- Box: Regen Monat -->
+
                 <div class="info">
                   <div class="label">📅 Regen Monat</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regenmonat }} L/m²
-                  </div>
+                  <div class="value">${REGENMONAT} L/m²</div>
                 </div>
-                <!-- Box: Regen Jahr -->
+
                 <div class="info" style="grid-column: span 2;">
                   <div class="label">📅 Regen dieses Jahr</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regenjahr }} L/m²
-                  </div>
+                  <div class="value">${REGENJAHR} L/m²</div>
                 </div>
               </div>
+
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
-                <a href="projekte/Wetterstation.html" class="projekt-link">
+                projekte/Wetterstation.html
                   🌦 Wetterstation
                 </a>
               </div>
+
               <div class="stand">
-                🕒 ${{ github.event.client_payload.zeit }}
+                🕒 ${ZEIT}
               </div>
-            </div>
+            </main>
           </body>
           </html>
           EOF
 
-      - name: Webseiten-Ordner für Pages vorbereiten
+      - name: Erzeugte HTML-Datei prüfen
+        run: |
+          echo "Auszug aus der erzeugten Datei:"
+          grep -E "temp|Regen|stand" public/index.html || true
+
+          if grep -q '\$TEMPERATUR\|\$REGEN\|\$ZEIT' public/index.html; then
+            echo "Fehler: In der HTML-Datei befinden sich noch nicht ersetzte Platzhalter."
+            exit 1
+          fi
+
+          echo "HTML-Datei wurde erfolgreich mit Wetterwerten erzeugt."
+
+      - name: GitHub Pages konfigurieren
         uses: actions/configure-pages@v5
 
-      - name: Artefakt hochladen
+      - name: Webseiten-Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.' 
+          path: public
 
       - name: Auf GitHub Pages veröffentlichen
         id: deployment
