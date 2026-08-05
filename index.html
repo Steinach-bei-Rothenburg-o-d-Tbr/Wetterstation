@@ -10,15 +10,15 @@
   <div class="card">
     <h1>🌦 Bastians Wetterstation</h1>
     <div class="ort">📍 Steinach bei Rothenburg ob der Tauber</div>
-    <div class="temp">31.6 °C</div>
+    <div class="temp">30.6 °C</div>
     <div class="grid">
-      <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">39.0 %</div></div>
-      <div class="info"><div class="label">🌬 Wind</div><div class="value">16.92 km/h</div></div>
-      <div class="info"><div class="label">🌪 Böen</div><div class="value">18.36 km/h</div></div>
-      <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">S</div></div>
+      <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">42.0 %</div></div>
+      <div class="info"><div class="label">🌬 Wind</div><div class="value">5.76 km/h</div></div>
+      <div class="info"><div class="label">🌪 Böen</div><div class="value">11.16 km/h</div></div>
+      <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">NW</div></div>
       <div class="info"><div class="label">📈 Luftdruck</div><div class="value">972 hPa</div></div>
-      <div class="info"><div class="label">☀️ UV-Index</div><div class="value">7.0</div></div>
-      <div class="info"><div class="label">💡 Helligkeit</div><div class="value">102518 lx</div></div>
+      <div class="info"><div class="label">☀️ UV-Index</div><div class="value">1.0</div></div>
+      <div class="info"><div class="label">💡 Helligkeit</div><div class="value">25663 lx</div></div>
       <div class="info" onclick="openModal()" title="Klicken für Details" style="grid-column: span 1;">
         <div class="label">🌧 Regen heute ▾</div>
         <div class="value">1.0 L/m²</div>
@@ -30,10 +30,10 @@
       <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
       <a href="wetterapi.json" class="projekt-link" target="_blank">🌐 Wetter-API (JSON)</a>
     </div>
-    <div class="stand">🕒 05.08.2026 15:00 Uhr</div>
+    <div class="stand">🕒 05.08.2026 15:43 Uhr</div>
   </div>
 
-  <!-- STATISTIK-POPUP (MODAL) AUS DEINER CSS -->
+  <!-- MODAL POPUP -->
   <div id="regenModal" class="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -48,18 +48,11 @@
   </div>
 
   <script>
-  function openModal() {
-    document.getElementById("regenModal").style.display = "block";
-  }
-  function closeModal() {
-    document.getElementById("regenModal").style.display = "none";
-  }
-  // Schließt das Popup, wenn man außerhalb des Fensters klickt
+  function openModal() { document.getElementById("regenModal").style.display = "block"; }
+  function closeModal() { document.getElementById("regenModal").style.display = "none"; }
   window.onclick = function(event) {
     var modal = document.getElementById("regenModal");
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
+    if (event.target == modal) { modal.style.display = "none"; }
   }
   </script>
 </body>
