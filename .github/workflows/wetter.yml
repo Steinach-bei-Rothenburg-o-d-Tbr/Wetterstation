@@ -114,7 +114,8 @@ jobs:
               </div>
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
-                <a href="projekte/Wetterstation.html" class="projekt-link">
+                <!-- Link wieder zurückkorrigiert ohne Unterordner -->
+                <a href="Wetterstation.html" class="projekt-link">
                   🌦 Wetterstation
                 </a>
               </div>
