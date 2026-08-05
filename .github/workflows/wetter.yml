@@ -26,12 +26,11 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: Wetterdaten verarbeiten und alle Dateien schreiben
+      - name: Wetterdaten verarbeiten und Dateien schreiben
         shell: python
         run: |
           import json
           import os
-          import urllib.request
 
           # 1. Daten vom Home Assistant Webhook holen
           temp = "${{ github.event.client_payload.temperatur || '0' }}"
@@ -45,7 +44,7 @@ jobs:
           regen_heute = float("${{ github.event.client_payload.regen_heute || '0' }}")
           zeit_neu = "${{ github.event.client_payload.zeit || 'Unbekannt' }}"
 
-          # 2. Langzeit-Regenwerte verarbeiten
+          # 2. Langzeit-Regenwerte verarbeiten (Startwert 1.6)
           regen_m = 1.6  
           regen_j = 1.6  
 
@@ -67,51 +66,7 @@ jobs:
                   except:
                       pass
 
-          # 3. Wetterprognose von Open-Meteo laden (Koordinaten: Steinach)
-          prognose_liste = []
-          try:
-              url = "https://open-meteo.com"
-              with urllib.request.urlopen(url) as response:
-                  forecast_data = json.loads(response.read().decode())
-                  
-                  # Komplett sichere Filterung ohne eckige Klammern oder Listen
-                  def get_wetter_text(code):
-                      c = int(code)
-                      if c == 0: 
-                          return "☀️", "Klar"
-                      if c >= 1 and c <= 3: 
-                          return "⛅", "Bewölkt"
-                      if c == 45 or c == 48: 
-                          return "🌫️", "Nebel"
-                      if c >= 51 and c <= 65: 
-                          return "🌧️", "Regen"
-                      if c >= 80 and c <= 82: 
-                          return "🌧️", "Regen"
-                      if c >= 71 and c <= 77: 
-                          return "🌨️", "Schnee"
-                      if c == 85 or c == 86: 
-                          return "🌨️", "Schnee"
-                      if c >= 95 and c <= 99: 
-                          return "⛈️", "Gewitter"
-                      return "✨", "Wechselhaft"
-
-                  daily = forecast_data["daily"]
-                  for i in range(3):
-                      emoji, text = get_wetter_text(daily["weather_code"][i])
-                      d_parts = daily["time"][i].split("-")
-                      date_formatted = f"{d_parts[2]}.{d_parts[1]}."
-                      
-                      prognose_liste.append({
-                          "datum": date_formatted,
-                          "emoji": emoji,
-                          "zustand": text,
-                          "temp_max": float(daily["temperature_2m_max"][i]),
-                          "temp_min": float(daily["temperature_2m_min"][i])
-                      })
-          except Exception as e:
-              prognose_liste = [{"datum": "N/A", "emoji": "❌", "zustand": "Fehler", "temp_max": 0.0, "temp_min": 0.0} for _ in range(3)]
-
-          # 4. wetterapi.json schreiben
+          # 3. wetterapi.json schreiben
           api_data = {
               "station": "Bastians Wetterstation Steinach",
               "stand": zeit_neu,
@@ -129,14 +84,13 @@ jobs:
                   "heute": str(round(regen_heute, 1)),
                   "aktueller_monat": str(round(regen_m, 1)),
                   "aktuelles_jahr": str(round(regen_j, 1))
-              },
-              "prognose_3_tage": prognose_liste
+              }
           }
 
           with open("wetterapi.json", "w") as f:
               json.dump(api_data, f, indent=2)
 
-          # 5. HTML-Webseite (index.html) direkt in Python bauen
+          # 4. HTML-Webseite (index.html) direkt bauen
           html_content = f"""<!DOCTYPE html>
           <html lang="de">
           <head>
@@ -149,51 +103,72 @@ jobs:
             <div class="card">
               <h1>🌦 Bastians Wetterstation</h1>
               <div class="ort">📍 Steinach bei Rothenburg ob der Tauber</div>
-              <div class="temp">{temp} °C</div>
+              <div class="temp">{{temp}} °C</div>
               <div class="grid">
-                <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">{humid} %</div></div>
-                <div class="info"><div class="label">🌬 Wind</div><div class="value">{wind} km/h</div></div>
-                <div class="info"><div class="label">🌪 Böen</div><div class="value">{boeen} km/h</div></div>
-                <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">{richtung}</div></div>
-                <div class="info"><div class="label">📈 Luftdruck</div><div class="value">{druck} hPa</div></div>
-                <div class="info"><div class="label">☀️ UV-Index</div><div class="value">{uv}</div></div>
-                <div class="info"><div class="label">💡 Helligkeit</div><div class="value">{lux} lx</div></div>
+                <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">{{humid}} %</div></div>
+                <div class="info"><div class="label">🌬 Wind</div><div class="value">{{wind}} km/h</div></div>
+                <div class="info"><div class="label">🌪 Böen</div><div class="value">{{boeen} km/h</div></div>
+                <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">{{richtung}}</div></div>
+                <div class="info"><div class="label">📈 Luftdruck</div><div class="value">{{druck}} hPa</div></div>
+                <div class="info"><div class="label">☀️ UV-Index</div><div class="value">{{uv}}</div></div>
+                <div class="info"><div class="label">💡 Helligkeit</div><div class="value">{{lux}} lx</div></div>
                 <div class="info" onclick="openModal()" title="Klicken für Details" style="grid-column: span 1;">
                   <div class="label">🌧 Regen heute ▾</div>
-                  <div class="value">{round(regen_heute, 1)} L/m²</div>
+                  <div class="value">{{round(regen_heute, 1)}} L/m²</div>
                 </div>
               </div>
               
-              <!-- 3-TAGE-PROGNOSE (GANZ UNTEN) -->
-              <div class="projekte" style="margin-top: 25px;">
-                <h2>🔮 3-Tage-Vorhersage (Steinach)</h2>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
-                  <div style="background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;">
-                    <div style="color: #666; font-weight: bold;">{prognose_liste[0]['datum']}</div>
-                    <div style="font-size: 24px; margin: 5px 0;">{prognose_liste[0]['emoji']}</div>
-                    <div style="font-weight: bold; color: #ff5722;">{prognose_liste[0]['temp_max']}°</div>
-                    <div style="color: #007bff;">{prognose_liste[0]['temp_min']}°</div>
-                    <div style="font-size: 11px; color: #777; margin-top: 3px;">{prognose_liste[0]['zustand']}</div>
-                  </div>
-                  <div style="background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;">
-                    <div style="color: #666; font-weight: bold;">{prognose_liste[1]['datum']}</div>
-                    <div style="font-size: 24px; margin: 5px 0;">{prognose_liste[1]['emoji']}</div>
-                    <div style="font-weight: bold; color: #ff5722;">{prognose_liste[1]['temp_max']}°</div>
-                    <div style="color: #007bff;">{prognose_liste[1]['temp_min']}°</div>
-                    <div style="font-size: 11px; color: #777; margin-top: 3px;">{prognose_liste[1]['zustand']}</div>
-                  </div>
-                  <div style="background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;">
-                    <div style="color: #666; font-weight: bold;">{prognose_liste[2]['datum']}</div>
-                    <div style="font-size: 24px; margin: 5px 0;">{prognose_liste[2]['emoji']}</div>
-                    <div style="font-weight: bold; color: #ff5722;">{prognose_liste[2]['temp_max']}°</div>
-                    <div style="color: #007bff;">{prognose_liste[2]['temp_min']}°</div>
-                    <div style="font-size: 11px; color: #777; margin-top: 3px;">{prognose_liste[2]['zustand']}</div>
-                  </div>
-                </div>
-              </div>
-
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
                 <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
                 <a href="wetterapi.json" class="projekt-link" target="_blank">🌐 Wetter-API (JSON)</a>
               </div>
+              <div class="stand">🕒 {{zeit_neu}}</div>
+            </div>
+
+            <!-- MODAL POPUP -->
+            <div id="regenModal" class="modal">
+              <div class="modal-content">
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <h2>📊 Regen-Statistiken</h2>
+                <hr>
+                <ul>
+                  <li><span>🌧 Heute:</span> <strong>{{round(regen_heute, 1)}} L/m²</strong></li>
+                  <li><span>📅 Dieser Monat:</span> <strong>{{round(regen_m, 1)}} L/m²</strong></li>
+                  <li><span>📅 Dieses Jahr:</span> <strong>{{round(regen_j, 1)}} L/m²</strong></li>
+                </ul>
+              </div>
+            </div>
+
+            <script>
+            function openModal() {{ document.getElementById("regenModal").style.display = "block"; }}
+            function closeModal() {{ document.getElementById("regenModal").style.display = "none"; }}
+            window.onclick = function(event) {{
+              var modal = document.getElementById("regenModal");
+              if (event.target == modal) {{ modal.style.display = "none"; }}
+            }}
+            </script>
+          </body>
+          </html>"""
+
+          with open("index.html", "w", encoding="utf-8") as f:
+              f.write(html_content)
+
+      - name: Webseiten-Ordner für Pages vorbereiten
+        uses: actions/configure-pages@v5
+
+      - name: Änderungen im Repository speichern
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add index.html wetterapi.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (Prognose entfernt & All-In-One)" && git push)
+
+      - name: Artefakt hochladen
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.' 
+
+      - name: Auf GitHub Pages veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4
