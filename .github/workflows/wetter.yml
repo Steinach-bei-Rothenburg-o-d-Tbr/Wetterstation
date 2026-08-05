@@ -59,35 +59,22 @@ jobs:
                   except:
                       pass
 
-          # 3. Wetterprognose von Open-Meteo für Steinach laden
+          # 3. Wetterprognose laden (Koordinaten von Steinach: 49.34, 10.28)
           prognose_liste = []
           try:
               url = "https://open-meteo.com"
               with urllib.request.urlopen(url) as response:
                   forecast_data = json.loads(response.read().decode())
-                  
-                  def get_wetter_info(code):
-                      c = int(code)
-                      if c == 0: return "☀️", "Klar"
-                      elif c == 1 or c == 2 or c == 3: return "⛅", "Bewölkt"
-                      elif c == 45 or c == 48: return "🌫️", "Nebel"
-                      elif c == 51 or c == 53 or c == 55 or c == 61 or c == 63 or c == 65 or c == 80 or c == 81 or c == 82: return "🌧️", "Regen"
-                      elif c == 71 or c == 73 or c == 75 or c == 77 or c == 85 or c == 86: return "🌨️", "Schnee"
-                      elif c == 95 or c == 96 or c == 99: return "⛈️", "Gewitter"
-                      else: return "✨", "Wechselhaft"
-
                   daily = forecast_data["daily"]
                   for i in range(3):
-                      emoji, text = get_wetter_info(daily["weather_code"][i])
                       prognose_liste.append({
-                          "datum": daily["time"][i],
-                          "emoji": emoji,
-                          "zustand": text,
-                          "temp_max": daily["temperature_2m_max"][i],
-                          "temp_min": daily["temperature_2m_min"][i]
+                          "datum": str(daily["time"][i]),
+                          "wmo_code": int(daily["weather_code"][i]),
+                          "temp_max": float(daily["temperature_2m_max"][i]),
+                          "temp_min": float(daily["temperature_2m_min"][i])
                       })
           except Exception as e:
-              prognose_liste = [{"datum": "N/A", "emoji": "❌", "zustand": "Fehler", "temp_max": 0, "temp_min": 0} for _ in range(3)]
+              prognose_liste = [{"datum": "N/A", "wmo_code": 0, "temp_max": 0.0, "temp_min": 0.0} for _ in range(3)]
 
           # 4. Neue API-Struktur aufbauen
           api_data = {
@@ -129,23 +116,8 @@ jobs:
           UV=$(jq -r '.messwerte.uv_index' wetterapi.json)
           LUX=$(jq -r '.messwerte.helligkeit_lux' wetterapi.json)
 
-          P1_TAG=$(jq -r '.prognose_3_tage[0].datum' wetterapi.json | awk -F'-' '{print $3"."$2"."}')
-          P1_EMOJI=$(jq -r '.prognose_3_tage[0].emoji' wetterapi.json)
-          P1_TXT=$(jq -r '.prognose_3_tage[0].zustand' wetterapi.json)
-          P1_MAX=$(jq -r '.prognose_3_tage[0].temp_max' wetterapi.json)
-          P1_MIN=$(jq -r '.prognose_3_tage[0].temp_min' wetterapi.json)
-
-          P2_TAG=$(jq -r '.prognose_3_tage[1].datum' wetterapi.json | awk -F'-' '{print $3"."$2"."}')
-          P2_EMOJI=$(jq -r '.prognose_3_tage[1].emoji' wetterapi.json)
-          P2_TXT=$(jq -r '.prognose_3_tage[1].zustand' wetterapi.json)
-          P2_MAX=$(jq -r '.prognose_3_tage[1].temp_max' wetterapi.json)
-          P2_MIN=$(jq -r '.prognose_3_tage[1].temp_min' wetterapi.json)
-
-          P3_TAG=$(jq -r '.prognose_3_tage[2].datum' wetterapi.json | awk -F'-' '{print $3"."$2"."}')
-          P3_EMOJI=$(jq -r '.prognose_3_tage[2].emoji' wetterapi.json)
-          P3_TXT=$(jq -r '.prognose_3_tage[2].zustand' wetterapi.json)
-          P3_MAX=$(jq -r '.prognose_3_tage[2].temp_max' wetterapi.json)
-          P3_MIN=$(jq -r '.prognose_3_tage[2].temp_min' wetterapi.json)
+          # Rohdaten an HTML übergeben (Das Rechnen und Übersetzen macht jetzt der Browser)
+          PROGNOSE_JSON=$(jq -c '.prognose_3_tage' wetterapi.json)
 
           cat > index.html << EOF
           <!DOCTYPE html>
@@ -175,18 +147,60 @@ jobs:
                 </div>
               </div>
               
+              <!-- 3-TAGE-PROGNOSE (GANZ UNTEN) -->
               <div class="projekte" style="margin-top: 25px;">
                 <h2>🔮 3-Tage-Vorhersage (Steinach)</h2>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
-                  <div style="background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;">
-                    <div style="color: #666; font-weight: bold;">$P1_TAG</div>
-                    <div style="font-size: 24px; margin: 5px 0;">$P1_EMOJI</div>
-                    <div style="font-weight: bold; color: #ff5722;">$P1_MAX°</div>
-                    <div style="color: #007bff;">$P1_MIN°</div>
-                    <div style="font-size: 11px; color: #777; margin-top: 3px;">$P1_TXT</div>
-                  </div>
-                  <div style="background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;">
-                    <div style="color: #666; font-weight: bold;">$P2_TAG</div>
-                    <div style="font-size: 24px; margin: 5px 0;">$P2_EMOJI</div>
-                    <div style="font-weight: bold; color: #ff5722;">$P2_MAX°</div>
-                    <div style="color: #007bff;">$P2_MIN°</div>
+                <div id="forecast-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+                  <!-- Wird automatisch per JavaScript befüllt -->
+                </div>
+              </div>
+
+              <div class="projekte">
+                <h2>🚀 Weitere Projekte</h2>
+                <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
+                <a href="wetterapi.json" class="projekt-link" target="_blank">🌐 Wetter-API (JSON)</a>
+              </div>
+              <div class="stand">🕒 $ZEIT</div>
+            </div>
+
+            <!-- MODAL POPUP -->
+            <div id="regenModal" class="modal">
+              <div class="modal-content">
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <h2>📊 Regen-Statistiken</h2>
+                <hr>
+                <ul>
+                  <li><span>🌧 Heute:</span> <strong>$REGEN_H L/m²</strong></li>
+                  <li><span>📅 Dieser Monat:</span> <strong>$REGEN_M L/m²</strong></li>
+                  <li><span>📅 Dieses Jahr:</span> <strong>$REGEN_J L/m²</strong></li>
+                </ul>
+              </div>
+            </div>
+
+            <script>
+            // JavaScript übersetzt die WMO-Codes ausfallsicher direkt im Browser
+            const rawForecast = $PROGNOSE_JSON;
+            const container = document.getElementById("forecast-container");
+
+            function getWetterInfo(code) {
+              if (code === 0) return { emoji: "☀️", text: "Klar" };
+              if ([1, 2, 3].includes(code)) return { emoji: "⛅", text: "Bewölkt" };
+              if ([45, 48].includes(code)) return { emoji: "🌫️", text: "Nebel" };
+              if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return { emoji: "🌧️", text: "Regen" };
+              if ([71, 73, 75, 77, 85, 86].includes(code)) return { emoji: "🌨️", text: "Schnee" };
+              if ([95, 96, 99].includes(code)) return { emoji: "⛈️", text: "Gewitter" };
+              return { emoji: "✨", text: "Wechselhaft" };
+            }
+
+            rawForecast.forEach(day => {
+              const info = getWetterInfo(day.wmo_code);
+              // Datum von YYYY-MM-DD in DD.MM. umwandeln
+              const parts = day.datum.split("-");
+              const dateStr = parts[2] + "." + parts[1] + ".";
+
+              const box = document.createElement("div");
+              box.style.cssText = "background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;";
+              box.innerHTML = \`
+                <div style="color: #666; font-weight: bold;">\${dateStr}</div>
+                <div style="font-size: 24px; margin: 5px 0;">\${info.emoji}</div>
+                <div style="font-weight: bold; color: #ff5722;">\${day.temp_max}°</div>
