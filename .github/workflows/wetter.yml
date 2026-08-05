@@ -26,6 +26,15 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
+      - name: Debug Payload
+        run: |
+          echo "Temperatur='${{ github.event.client_payload.temperatur }}'"
+          echo "Regen heute='${{ github.event.client_payload.regen_heute }}'"
+          echo "Regen 14 Tage='${{ github.event.client_payload.regenvierzehntage }}'"
+          echo "Regen Monat='${{ github.event.client_payload.regenmonat }}'"
+          echo "Regen Jahr='${{ github.event.client_payload.regenjahr }}'"
+          echo "Zeit='${{ github.event.client_payload.zeit }}'"
+
       - name: HTML-Datei erstellen
         env:
           TEMPERATUR: ${{ github.event.client_payload.temperatur }}
@@ -51,71 +60,58 @@ jobs:
             <title>Bastians Wetterstation | Steinach bei Rothenburg</title>
             <link rel="stylesheet" href="css/style.css">
           </head>
-
           <body>
             <div class="card">
-
               <h1>🌦 Bastians Wetterstation</h1>
-
               <div class="ort">
                 📍 Steinach bei Rothenburg ob der Tauber
               </div>
-
               <div class="temp">
                 $TEMPERATUR °C
               </div>
-
               <div class="grid">
-
                 <div class="info">
                   <div class="label">💧 Luftfeuchtigkeit</div>
                   <div class="value">
                     $LUFTFEUCHTIGKEIT %
                   </div>
                 </div>
-
                 <div class="info">
                   <div class="label">🌬 Wind</div>
                   <div class="value">
                     $WINDGESCHWINDIGKEIT km/h
                   </div>
                 </div>
-
                 <div class="info">
                   <div class="label">🌪 Böen</div>
                   <div class="value">
                     $BOENGESCHWINDIGKEIT km/h
                   </div>
                 </div>
-
                 <div class="info">
                   <div class="label">🧭 Windrichtung</div>
                   <div class="value">
                     $WINDRICHTUNG
                   </div>
                 </div>
-
                 <div class="info">
                   <div class="label">📈 Luftdruck</div>
                   <div class="value">
                     $LUFTDRUCK hPa
                   </div>
                 </div>
-
                 <div class="info">
                   <div class="label">☀️ UV-Index</div>
                   <div class="value">
                     $UV_INDEX
                   </div>
                 </div>
-
                 <div class="info">
                   <div class="label">💡 Helligkeit</div>
                   <div class="value">
                     $HELLIGKEIT lx
                   </div>
                 </div>
-
                 <!-- Box: Regen heute -->
                 <div class="info">
                   <div class="label">🌧 Regen heute</div>
@@ -123,7 +119,6 @@ jobs:
                     $REGEN_HEUTE L/m²
                   </div>
                 </div>
-
                 <!-- Box: Regen 14 Tage -->
                 <div class="info">
                   <div class="label">📅 Regen 14 Tage</div>
@@ -131,7 +126,6 @@ jobs:
                     $REGENVIERZEHNTAGE L/m²
                   </div>
                 </div>
-
                 <!-- Box: Regen Monat -->
                 <div class="info">
                   <div class="label">📅 Regen Monat</div>
@@ -139,7 +133,6 @@ jobs:
                     $REGENMONAT L/m²
                   </div>
                 </div>
-
                 <!-- Box: Regen Jahr -->
                 <div class="info" style="grid-column: span 2;">
                   <div class="label">📅 Regen dieses Jahr</div>
@@ -147,20 +140,16 @@ jobs:
                     $REGENJAHR L/m²
                   </div>
                 </div>
-
               </div>
-
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
                 <a href="projekte/Wetterstation.html" class="projekt-link">
                   🌦 Wetterstation
                 </a>
               </div>
-
               <div class="stand">
                 🕒 $ZEIT
               </div>
-
             </div>
           </body>
           </html>
