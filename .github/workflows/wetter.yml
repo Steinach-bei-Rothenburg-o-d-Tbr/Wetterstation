@@ -36,7 +36,7 @@ jobs:
           regen_heute = float("${{ github.event.client_payload.regen_heute || '0' }}")
           zeit_neu = "${{ github.event.client_payload.zeit || 'Unbekannt' }}"
 
-          # 2. Langzeitwerte verarbeiten
+          # 2. Langzeitwerte verarbeiten (Startwert 1.6)
           regen_m = 1.6  
           regen_j = 1.6  
 
@@ -119,28 +119,47 @@ jobs:
                 <div class="info"><div class="label">📈 Luftdruck</div><div class="value">$DRUCK hPa</div></div>
                 <div class="info"><div class="label">☀️ UV-Index</div><div class="value">$UV</div></div>
                 <div class="info"><div class="label">💡 Helligkeit</div><div class="value">$LUX lx</div></div>
-                <div class="info" onclick="toggleRegenDetails()" title="Klicken für Details" style="grid-column: span 1;">
+                <div class="info" onclick="openModal()" title="Klicken für Details" style="grid-column: span 1;">
                   <div class="label">🌧 Regen heute ▾</div>
                   <div class="value">$REGEN_H L/m²</div>
-                  <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left; font-size: 15px; line-height: 1.6;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>📅 Monat:</span> <strong>$REGEN_M L/m²</strong></div>
-                    <div style="display: flex; justify-content: space-between;"><span>📅 Jahr:</span> <strong>$REGEN_J L/m²</strong></div>
-                  </div>
                 </div>
               </div>
+              
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
-                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
-                  <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
-                  <a href="wetterapi.json" class="projekt-link" target="_blank" style="background-color: #333333; color: #ffffff !important; border: 1px solid #555555;">🌐 Wetter-API (JSON)</a>
-                </div>
+                <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
+                <a href="wetterapi.json" class="projekt-link" target="_blank">🌐 Wetter-API (JSON)</a>
               </div>
               <div class="stand">🕒 $ZEIT</div>
             </div>
+
+            <!-- STATISTIK-POPUP (MODAL) AUS DEINER CSS -->
+            <div id="regenModal" class="modal">
+              <div class="modal-content">
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <h2>📊 Regen-Statistiken</h2>
+                <hr>
+                <ul>
+                  <li><span>🌧 Heute:</span> <strong>$REGEN_H L/m²</strong></li>
+                  <li><span>📅 Dieser Monat:</span> <strong>$REGEN_M L/m²</strong></li>
+                  <li><span>📅 Dieses Jahr:</span> <strong>$REGEN_J L/m²</strong></li>
+                </ul>
+              </div>
+            </div>
+
             <script>
-            function toggleRegenDetails() {
-              var details = document.getElementById("regen-details");
-              details.style.display = details.style.display === "none" ? "block" : "none";
+            function openModal() {
+              document.getElementById("regenModal").style.display = "block";
+            }
+            function closeModal() {
+              document.getElementById("regenModal").style.display = "none";
+            }
+            // Schließt das Popup, wenn man außerhalb des Fensters klickt
+            window.onclick = function(event) {
+              var modal = document.getElementById("regenModal");
+              if (event.target == modal) {
+                modal.style.display = "none";
+              }
             }
             </script>
           </body>
@@ -155,7 +174,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add index.html wetterapi.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (API Button-Farbe korrigiert)" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (Popup-Modal & API-Button aktiviert)" && git push)
 
       - name: Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
