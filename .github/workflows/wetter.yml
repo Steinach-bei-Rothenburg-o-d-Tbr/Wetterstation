@@ -68,12 +68,12 @@ jobs:
                   
                   # WMO-Wettercodes in Emojis und Text übersetzen
                   def get_wetter_info(code):
-                      if code in [0]: return "☀️", "Klar"
-                      if code in [1, 2, 3]: return "⛅", "Bewölkt"
-                      if code in [45, 48]: return "🌫️", "Nebel"
-                      if code in [51, 53, 55, 61, 63, 65, 80, 81, 82]: return "🌧️", "Regen"
-                      if code in [71, 73, 75, 77, 85, 86]: return "🌨️", "Schnee"
-                      if code in [95, 96, 99]: return "⛈️", "Gewitter"
+                      if code in: return "☀️", "Klar"
+                      if code in: return "⛅", "Bewölkt"
+                      if code in: return "🌫️", "Nebel"
+                      if code in: return "🌧️", "Regen"
+                      if code in: return "🌨️", "Schnee"
+                      if code in: return "⛈️", "Gewitter"
                       return "✨", "Wechselhaft"
 
                   daily = forecast_data["daily"]
@@ -177,7 +177,7 @@ jobs:
                 </div>
               </div>
               
-              <!-- NEU: 3-TAGE-PROGNOSE SEGMENT -->
+              <!-- 3-TAGE-PROGNOSE SEGMENT -->
               <div class="projekte" style="margin-top: 25px;">
                 <h2>🔮 3-Tage-Vorhersage (Steinach)</h2>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
