@@ -26,17 +26,18 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: Wetterdaten verarbeiten und berechnen
+      - name: Wetterdaten verarbeiten und Prognose laden
         shell: python
         run: |
           import json
           import os
+          import urllib.request
 
           # 1. Daten vom Home Assistant Webhook holen
           regen_heute = float("${{ github.event.client_payload.regen_heute || '0' }}")
           zeit_neu = "${{ github.event.client_payload.zeit || 'Unbekannt' }}"
 
-          # 2. Langzeitwerte verarbeiten (Startwert 1.6)
+          # 2. Langzeit-Regenwerte verarbeiten
           regen_m = 1.6  
           regen_j = 1.6  
 
@@ -58,7 +59,38 @@ jobs:
                   except:
                       pass
 
-          # 3. API-Struktur aufbauen
+          # 3. Wetterprognose von Open-Meteo für Steinach laden (Koordinaten: 49.34, 10.28)
+          prognose_liste = []
+          try:
+              url = "https://open-meteo.com"
+              with urllib.request.urlopen(url) as response:
+                  forecast_data = json.loads(response.read().decode())
+                  
+                  # WMO-Wettercodes in Emojis und Text übersetzen
+                  def get_wetter_info(code):
+                      if code in [0]: return "☀️", "Klar"
+                      if code in [1, 2, 3]: return "⛅", "Bewölkt"
+                      if code in [45, 48]: return "🌫️", "Nebel"
+                      if code in [51, 53, 55, 61, 63, 65, 80, 81, 82]: return "🌧️", "Regen"
+                      if code in [71, 73, 75, 77, 85, 86]: return "🌨️", "Schnee"
+                      if code in [95, 96, 99]: return "⛈️", "Gewitter"
+                      return "✨", "Wechselhaft"
+
+                  daily = forecast_data["daily"]
+                  for i in range(3):
+                      emoji, text = get_wetter_info(daily["weather_code"][i])
+                      prognose_liste.append({
+                          "datum": daily["time"][i],
+                          "emoji": emoji,
+                          "zustand": text,
+                          "temp_max": daily["temperature_2m_max"][i],
+                          "temp_min": daily["temperature_2m_min"][i]
+                      })
+          except Exception as e:
+              # Fallback falls die API offline ist
+              prognose_liste = [{"datum": "N/A", "emoji": "❌", "zustand": "Fehler beim Laden", "temp_max": 0, "temp_min": 0} for _ in range(3)]
+
+          # 4. Neue API-Struktur aufbauen
           api_data = {
               "station": "Bastians Wetterstation Steinach",
               "stand": zeit_neu,
@@ -76,7 +108,8 @@ jobs:
                   "heute": str(round(regen_heute, 1)),
                   "aktueller_monat": str(round(regen_m, 1)),
                   "aktuelles_jahr": str(round(regen_j, 1))
-              }
+              },
+              "prognose_3_tage": prognose_liste
           }
 
           with open("wetterapi.json", "w") as f:
@@ -96,6 +129,25 @@ jobs:
           DRUCK=$(jq -r '.messwerte.luftdruck_hpa' wetterapi.json)
           UV=$(jq -r '.messwerte.uv_index' wetterapi.json)
           LUX=$(jq -r '.messwerte.helligkeit_lux' wetterapi.json)
+
+          # Prognosedaten für HTML aufbereiten
+          P1_TAG=$(jq -r '.prognose_3_tage[0].datum' wetterapi.json | awk -F'-' '{print $3"."$2"."}')
+          P1_EMOJI=$(jq -r '.prognose_3_tage[0].emoji' wetterapi.json)
+          P1_TXT=$(jq -r '.prognose_3_tage[0].zustand' wetterapi.json)
+          P1_MAX=$(jq -r '.prognose_3_tage[0].temp_max' wetterapi.json)
+          P1_MIN=$(jq -r '.prognose_3_tage[0].temp_min' wetterapi.json)
+
+          P2_TAG=$(jq -r '.prognose_3_tage[1].datum' wetterapi.json | awk -F'-' '{print $3"."$2"."}')
+          P2_EMOJI=$(jq -r '.prognose_3_tage[1].emoji' wetterapi.json)
+          P2_TXT=$(jq -r '.prognose_3_tage[1].zustand' wetterapi.json)
+          P2_MAX=$(jq -r '.prognose_3_tage[1].temp_max' wetterapi.json)
+          P2_MIN=$(jq -r '.prognose_3_tage[1].temp_min' wetterapi.json)
+
+          P3_TAG=$(jq -r '.prognose_3_tage[2].datum' wetterapi.json | awk -F'-' '{print $3"."$2"."}')
+          P3_EMOJI=$(jq -r '.prognose_3_tage[2].emoji' wetterapi.json)
+          P3_TXT=$(jq -r '.prognose_3_tage[2].zustand' wetterapi.json)
+          P3_MAX=$(jq -r '.prognose_3_tage[2].temp_max' wetterapi.json)
+          P3_MIN=$(jq -r '.prognose_3_tage[2].temp_min' wetterapi.json)
 
           cat > index.html << EOF
           <!DOCTYPE html>
@@ -125,62 +177,18 @@ jobs:
                 </div>
               </div>
               
-              <div class="projekte">
-                <h2>🚀 Weitere Projekte</h2>
-                <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
-                <a href="wetterapi.json" class="projekt-link" target="_blank">🌐 Wetter-API (JSON)</a>
-              </div>
-              <div class="stand">🕒 $ZEIT</div>
-            </div>
-
-            <!-- STATISTIK-POPUP (MODAL) AUS DEINER CSS -->
-            <div id="regenModal" class="modal">
-              <div class="modal-content">
-                <span class="close-btn" onclick="closeModal()">&times;</span>
-                <h2>📊 Regen-Statistiken</h2>
-                <hr>
-                <ul>
-                  <li><span>🌧 Heute:</span> <strong>$REGEN_H L/m²</strong></li>
-                  <li><span>📅 Dieser Monat:</span> <strong>$REGEN_M L/m²</strong></li>
-                  <li><span>📅 Dieses Jahr:</span> <strong>$REGEN_J L/m²</strong></li>
-                </ul>
-              </div>
-            </div>
-
-            <script>
-            function openModal() {
-              document.getElementById("regenModal").style.display = "block";
-            }
-            function closeModal() {
-              document.getElementById("regenModal").style.display = "none";
-            }
-            // Schließt das Popup, wenn man außerhalb des Fensters klickt
-            window.onclick = function(event) {
-              var modal = document.getElementById("regenModal");
-              if (event.target == modal) {
-                modal.style.display = "none";
-              }
-            }
-            </script>
-          </body>
-          </html>
-          EOF
-
-      - name: Webseiten-Ordner für Pages vorbereiten
-        uses: actions/configure-pages@v5
-
-      - name: Änderungen im Repository speichern
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add index.html wetterapi.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (Popup-Modal & API-Button aktiviert)" && git push)
-
-      - name: Artefakt hochladen
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.' 
-
-      - name: Auf GitHub Pages veröffentlichen
-        id: deployment
-        uses: actions/deploy-pages@v4
+              <!-- NEU: 3-TAGE-PROGNOSE SEGMENT -->
+              <div class="projekte" style="margin-top: 25px;">
+                <h2>🔮 3-Tage-Vorhersage (Steinach)</h2>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+                  <div style="background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;">
+                    <div style="color: #666; font-weight: bold;">$P1_TAG</div>
+                    <div style="font-size: 24px; margin: 5px 0;">$P1_EMOJI</div>
+                    <div style="font-weight: bold; color: #ff5722;">$P1_MAX°</div>
+                    <div style="color: #007bff;">$P1_MIN°</div>
+                    <div style="font-size: 11px; color: #777; margin-top: 3px;">$P1_TXT</div>
+                  </div>
+                  <div style="background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;">
+                    <div style="color: #666; font-weight: bold;">$P2_TAG</div>
+                    <div style="font-size: 24px; margin: 5px 0;">$P2_EMOJI</div>
+                    <div style="font-weight: bold; color: #ff5722;">$P2_MAX°</div>
