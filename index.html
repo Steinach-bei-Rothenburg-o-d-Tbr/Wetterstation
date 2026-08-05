@@ -71,10 +71,11 @@
         </div>
       </div>
 
-      <div class="info">
-        <div class="label">🌧 Regen heute</div>
+      <!-- Klickbare Box für Regen heute eingefügt -->
+      <div class="info" onclick="openPopup()" style="cursor: pointer;" title="Klicken für Statistiken">
+        <div class="label">🌧 Regen heute 📊</div>
         <div class="value">
-          0 mm
+          {{ regen_heute }} L/m²
         </div>
       </div>
 
@@ -88,9 +89,51 @@
     </div>
 
     <div class="stand">
-      🕒 09.07.2026 21:45 Uhr
+      🕒 {{ zeit }}
     </div>
 
   </div>
+
+  <!-- Das versteckte Statistik-Popup am Ende der Datei -->
+  <div id="regen-popup" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6);">
+    <div class="modal-content" style="background-color:#fff; margin:15% auto; padding:25px; border-radius:15px; width:85%; max-width:400px; box-shadow:0 5px 15px rgba(0,0,0,0.3); position:relative; color:#333; font-family:sans-serif;">
+      
+      <span class="close-btn" onclick="closePopup()" style="position:absolute; right:20px; top:10px; font-size:30px; font-weight:bold; cursor:pointer; color:#aaa;">&times;</span>
+      
+      <h2 style="margin-top:0; color:#007bff; display:flex; align-items:center; gap:10px;">🌦 Regen-Statistiken</h2>
+      <hr style="border:0; border-top:1px solid #eee; margin-bottom:15px;">
+      
+      <ul style="list-style:none; padding:0; margin:0; font-size:16px;">
+        <li style="padding:12px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+          <span>📅 Letzte 14 Tage:</span> 
+          <strong><span id="regen-14tage-wert">{{ regen_14tage }}</span> L/m²</strong>
+        </li>
+        <li style="padding:12px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+          <span>📅 Diesen Monat:</span> 
+          <strong><span id="regen-monat-wert">{{ regen_monat }}</span> L/m²</strong>
+        </li>
+        <li style="padding:12px 0; display:flex; justify-content:space-between; align-items:center;">
+          <span>📅 Dieses Jahr:</span> 
+          <strong><span id="regen-jahr-wert">{{ regen_jahr }}</span> L/m²</strong>
+        </li>
+      </ul>
+      
+    </div>
+  </div>
+
+  <script>
+  function openPopup() {
+    document.getElementById("regen-popup").style.display = "block";
+  }
+  function closePopup() {
+    document.getElementById("regen-popup").style.display = "none";
+  }
+  window.onclick = function(event) {
+    let modal = document.getElementById("regen-popup");
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  </script>
 </body>
 </html>
