@@ -37,9 +37,9 @@ jobs:
           UV_INDEX: ${{ github.event.client_payload.uv_index }}
           HELLIGKEIT: ${{ github.event.client_payload.beleuchtungsstarke }}
           REGEN_HEUTE: ${{ github.event.client_payload.regen_heute }}
-          REGENVIERZEHNTAGE: ${{ github.event.client_payload.regen_14tage }}
-          REGENMONAT: ${{ github.event.client_payload.regen_monat }}
-          REGENJAHR: ${{ github.event.client_payload.regen_jahr }}
+          REGENVIERZEHNTAGE: ${{ github.event.client_payload.regenvierzehntage }}
+          REGENMONAT: ${{ github.event.client_payload.regenmonat }}
+          REGENJAHR: ${{ github.event.client_payload.regenjahr }}
           ZEIT: ${{ github.event.client_payload.zeit }}
         run: |
           cat > index.html << EOF
@@ -125,10 +125,10 @@ jobs:
                   
                   <!-- Versteckte Statistiken, die bei Klick aufklappen -->
                   <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left; font-size: 15px; line-height: 1.6;">
-                    <div style="display: flex; justify-content: space-between;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                       <span>📅 14 Tage:</span> <strong>$REGENVIERZEHNTAGE L/m²</strong>
                     </div>
-                    <div style="display: flex; justify-content: space-between;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                       <span>📅 Monat:</span> <strong>$REGENMONAT L/m²</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
