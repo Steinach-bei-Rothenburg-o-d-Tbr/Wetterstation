@@ -74,26 +74,26 @@ jobs:
           </html>
           EOF
 
-          # 2. HIER WIRD DEINE NEUE API-DATEI (JSON) GENERIERT
-          cat > wetterapi.json << 'EOF'
+          # 2. HIER WIRD DEINE API-DATEI (JSON) JETZT MIT ECHTEN DATEN GEFÜLLT
+          cat > wetterapi.json << EOF
           {
             "station": "Bastians Wetterstation Steinach",
             "stand": "${{ github.event.client_payload.zeit }}",
             "messwerte": {
-              "temperatur_celsius": ${{ github.event.client_payload.temperatur }},
-              "luftfeuchtigkeit_prozent": ${{ github.event.client_payload.luftfeuchtigkeit }},
-              "windgeschwindigkeit_kmh": ${{ github.event.client_payload.windgeschwindigkeit }},
-              "boengeschwindigkeit_kmh": ${{ github.event.client_payload.boengeschwindigkeit }},
+              "temperatur_celsius": "${{ github.event.client_payload.temperatur }}",
+              "luftfeuchtigkeit_prozent": "${{ github.event.client_payload.luftfeuchtigkeit }}",
+              "windgeschwindigkeit_kmh": "${{ github.event.client_payload.windgeschwindigkeit }}",
+              "boengeschwindigkeit_kmh": "${{ github.event.client_payload.boengeschwindigkeit }}",
               "windrichtung": "${{ github.event.client_payload.windrichtung }}",
-              "luftdruck_hpa": ${{ github.event.client_payload.druck }},
-              "uv_index": ${{ github.event.client_payload.uv_index }},
-              "helligkeit_lux": ${{ github.event.client_payload.beleuchtungsstarke }}
+              "luftdruck_hpa": "${{ github.event.client_payload.druck }}",
+              "uv_index": "${{ github.event.client_payload.uv_index }}",
+              "helligkeit_lux": "${{ github.event.client_payload.beleuchtungsstarke }}"
             },
             "niederschlag_lm2": {
-              "heute": ${{ github.event.client_payload.regen_heute }},
-              "letzte_vierzehn_tage": ${{ github.event.client_payload.regenvierzehntage }},
-              "aktueller_monat": ${{ github.event.client_payload.regenmonat }},
-              "aktuelles_jahr": ${{ github.event.client_payload.regenjahr }}
+              "heute": "${{ github.event.client_payload.regen_heute }}",
+              "letzte_vierzehn_tage": "${{ github.event.client_payload.regenvierzehntage }}",
+              "aktueller_monat": "${{ github.event.client_payload.regenmonat }}",
+              "aktuelles_jahr": "${{ github.event.client_payload.regenjahr }}"
             }
           }
           EOF
