@@ -17,7 +17,7 @@
     </div>
 
     <div class="temp">
-      21.7 °C
+      {{ temperatur }} °C
     </div>
 
     <div class="grid">
@@ -25,54 +25,54 @@
       <div class="info">
         <div class="label">💧 Luftfeuchtigkeit</div>
         <div class="value">
-          53.0 %
+          {{ luftfeuchtigkeit }} %
         </div>
       </div>
 
       <div class="info">
         <div class="label">🌬 Wind</div>
         <div class="value">
-          0.0 km/h
+          {{ windgeschwindigkeit }} km/h
         </div>
       </div>
 
       <div class="info">
         <div class="label">🌪 Böen</div>
         <div class="value">
-          0.0 km/h
+          {{ boengeschwindigkeit }} km/h
         </div>
       </div>
 
       <div class="info">
         <div class="label">🧭 Windrichtung</div>
         <div class="value">
-          NW
+          {{ windrichtung }}
         </div>
       </div>
 
       <div class="info">
         <div class="label">📈 Luftdruck</div>
         <div class="value">
-          972 hPa
+          {{ druck }} hPa
         </div>
       </div>
 
       <div class="info">
         <div class="label">☀️ UV-Index</div>
         <div class="value">
-          0.0
+          {{ uv_index }}
         </div>
       </div>
 
       <div class="info">
         <div class="label">💡 Helligkeit</div>
         <div class="value">
-          60 lx
+          {{ beleuchtungsstarke }} lx
         </div>
       </div>
 
-      <!-- Klickbare Box für Regen heute eingefügt -->
-      <div class="info" onclick="openPopup()" style="cursor: pointer;" title="Klicken für Statistiken">
+      <!-- Klickbare Box für Regen heute -->
+      <div class="info" onclick="openPopup()" title="Klicken für Statistiken">
         <div class="label">🌧 Regen heute 📊</div>
         <div class="value">
           {{ regen_heute }} L/m²
@@ -94,25 +94,25 @@
 
   </div>
 
-  <!-- Das versteckte Statistik-Popup am Ende der Datei -->
-  <div id="regen-popup" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6);">
-    <div class="modal-content" style="background-color:#fff; margin:15% auto; padding:25px; border-radius:15px; width:85%; max-width:400px; box-shadow:0 5px 15px rgba(0,0,0,0.3); position:relative; color:#333; font-family:sans-serif;">
+  <!-- Das saubere Statistik-Popup am Ende der Datei -->
+  <div id="regen-popup" class="modal">
+    <div class="modal-content">
       
-      <span class="close-btn" onclick="closePopup()" style="position:absolute; right:20px; top:10px; font-size:30px; font-weight:bold; cursor:pointer; color:#aaa;">&times;</span>
+      <span class="close-btn" onclick="closePopup()">&times;</span>
       
-      <h2 style="margin-top:0; color:#007bff; display:flex; align-items:center; gap:10px;">🌦 Regen-Statistiken</h2>
-      <hr style="border:0; border-top:1px solid #eee; margin-bottom:15px;">
+      <h2>🌦 Regen-Statistiken</h2>
+      <hr>
       
-      <ul style="list-style:none; padding:0; margin:0; font-size:16px;">
-        <li style="padding:12px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+      <ul>
+        <li>
           <span>📅 Letzte 14 Tage:</span> 
           <strong><span id="regen-14tage-wert">{{ regen_14tage }}</span> L/m²</strong>
         </li>
-        <li style="padding:12px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+        <li>
           <span>📅 Diesen Monat:</span> 
           <strong><span id="regen-monat-wert">{{ regen_monat }}</span> L/m²</strong>
         </li>
-        <li style="padding:12px 0; display:flex; justify-content:space-between; align-items:center;">
+        <li>
           <span>📅 Dieses Jahr:</span> 
           <strong><span id="regen-jahr-wert">{{ regen_jahr }}</span> L/m²</strong>
         </li>
