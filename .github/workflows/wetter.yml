@@ -59,26 +59,34 @@ jobs:
                   except:
                       pass
 
-          # 3. Wetterprognose von Open-Meteo für Steinach laden (Koordinaten: 49.34, 10.28)
+          # 3. Wetterprognose von Open-Meteo für Steinach laden
           prognose_liste = []
           try:
               url = "https://open-meteo.com"
               with urllib.request.urlopen(url) as response:
                   forecast_data = json.loads(response.read().decode())
                   
-                  # WMO-Wettercodes in Emojis und Text übersetzen
+                  # Robuste Übersetzung ohne eckige Klammern
                   def get_wetter_info(code):
-                      if code in: return "☀️", "Klar"
-                      if code in: return "⛅", "Bewölkt"
-                      if code in: return "🌫️", "Nebel"
-                      if code in: return "🌧️", "Regen"
-                      if code in: return "🌨️", "Schnee"
-                      if code in: return "⛈️", "Gewitter"
-                      return "✨", "Wechselhaft"
+                      c = int(code)
+                      if c == 0:
+                          return "☀️", "Klar"
+                      elif c == 1 or c == 2 or c == 3:
+                          return "⛅", "Bewölkt"
+                      elif c == 45 or c == 48:
+                          return "🌫️", "Nebel"
+                      elif c == 51 or c == 53 or c == 55 or c == 61 or c == 63 or c == 65 or c == 80 or c == 81 or c == 82:
+                          return "🌧️", "Regen"
+                      elif c == 71 or c == 73 or c == 75 or c == 77 or c == 85 or c == 86:
+                          return "🌨️", "Schnee"
+                      elif c == 95 or c == 96 or c == 99:
+                          return "⛈️", "Gewitter"
+                      else:
+                          return "✨", "Wechselhaft"
 
                   daily = forecast_data["daily"]
                   for i in range(3):
-                      emoji, text = get_wetter_info(int(daily["weather_code"][i]))
+                      emoji, text = get_wetter_info(daily["weather_code"][i])
                       prognose_liste.append({
                           "datum": daily["time"][i],
                           "emoji": emoji,
@@ -87,7 +95,6 @@ jobs:
                           "temp_min": daily["temperature_2m_min"][i]
                       })
           except Exception as e:
-              # Fallback falls die API offline ist
               prognose_liste = [{"datum": "N/A", "emoji": "❌", "zustand": "Fehler beim Laden", "temp_max": 0, "temp_min": 0} for _ in range(3)]
 
           # 4. Neue API-Struktur aufbauen
@@ -189,6 +196,3 @@ jobs:
                     <div style="font-size: 11px; color: #777; margin-top: 3px;">$P1_TXT</div>
                   </div>
                   <div style="background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;">
-                    <div style="color: #666; font-weight: bold;">$P2_TAG</div>
-                    <div style="font-size: 24px; margin: 5px 0;">$P2_EMOJI</div>
-                    <div style="font-weight: bold; color: #ff5722;">$P2_MAX°</div>
