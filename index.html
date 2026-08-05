@@ -71,11 +71,24 @@
         </div>
       </div>
 
-      <!-- Klickbare Box für Regen heute -->
-      <div class="info" onclick="openPopup()" title="Klicken für Statistiken">
-        <div class="label">🌧 Regen heute 📊</div>
+      <!-- Erweiterbare Box für Regen heute -->
+      <div class="info" onclick="toggleRegenDetails()" title="Klicken für Details" style="grid-column: span 1;">
+        <div class="label">🌧 Regen heute ▾</div>
         <div class="value">
           __REGEN_HEUTE__ L/m²
+        </div>
+        
+        <!-- Dieser Bereich ist standardmäßig versteckt und klappt bei Klick auf -->
+        <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left; font-size: 15px; line-height: 1.6;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>📅 14 Tage:</span> <strong>__REGEN_14TAGE__ L/m²</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>📅 Monat:</span> <strong>__REGEN_MONAT__ L/m²</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>📅 Jahr:</span> <strong>__REGEN_JAHR__ L/m²</strong>
+          </div>
         </div>
       </div>
 
@@ -94,44 +107,14 @@
 
   </div>
 
-  <!-- Das saubere Statistik-Popup am Ende der Datei -->
-  <div id="regen-popup" class="modal">
-    <div class="modal-content">
-      
-      <span class="close-btn" onclick="closePopup()">&times;</span>
-      
-      <h2>🌦 Regen-Statistiken</h2>
-      <hr>
-      
-      <ul>
-        <li>
-          <span>📅 Letzte 14 Tage:</span> 
-          <strong><span id="regen-14tage-wert">__REGEN_14TAGE__</span> L/m²</strong>
-        </li>
-        <li>
-          <span>📅 Diesen Monat:</span> 
-          <strong><span id="regen-monat-wert">__REGEN_MONAT__</span> L/m²</strong>
-        </li>
-        <li>
-          <span>📅 Dieses Jahr:</span> 
-          <strong><span id="regen-jahr-wert">__REGEN_JAHR__</span> L/m²</strong>
-        </li>
-      </ul>
-      
-    </div>
-  </div>
-
+  <!-- Kurzes Skript für den Aufklapp-Effekt -->
   <script>
-  function openPopup() {
-    document.getElementById("regen-popup").style.display = "block";
-  }
-  function closePopup() {
-    document.getElementById("regen-popup").style.display = "none";
-  }
-  window.onclick = function(event) {
-    let modal = document.getElementById("regen-popup");
-    if (event.target == modal) {
-      modal.style.display = "none";
+  function toggleRegenDetails() {
+    var details = document.getElementById("regen-details");
+    if (details.style.display === "none") {
+      details.style.display = "block";
+    } else {
+      details.style.display = "none";
     }
   }
   </script>
