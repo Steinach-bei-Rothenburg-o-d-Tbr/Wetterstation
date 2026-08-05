@@ -103,18 +103,18 @@ jobs:
             <div class="card">
               <h1>🌦 Bastians Wetterstation</h1>
               <div class="ort">📍 Steinach bei Rothenburg ob der Tauber</div>
-              <div class="temp">{{temp}} °C</div>
+              <div class="temp">{temp} °C</div>
               <div class="grid">
-                <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">{{humid}} %</div></div>
-                <div class="info"><div class="label">🌬 Wind</div><div class="value">{{wind}} km/h</div></div>
-                <div class="info"><div class="label">🌪 Böen</div><div class="value">{{boeen} km/h</div></div>
-                <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">{{richtung}}</div></div>
-                <div class="info"><div class="label">📈 Luftdruck</div><div class="value">{{druck}} hPa</div></div>
-                <div class="info"><div class="label">☀️ UV-Index</div><div class="value">{{uv}}</div></div>
-                <div class="info"><div class="label">💡 Helligkeit</div><div class="value">{{lux}} lx</div></div>
+                <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">{humid} %</div></div>
+                <div class="info"><div class="label">🌬 Wind</div><div class="value">{wind} km/h</div></div>
+                <div class="info"><div class="label">🌪 Böen</div><div class="value">{boeen} km/h</div></div>
+                <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">{richtung}</div></div>
+                <div class="info"><div class="label">📈 Luftdruck</div><div class="value">{druck} hPa</div></div>
+                <div class="info"><div class="label">☀️ UV-Index</div><div class="value">{uv}</div></div>
+                <div class="info"><div class="label">💡 Helligkeit</div><div class="value">{lux} lx</div></div>
                 <div class="info" onclick="openModal()" title="Klicken für Details" style="grid-column: span 1;">
                   <div class="label">🌧 Regen heute ▾</div>
-                  <div class="value">{{round(regen_heute, 1)}} L/m²</div>
+                  <div class="value">{round(regen_heute, 1)} L/m²</div>
                 </div>
               </div>
               
@@ -123,7 +123,7 @@ jobs:
                 <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
                 <a href="wetterapi.json" class="projekt-link" target="_blank">🌐 Wetter-API (JSON)</a>
               </div>
-              <div class="stand">🕒 {{zeit_neu}}</div>
+              <div class="stand">🕒 {zeit_neu}</div>
             </div>
 
             <!-- MODAL POPUP -->
@@ -133,9 +133,9 @@ jobs:
                 <h2>📊 Regen-Statistiken</h2>
                 <hr>
                 <ul>
-                  <li><span>🌧 Heute:</span> <strong>{{round(regen_heute, 1)}} L/m²</strong></li>
-                  <li><span>📅 Dieser Monat:</span> <strong>{{round(regen_m, 1)}} L/m²</strong></li>
-                  <li><span>📅 Dieses Jahr:</span> <strong>{{round(regen_j, 1)}} L/m²</strong></li>
+                  <li><span>🌧 Heute:</span> <strong>{round(regen_heute, 1)} L/m²</strong></li>
+                  <li><span>📅 Dieser Monat:</span> <strong>{round(regen_m, 1)} L/m²</strong></li>
+                  <li><span>📅 Dieses Jahr:</span> <strong>{round(regen_j, 1)} L/m²</strong></li>
                 </ul>
               </div>
             </div>
@@ -157,12 +157,12 @@ jobs:
       - name: Webseiten-Ordner für Pages vorbereiten
         uses: actions/configure-pages@v5
 
-      - name: Änderungen im Repository speichern
+      - name: Änderungen im Repository保存 (Commit)
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add index.html wetterapi.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (Prognose entfernt & All-In-One)" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (Böen Klammer-Fix)" && git push)
 
       - name: Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
