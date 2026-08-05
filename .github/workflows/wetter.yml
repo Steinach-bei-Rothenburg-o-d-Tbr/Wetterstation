@@ -12,16 +12,16 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 jobs:
   build-and-deploy:
+    runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
 
     steps:
       - name: Code auschecken
@@ -45,96 +45,56 @@ jobs:
           ZEIT: ${{ github.event.client_payload.zeit }}
 
         run: |
-          ist_gueltig() {
-            local wert
-            wert="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | xargs)"
+          wert_pruefen() {
+            local wert="$1"
+            local klein
 
-            [ -n "$wert" ] &&
-            [ "$wert" != "unknown" ] &&
-            [ "$wert" != "unavailable" ] &&
-            [ "$wert" != "none" ] &&
-            [ "$wert" != "null" ] &&
-            [ "$wert" != "nan" ]
-          }
+            klein="$(printf '%s' "$wert" | tr '[:upper:]' '[:lower:]' | xargs)"
 
-          html_escape() {
-            printf '%s' "$1" |
-              sed \
-                -e 's/&/\&amp;/g' \
-                -e 's/</\&lt;/g' \
-                -e 's/>/\&gt;/g' \
-                -e 's/"/\&quot;/g' \
-                -e "s/'/\&#39;/g"
-          }
-
-          anzeige_wert() {
-            if ist_gueltig "$1"; then
-              html_escape "$1"
+            if [ -z "$klein" ] ||
+               [ "$klein" = "unknown" ] ||
+               [ "$klein" = "unavailable" ] ||
+               [ "$klein" = "none" ] ||
+               [ "$klein" = "null" ] ||
+               [ "$klein" = "nan" ]; then
+              printf '%s' "Keine Daten"
             else
-              printf '%s' "--"
+              printf '%s' "$wert"
             fi
           }
 
-          TEMPERATUR_ANZEIGE="$(anzeige_wert "$TEMPERATUR")"
-          LUFTFEUCHTIGKEIT_ANZEIGE="$(anzeige_wert "$LUFTFEUCHTIGKEIT")"
-          WINDGESCHWINDIGKEIT_ANZEIGE="$(anzeige_wert "$WINDGESCHWINDIGKEIT")"
-          BOENGESCHWINDIGKEIT_ANZEIGE="$(anzeige_wert "$BOENGESCHWINDIGKEIT")"
-          WINDRICHTUNG_ANZEIGE="$(anzeige_wert "$WINDRICHTUNG")"
-          LUFTDRUCK_ANZEIGE="$(anzeige_wert "$LUFTDRUCK")"
-          UV_INDEX_ANZEIGE="$(anzeige_wert "$UV_INDEX")"
-          HELLIGKEIT_ANZEIGE="$(anzeige_wert "$HELLIGKEIT")"
-          REGEN_HEUTE_ANZEIGE="$(anzeige_wert "$REGEN_HEUTE")"
-          ZEIT_ANZEIGE="$(anzeige_wert "$ZEIT")"
+          TEMPERATUR="$(wert_pruefen "$TEMPERATUR")"
+          LUFTFEUCHTIGKEIT="$(wert_pruefen "$LUFTFEUCHTIGKEIT")"
+          WINDGESCHWINDIGKEIT="$(wert_pruefen "$WINDGESCHWINDIGKEIT")"
+          BOENGESCHWINDIGKEIT="$(wert_pruefen "$BOENGESCHWINDIGKEIT")"
+          WINDRICHTUNG="$(wert_pruefen "$WINDRICHTUNG")"
+          LUFTDRUCK="$(wert_pruefen "$LUFTDRUCK")"
+          UV_INDEX="$(wert_pruefen "$UV_INDEX")"
+          HELLIGKEIT="$(wert_pruefen "$HELLIGKEIT")"
+          REGEN_HEUTE="$(wert_pruefen "$REGEN_HEUTE")"
+          REGEN_14_TAGE="$(wert_pruefen "$REGEN_14_TAGE")"
+          REGEN_MONAT="$(wert_pruefen "$REGEN_MONAT")"
+          REGEN_JAHR="$(wert_pruefen "$REGEN_JAHR")"
+          ZEIT="$(wert_pruefen "$ZEIT")"
 
-          REGEN_DETAILS=""
+          einheit() {
+            if [ "$1" = "Keine Daten" ]; then
+              printf ''
+            else
+              printf '%s' "$2"
+            fi
+          }
 
-          if ist_gueltig "$REGEN_14_TAGE"; then
-            REGEN_14_TAGE_ANZEIGE="$(html_escape "$REGEN_14_TAGE")"
-            REGEN_DETAILS="${REGEN_DETAILS}
-              <div class=\"regen-zeile\">
-                <span>📅 Letzte 14 Tage</span>
-                <strong>${REGEN_14_TAGE_ANZEIGE} L/m²</strong>
-              </div>"
-          fi
-
-          if ist_gueltig "$REGEN_MONAT"; then
-            REGEN_MONAT_ANZEIGE="$(html_escape "$REGEN_MONAT")"
-            REGEN_DETAILS="${REGEN_DETAILS}
-              <div class=\"regen-zeile\">
-                <span>📅 Dieser Monat</span>
-                <strong>${REGEN_MONAT_ANZEIGE} L/m²</strong>
-              </div>"
-          fi
-
-          if ist_gueltig "$REGEN_JAHR"; then
-            REGEN_JAHR_ANZEIGE="$(html_escape "$REGEN_JAHR")"
-            REGEN_DETAILS="${REGEN_DETAILS}
-              <div class=\"regen-zeile\">
-                <span>📅 Dieses Jahr</span>
-                <strong>${REGEN_JAHR_ANZEIGE} L/m²</strong>
-              </div>"
-          fi
-
-          if [ -n "$REGEN_DETAILS" ]; then
-            REGEN_BOX="
-              <details class=\"info regen-box\">
-                <summary>
-                  <span class=\"label\">🌧 Regen heute</span>
-                  <span class=\"value\">${REGEN_HEUTE_ANZEIGE} L/m²</span>
-                  <span class=\"hinweis\">Weitere Regenwerte anzeigen</span>
-                </summary>
-
-                <div class=\"regen-details\">
-                  ${REGEN_DETAILS}
-                </div>
-              </details>"
-          else
-            REGEN_BOX="
-              <div class=\"info\">
-                <div class=\"label\">🌧 Regen heute</div>
-                <div class=\"value\">${REGEN_HEUTE_ANZEIGE} L/m²</div>
-              </div>"
-          fi
+          TEMPERATUR_EINHEIT="$(einheit "$TEMPERATUR" " °C")"
+          LUFTFEUCHTIGKEIT_EINHEIT="$(einheit "$LUFTFEUCHTIGKEIT" " %")"
+          WINDGESCHWINDIGKEIT_EINHEIT="$(einheit "$WINDGESCHWINDIGKEIT" " km/h")"
+          BOENGESCHWINDIGKEIT_EINHEIT="$(einheit "$BOENGESCHWINDIGKEIT" " km/h")"
+          LUFTDRUCK_EINHEIT="$(einheit "$LUFTDRUCK" " hPa")"
+          HELLIGKEIT_EINHEIT="$(einheit "$HELLIGKEIT" " lx")"
+          REGEN_HEUTE_EINHEIT="$(einheit "$REGEN_HEUTE" " L/m²")"
+          REGEN_14_TAGE_EINHEIT="$(einheit "$REGEN_14_TAGE" " L/m²")"
+          REGEN_MONAT_EINHEIT="$(einheit "$REGEN_MONAT" " L/m²")"
+          REGEN_JAHR_EINHEIT="$(einheit "$REGEN_JAHR" " L/m²")"
 
           cat > index.html <<EOF
           <!DOCTYPE html>
@@ -156,8 +116,8 @@ jobs:
                 color-scheme: light dark;
                 --hintergrund-oben: #dff3ff;
                 --hintergrund-unten: #eef7ed;
-                --karte: rgba(255, 255, 255, 0.92);
-                --box: rgba(255, 255, 255, 0.8);
+                --karte: rgba(255, 255, 255, 0.94);
+                --box: rgba(255, 255, 255, 0.82);
                 --text: #19324a;
                 --sekundaer: #5d7185;
                 --akzent: #1976d2;
@@ -175,8 +135,16 @@ jobs:
                 font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
                 color: var(--text);
                 background:
-                  radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 35%),
-                  linear-gradient(145deg, var(--hintergrund-oben), var(--hintergrund-unten));
+                  radial-gradient(
+                    circle at top left,
+                    rgba(255, 255, 255, 0.9),
+                    transparent 35%
+                  ),
+                  linear-gradient(
+                    145deg,
+                    var(--hintergrund-oben),
+                    var(--hintergrund-unten)
+                  );
               }
 
               .card {
@@ -207,10 +175,9 @@ jobs:
                 margin: 26px 0 30px;
                 text-align: center;
                 color: var(--akzent);
-                font-size: clamp(3.5rem, 13vw, 7rem);
+                font-size: clamp(3rem, 12vw, 6.5rem);
                 font-weight: 800;
                 line-height: 1;
-                letter-spacing: -0.06em;
               }
 
               .grid {
@@ -239,7 +206,7 @@ jobs:
               .value {
                 display: block;
                 overflow-wrap: anywhere;
-                font-size: clamp(1.25rem, 4vw, 1.75rem);
+                font-size: clamp(1.2rem, 4vw, 1.75rem);
                 font-weight: 750;
               }
 
@@ -248,7 +215,9 @@ jobs:
               }
 
               details.regen-box summary {
+                position: relative;
                 list-style: none;
+                padding-right: 32px;
               }
 
               details.regen-box summary::-webkit-details-marker {
@@ -257,22 +226,24 @@ jobs:
 
               details.regen-box summary::after {
                 content: "▾";
-                float: right;
-                margin-top: -32px;
+                position: absolute;
+                top: 50%;
+                right: 0;
                 color: var(--akzent);
                 font-size: 1.4rem;
+                transform: translateY(-50%);
                 transition: transform 0.2s ease;
               }
 
               details.regen-box[open] summary::after {
-                transform: rotate(180deg);
+                transform: translateY(-50%) rotate(180deg);
               }
 
               .hinweis {
                 display: block;
                 margin-top: 8px;
                 color: var(--sekundaer);
-                font-size: 0.78rem;
+                font-size: 0.8rem;
               }
 
               .regen-details {
@@ -286,12 +257,12 @@ jobs:
                 gap: 16px;
                 align-items: center;
                 justify-content: space-between;
-                padding: 8px 0;
+                padding: 9px 0;
                 font-size: 0.95rem;
               }
 
               .regen-zeile strong {
-                white-space: nowrap;
+                text-align: right;
               }
 
               .projekte {
@@ -310,7 +281,7 @@ jobs:
                 display: inline-block;
                 padding: 11px 18px;
                 border-radius: 999px;
-                color: white;
+                color: #ffffff;
                 background: var(--akzent);
                 text-decoration: none;
                 font-weight: 700;
@@ -374,58 +345,103 @@ jobs:
               </div>
 
               <div class="temp">
-                ${TEMPERATUR_ANZEIGE} °C
+                ${TEMPERATUR}${TEMPERATUR_EINHEIT}
               </div>
 
               <div class="grid">
                 <div class="info">
                   <div class="label">💧 Luftfeuchtigkeit</div>
-                  <div class="value">${LUFTFEUCHTIGKEIT_ANZEIGE} %</div>
+                  <div class="value">
+                    ${LUFTFEUCHTIGKEIT}${LUFTFEUCHTIGKEIT_EINHEIT}
+                  </div>
                 </div>
 
                 <div class="info">
                   <div class="label">🌬 Wind</div>
-                  <div class="value">${WINDGESCHWINDIGKEIT_ANZEIGE} km/h</div>
+                  <div class="value">
+                    ${WINDGESCHWINDIGKEIT}${WINDGESCHWINDIGKEIT_EINHEIT}
+                  </div>
                 </div>
 
                 <div class="info">
                   <div class="label">🌪 Böen</div>
-                  <div class="value">${BOENGESCHWINDIGKEIT_ANZEIGE} km/h</div>
+                  <div class="value">
+                    ${BOENGESCHWINDIGKEIT}${BOENGESCHWINDIGKEIT_EINHEIT}
+                  </div>
                 </div>
 
                 <div class="info">
                   <div class="label">🧭 Windrichtung</div>
-                  <div class="value">${WINDRICHTUNG_ANZEIGE}</div>
+                  <div class="value">${WINDRICHTUNG}</div>
                 </div>
 
                 <div class="info">
                   <div class="label">📈 Luftdruck</div>
-                  <div class="value">${LUFTDRUCK_ANZEIGE} hPa</div>
+                  <div class="value">
+                    ${LUFTDRUCK}${LUFTDRUCK_EINHEIT}
+                  </div>
                 </div>
 
                 <div class="info">
                   <div class="label">☀️ UV-Index</div>
-                  <div class="value">${UV_INDEX_ANZEIGE}</div>
+                  <div class="value">${UV_INDEX}</div>
                 </div>
 
                 <div class="info">
                   <div class="label">💡 Helligkeit</div>
-                  <div class="value">${HELLIGKEIT_ANZEIGE} lx</div>
+                  <div class="value">
+                    ${HELLIGKEIT}${HELLIGKEIT_EINHEIT}
+                  </div>
                 </div>
 
-                ${REGEN_BOX}
+                <details class="info regen-box">
+                  <summary>
+                    <span class="label">🌧 Regen heute</span>
+
+                    <span class="value">
+                      ${REGEN_HEUTE}${REGEN_HEUTE_EINHEIT}
+                    </span>
+
+                    <span class="hinweis">
+                      Weitere Regenwerte anzeigen
+                    </span>
+                  </summary>
+
+                  <div class="regen-details">
+                    <div class="regen-zeile">
+                      <span>📅 Letzte 14 Tage</span>
+                      <strong>
+                        ${REGEN_14_TAGE}${REGEN_14_TAGE_EINHEIT}
+                      </strong>
+                    </div>
+
+                    <div class="regen-zeile">
+                      <span>📅 Dieser Monat</span>
+                      <strong>
+                        ${REGEN_MONAT}${REGEN_MONAT_EINHEIT}
+                      </strong>
+                    </div>
+
+                    <div class="regen-zeile">
+                      <span>📅 Dieses Jahr</span>
+                      <strong>
+                        ${REGEN_JAHR}${REGEN_JAHR_EINHEIT}
+                      </strong>
+                    </div>
+                  </div>
+                </details>
               </div>
 
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
 
-                projekte/Wetterstation.html
-                  🌦 Wetterstation
-                </a>
+                <a
+                  href="projekte/Wetterstation.html"
+                  class="a>
               </div>
 
               <div class="stand">
-                🕒 ${ZEIT_ANZEIGE}
+                🕒 ${ZEIT}
               </div>
             </main>
           </body>
