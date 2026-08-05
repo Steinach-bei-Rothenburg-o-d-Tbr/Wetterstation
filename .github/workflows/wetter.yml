@@ -26,8 +26,9 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: HTML-Datei erstellen
+      - name: HTML und API-JSON erstellen
         run: |
+          # 1. Die normale Webseite für Besucher bauen
           cat > index.html << 'EOF'
           <!DOCTYPE html>
           <html lang="de">
@@ -40,105 +41,63 @@ jobs:
           <body>
             <div class="card">
               <h1>🌦 Bastians Wetterstation</h1>
-              <div class="ort">
-                📍 Steinach bei Rothenburg ob der Tauber
-              </div>
-              <div class="temp">
-                ${{ github.event.client_payload.temperatur }} °C
-              </div>
+              <div class="ort">📍 Steinach bei Rothenburg ob der Tauber</div>
+              <div class="temp">${{ github.event.client_payload.temperatur }} °C</div>
               <div class="grid">
-                <div class="info">
-                  <div class="label">💧 Luftfeuchtigkeit</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.luftfeuchtigkeit }} %
-                  </div>
-                </div>
-                <div class="info">
-                  <div class="label">🌬 Wind</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.windgeschwindigkeit }} km/h
-                  </div>
-                </div>
-                <div class="info">
-                  <div class="label">🌪 Böen</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.boengeschwindigkeit }} km/h
-                  </div>
-                </div>
-                <div class="info">
-                  <div class="label">🧭 Windrichtung</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.windrichtung }}
-                  </div>
-                </div>
-                <div class="info">
-                  <div class="label">📈 Luftdruck</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.druck }} hPa
-                  </div>
-                </div>
-                <div class="info">
-                  <div class="label">☀️ UV-Index</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.uv_index }}
-                  </div>
-                </div>
-                <div class="info">
-                  <div class="label">💡 Helligkeit</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.beleuchtungsstarke }} lx
-                  </div>
-                </div>
-
-                <!-- Interaktive, aufklappbare Box für Regen heute -->
+                <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">${{ github.event.client_payload.luftfeuchtigkeit }} %</div></div>
+                <div class="info"><div class="label">🌬 Wind</div><div class="value">${{ github.event.client_payload.windgeschwindigkeit }} km/h</div></div>
+                <div class="info"><div class="label">🌪 Böen</div><div class="value">${{ github.event.client_payload.boengeschwindigkeit }} km/h</div></div>
+                <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">${{ github.event.client_payload.windrichtung }}</div></div>
+                <div class="info"><div class="label">📈 Luftdruck</div><div class="value">${{ github.event.client_payload.druck }} hPa</div></div>
+                <div class="info"><div class="label">☀️ UV-Index</div><div class="value">${{ github.event.client_payload.uv_index }}</div></div>
+                <div class="info"><div class="label">💡 Helligkeit</div><div class="value">${{ github.event.client_payload.beleuchtungsstarke }} lx</div></div>
                 <div class="info" onclick="toggleRegenDetails()" title="Klicken für Details" style="grid-column: span 1;">
                   <div class="label">🌧 Regen heute ▾</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regen_heute }} L/m²
-                  </div>
-                  
-                  <!-- Versteckte Statistiken, die bei Klick aufklappen -->
+                  <div class="value">${{ github.event.client_payload.regen_heute }} L/m²</div>
                   <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left; font-size: 15px; line-height: 1.6;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                      <span>📅 14 Tage:</span> <strong>${{ github.event.client_payload.regenvierzehntage }} L/m²</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                      <span>📅 Monat:</span> <strong>${{ github.event.client_payload.regenmonat }} L/m²</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                      <span>📅 Jahr:</span> <strong>${{ github.event.client_payload.regenjahr }} L/m²</strong>
-                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>📅 14 Tage:</span> <strong>${{ github.event.client_payload.regenvierzehntage }} L/m²</strong></div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>📅 Monat:</span> <strong>${{ github.event.client_payload.regenmonat }} L/m²</strong></div>
+                    <div style="display: flex; justify-content: space-between;"><span>📅 Jahr:</span> <strong>${{ github.event.client_payload.regenjahr }} L/m²</strong></div>
                   </div>
                 </div>
-
               </div>
-              <div class="projekte">
-                <h2>🚀 Weitere Projekte</h2>
-                <!-- Link wieder zurückkorrigiert ohne Unterordner -->
-                <a href="Wetterstation.html" class="projekt-link">
-                  🌦 Wetterstation
-                </a>
-              </div>
-              <div class="stand">
-                🕒 ${{ github.event.client_payload.zeit }}
-              </div>
+              <div class="projekte"><h2>🚀 Weitere Projekte</h2><a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a></div>
+              <div class="stand">🕒 ${{ github.event.client_payload.zeit }}</div>
             </div>
-
-            <!-- Skript für den Aufklapp-Effekt -->
             <script>
             function toggleRegenDetails() {
               var details = document.getElementById("regen-details");
-              if (details.style.display === "none") {
-                details.style.display = "block";
-              } else {
-                details.style.display = "none";
-              }
+              details.style.display = details.style.display === "none" ? "block" : "none";
             }
             </script>
           </body>
           </html>
           EOF
 
+          # 2. HIER WIRD DEINE NEUE API-DATEI (JSON) GENERIERT
+          cat > wetter.json << 'EOF'
+          {
+            "station": "Bastians Wetterstation Steinach",
+            "stand": "${{ github.event.client_payload.zeit }}",
+            "messwerte": {
+              "temperatur_celsius": ${{ github.event.client_payload.temperatur }},
+              "luftfeuchtigkeit_prozent": ${{ github.event.client_payload.luftfeuchtigkeit }},
+              "windgeschwindigkeit_kmh": ${{ github.event.client_payload.windgeschwindigkeit }},
+              "boengeschwindigkeit_kmh": ${{ github.event.client_payload.boengeschwindigkeit }},
+              "windrichtung": "${{ github.event.client_payload.windrichtung }}",
+              "luftdruck_hpa": ${{ github.event.client_payload.druck }},
+              "uv_index": ${{ github.event.client_payload.uv_index }},
+              "helligkeit_lux": ${{ github.event.client_payload.beleuchtungsstarke }}
+            },
+            "niederschlag_lm2": {
+              "heute": ${{ github.event.client_payload.regen_heute }},
+              "letzte_vierzehn_tage": ${{ github.event.client_payload.regenvierzehntage }},
+              "aktueller_monat": ${{ github.event.client_payload.regenmonat }},
+              "aktuelles_jahr": ${{ github.event.client_payload.regenjahr }}
+            }
+          }
+          EOF
+          
       - name: Webseiten-Ordner für Pages vorbereiten
         uses: actions/configure-pages@v5
 
