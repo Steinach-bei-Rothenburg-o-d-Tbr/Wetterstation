@@ -32,11 +32,11 @@ jobs:
           import json
           import os
 
-          # 1. Aktuelle Daten vom Home Assistant Webhook holen
+          # 1. Daten vom Home Assistant Webhook holen
           regen_heute = float("${{ github.event.client_payload.regen_heute || '0' }}")
           zeit_neu = "${{ github.event.client_payload.zeit || 'Unbekannt' }}"
 
-          # 2. Bestehende Langzeitwerte laden oder Startwerte setzen
+          # 2. Langzeitwerte verarbeiten
           regen_m = 1.6  
           regen_j = 1.6  
 
@@ -58,7 +58,7 @@ jobs:
                   except:
                       pass
 
-          # 3. Neue API-Struktur aufbauen
+          # 3. API-Struktur aufbauen
           api_data = {
               "station": "Bastians Wetterstation Steinach",
               "stand": zeit_neu,
@@ -130,9 +130,9 @@ jobs:
               </div>
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
-                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
                   <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
-                  <a href="wetterapi.json" class="projekt-link" target="_blank" style="background-color: #24292e;">🌐 Wetter-API (JSON)</a>
+                  <a href="wetterapi.json" class="projekt-link" target="_blank" style="background-color: #333333; color: #ffffff !important; border: 1px solid #555555;">🌐 Wetter-API (JSON)</a>
                 </div>
               </div>
               <div class="stand">🕒 $ZEIT</div>
@@ -155,7 +155,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add index.html wetterapi.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (API verlinkt)" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (API Button-Farbe korrigiert)" && git push)
 
       - name: Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
