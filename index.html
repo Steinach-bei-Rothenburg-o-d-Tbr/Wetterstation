@@ -8,35 +8,27 @@
 </head>
 <body>
   <div class="card">
-    <h1> Adil 🌦 Bastians Wetterstation</h1>
+    <h1>🌦 Bastians Wetterstation</h1>
     <div class="ort">📍 Steinach bei Rothenburg ob der Tauber</div>
     <div class="temp">30.6 °C</div>
     <div class="grid">
-      <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">41.0 %</div></div>
-      <div class="info"><div class="label">🌬 Wind</div><div class="value">6.48 km/h</div></div>
-      <div class="info"><div class="label">🌪 Böen</div><div class="value">14.4 km/h</div></div>
-      <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">W</div></div>
+      <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">40.0 %</div></div>
+      <div class="info"><div class="label">🌬 Wind</div><div class="value">2.52 km/h</div></div>
+      <div class="info"><div class="label">🌪 Böen</div><div class="value">6.12 km/h</div></div>
+      <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">SW</div></div>
       <div class="info"><div class="label">📈 Luftdruck</div><div class="value">973 hPa</div></div>
-      <div class="info"><div class="label">☀️ UV-Index</div><div class="value">8.0</div></div>
-      <div class="info"><div class="label">💡 Helligkeit</div><div class="value">109270 lx</div></div>
-      <div class="info" onclick="toggleRegenDetails()" title="Klicken für Details" style="grid-column: span 1;">
+      <div class="info"><div class="label">☀️ UV-Index</div><div class="value">7.0</div></div>
+      <div class="info"><div class="label">💡 Helligkeit</div><div class="value">75736 lx</div></div>
+      <div class="info" onclick="toggleRegenDetails()" style="grid-column: span 1;">
         <div class="label">🌧 Regen heute ▾</div>
         <div class="value">1.0 L/m²</div>
-        <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left; font-size: 15px; line-height: 1.6;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>📅 14 Tage:</span> <strong>0 L/m²</strong></div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>📅 Monat:</span> <strong>0 L/m²</strong></div>
-          <div style="display: flex; justify-content: space-between;"><span>📅 Jahr:</span> <strong>0 L/m²</strong></div>
+        <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>📅 Monat:</span> <strong>1.6 L/m²</strong></div>
+          <div style="display: flex; justify-content: space-between;"><span>📅 Jahr:</span> <strong>1.6 L/m²</strong></div>
         </div>
       </div>
     </div>
-    <div class="projekte"><h2>🚀 Weitere Projekte</h2><a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a></div>
-    <div class="stand">🕒 05.08.2026 14:30 Uhr</div>
+    <div class="stand">🕒 05.08.2026 14:41 Uhr</div>
   </div>
-  <script>
-  function toggleRegenDetails() {
-    var details = document.getElementById("regen-details");
-    details.style.display = details.style.display === "none" ? "block" : "none";
-  }
-  </script>
 </body>
 </html>
