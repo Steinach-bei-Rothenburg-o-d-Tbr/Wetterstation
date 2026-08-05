@@ -31,41 +31,34 @@ jobs:
         run: |
           import json
           import os
-          from datetime import datetime
 
-          # 1. Aktuelle Daten vom Webhook holen
+          # 1. Aktuelle Daten vom Home Assistant Webhook holen
           regen_heute = float("${{ github.event.client_payload.regen_heute || '0' }}")
           zeit_neu = "${{ github.event.client_payload.zeit || 'Unbekannt' }}"
-          
-          # Aktuelles Datum zerlegen für Reset-Logik
-          try:
-              dt_neu = datetime.strptime(zeit_neu, "%d.%m.%Y %H:%M Uhr")
-          except:
-              dt_neu = datetime.now()
 
-          # 2. Alte Werte laden, falls Datei existiert
-          regen_14, regen_m, regen_j = 0.0, 0.0, 0.0
+          # 2. Bestehende Langzeitwerte laden oder Startwerte setzen
+          regen_m = 1.6  
+          regen_j = 1.6  
+
           if os.path.exists("wetterapi.json"):
               with open("wetterapi.json", "r") as f:
                   try:
                       old_data = json.load(f)
-                      # Werte aus der alten Datei holen
                       regen_m = float(old_data["niederschlag_lm2"]["aktueller_monat"])
                       regen_j = float(old_data["niederschlag_lm2"]["aktuelles_jahr"])
-                      
-                      # Einfache Logik: Wenn regen_heute steigt, addieren wir die Differenz
-                      # Für den Test nehmen wir jetzt einfach den HA-Wert als Basis
+                      old_heute = float(old_data["niederschlag_lm2"]["heute"])
+
+                      if regen_heute > old_heute:
+                          differenz = regen_heute - old_heute
+                          regen_m += differenz
+                          regen_j += differenz
+                      elif regen_heute < old_heute:
+                          regen_m += regen_heute
+                          regen_j += regen_heute
                   except:
                       pass
 
-          # Da HAOS lokal rechnet, nutzen wir GitHub jetzt als stabilen Speicher:
-          # Wir übernehmen die Berechnung von Monat und Jahr basierend auf deinen HA-Änderungen.
-          # Da dein HA-Jahressensor 1.6 sagt, setzen wir hier temporär die echten Startwerte ein:
-          if regen_j == 0.0:
-              regen_j = 1.6
-              regen_m = 1.6
-
-          # 3. Neue API-Datei schreiben
+          # 3. Neue API-Struktur aufbauen (OHNE 14 TAGE)
           api_data = {
               "station": "Bastians Wetterstation Steinach",
               "stand": zeit_neu,
@@ -80,8 +73,7 @@ jobs:
                   "helligkeit_lux": "${{ github.event.client_payload.beleuchtungsstarke || '0' }}"
               },
               "niederschlag_lm2": {
-                  "heute": str(regen_heute),
-                  "letzte_vierzehn_tage": "0.0", 
+                  "heute": str(round(regen_heute, 1)),
                   "aktueller_monat": str(round(regen_m, 1)),
                   "aktuelles_jahr": str(round(regen_j, 1))
               }
@@ -92,7 +84,6 @@ jobs:
 
       - name: HTML Webseite erstellen
         run: |
-          # Holt sich die frisch berechneten Werte aus der JSON für die HTML-Ansicht
           REGEN_H=$(jq -r '.niederschlag_lm2.heute' wetterapi.json)
           REGEN_M=$(jq -r '.niederschlag_lm2.aktueller_monat' wetterapi.json)
           REGEN_J=$(jq -r '.niederschlag_lm2.aktuelles_jahr' wetterapi.json)
@@ -128,17 +119,24 @@ jobs:
                 <div class="info"><div class="label">📈 Luftdruck</div><div class="value">$DRUCK hPa</div></div>
                 <div class="info"><div class="label">☀️ UV-Index</div><div class="value">$UV</div></div>
                 <div class="info"><div class="label">💡 Helligkeit</div><div class="value">$LUX lx</div></div>
-                <div class="info" onclick="toggleRegenDetails()" style="grid-column: span 1;">
+                <div class="info" onclick="toggleRegenDetails()" title="Klicken für Details" style="grid-column: span 1;">
                   <div class="label">🌧 Regen heute ▾</div>
                   <div class="value">$REGEN_H L/m²</div>
-                  <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left;">
+                  <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left; font-size: 15px; line-height: 1.6;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>📅 Monat:</span> <strong>$REGEN_M L/m²</strong></div>
                     <div style="display: flex; justify-content: space-between;"><span>📅 Jahr:</span> <strong>$REGEN_J L/m²</strong></div>
                   </div>
                 </div>
               </div>
+              <div class="projekte"><h2>🚀 Weitere Projekte</h2><a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a></div>
               <div class="stand">🕒 $ZEIT</div>
             </div>
+            <script>
+            function toggleRegenDetails() {
+              var details = document.getElementById("regen-details");
+              details.style.display = details.style.display === "none" ? "block" : "none";
+            }
+            </script>
           </body>
           </html>
           EOF
@@ -151,7 +149,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add index.html wetterapi.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (Langzeitstatistik bereinigt)" && git push)
 
       - name: Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
