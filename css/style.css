@@ -51,6 +51,16 @@ h1 {
   box-shadow: 0 4px 10px rgba(0,0,0,.15);
 }
 
+/* Macht Boxen mit Klick-Funktion als klickbar erkennbar */
+.info[onclick] {
+  cursor: pointer;
+}
+
+/* Färbt die klickbare Box beim Drüberfahren leicht bläulich ein */
+.info[onclick]:hover {
+  background: #e9f2ff;
+}
+
 .label {
   color: #666;
   margin-bottom: 5px;
@@ -92,6 +102,79 @@ h1 {
   font-size: 16px;
 }
 
+/* --- DESIGN FÜR DAS STATISTIK-POPUP (MODAL) --- */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1000; 
+  left: 0; 
+  top: 0; 
+  width: 100%; 
+  height: 100%; 
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background-color: #fff; 
+  margin: 15% auto; 
+  padding: 25px; 
+  border-radius: 15px; 
+  width: 85%; 
+  max-width: 400px; 
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+  position: relative; 
+  color: #333; 
+  text-align: left; /* Überschreibt die Zentrierung der Hauptseite */
+}
+
+.close-btn {
+  position: absolute; 
+  right: 20px; 
+  top: 10px; 
+  font-size: 30px; 
+  font-weight: bold; 
+  cursor: pointer; 
+  color: #aaa;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+.modal-content h2 {
+  margin-top: 0; 
+  color: #007bff; 
+  display: flex; 
+  align-items: center; 
+  gap: 10px;
+}
+
+.modal-content hr {
+  border: 0; 
+  border-top: 1px solid #eee; 
+  margin-bottom: 15px;
+}
+
+.modal-content ul {
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+  font-size: 16px;
+}
+
+.modal-content li {
+  padding: 12px 0; 
+  border-bottom: 1px solid #eee; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.modal-content li:last-child {
+  border-bottom: none;
+}
+
+/* RESPONSIVE LAYOUT */
 @media (max-width: 600px) {
   .grid {
     grid-template-columns: 1fr;
