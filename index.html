@@ -17,7 +17,7 @@
     </div>
 
     <div class="temp">
-      {{ temperatur }} °C
+      __TEMPERATUR__ °C
     </div>
 
     <div class="grid">
@@ -25,49 +25,49 @@
       <div class="info">
         <div class="label">💧 Luftfeuchtigkeit</div>
         <div class="value">
-          {{ luftfeuchtigkeit }} %
+          __LUFTFEUCHTIGKEIT__ %
         </div>
       </div>
 
       <div class="info">
         <div class="label">🌬 Wind</div>
         <div class="value">
-          {{ windgeschwindigkeit }} km/h
+          __WINDGESCHWINDIGKEIT__ km/h
         </div>
       </div>
 
       <div class="info">
         <div class="label">🌪 Böen</div>
         <div class="value">
-          {{ boengeschwindigkeit }} km/h
+          __BOENGESCHWINDIGKEIT__ km/h
         </div>
       </div>
 
       <div class="info">
         <div class="label">🧭 Windrichtung</div>
         <div class="value">
-          {{ windrichtung }}
+          __WINDRICHTUNG__
         </div>
       </div>
 
       <div class="info">
         <div class="label">📈 Luftdruck</div>
         <div class="value">
-          {{ druck }} hPa
+          __LUFTDRUCK__ hPa
         </div>
       </div>
 
       <div class="info">
         <div class="label">☀️ UV-Index</div>
         <div class="value">
-          {{ uv_index }}
+          __UV_INDEX__
         </div>
       </div>
 
       <div class="info">
         <div class="label">💡 Helligkeit</div>
         <div class="value">
-          {{ beleuchtungsstarke }} lx
+          __HELLIGKEIT__ lx
         </div>
       </div>
 
@@ -75,7 +75,7 @@
       <div class="info" onclick="openPopup()" title="Klicken für Statistiken">
         <div class="label">🌧 Regen heute 📊</div>
         <div class="value">
-          {{ regen_heute }} L/m²
+          __REGEN_HEUTE__ L/m²
         </div>
       </div>
 
@@ -89,7 +89,7 @@
     </div>
 
     <div class="stand">
-      🕒 {{ zeit }}
+      🕒 __ZEIT__
     </div>
 
   </div>
@@ -106,15 +106,15 @@
       <ul>
         <li>
           <span>📅 Letzte 14 Tage:</span> 
-          <strong><span id="regen-14tage-wert">{{ regen_14tage }}</span> L/m²</strong>
+          <strong><span id="regen-14tage-wert">__REGEN_14TAGE__</span> L/m²</strong>
         </li>
         <li>
           <span>📅 Diesen Monat:</span> 
-          <strong><span id="regen-monat-wert">{{ regen_monat }}</span> L/m²</strong>
+          <strong><span id="regen-monat-wert">__REGEN_MONAT__</span> L/m²</strong>
         </li>
         <li>
           <span>📅 Dieses Jahr:</span> 
-          <strong><span id="regen-jahr-wert">{{ regen_jahr }}</span> L/m²</strong>
+          <strong><span id="regen-jahr-wert">__REGEN_JAHR__</span> L/m²</strong>
         </li>
       </ul>
       
