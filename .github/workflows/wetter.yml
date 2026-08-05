@@ -78,7 +78,7 @@ jobs:
 
                   daily = forecast_data["daily"]
                   for i in range(3):
-                      emoji, text = get_wetter_info(daily["weather_code"][i])
+                      emoji, text = get_wetter_info(int(daily["weather_code"][i]))
                       prognose_liste.append({
                           "datum": daily["time"][i],
                           "emoji": emoji,
