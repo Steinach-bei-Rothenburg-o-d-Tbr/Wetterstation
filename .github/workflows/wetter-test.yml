@@ -1,0 +1,64 @@
+name: TEST Wetter-Vorhersage
+
+on:
+  workflow_dispatch: # Ermöglicht dir den Start per Knopfdruck auf GitHub
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  test-prognose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: Test-Webseite mit Vorhersage bauen
+        run: |
+          cat > prognose-test.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="de">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Test Vorhersage Steinach</title>
+            <link rel="stylesheet" href="css/style.css">
+          </head>
+          <body>
+            <div class="card">
+              <h1>🔮 Wetterprognose Test</h1>
+              <div class="ort">📍 Steinach bei Rothenburg o.d.Tbr.</div>
+              
+              <!-- Absolut sicheres Wetter-Widget von Open-Meteo per Iframe -->
+              <iframe 
+                src="https://open-meteo.com" 
+                style="width: 100%; height: 350px; border: none; border-radius: 10px; margin-top: 20px;">
+              </iframe>
+
+              <div class="projekte" style="margin-top: 20px;">
+                <a href="index.html" class="projekt-link">⬅️ Zurück zur Hauptseite</a>
+              </div>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Webseiten-Ordner für Pages vorbereiten
+        uses: actions/configure-pages@v5
+
+      - name: Testseite im Repo speichern
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add prognose-test.html
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Test-Prognoseseite hinzugefügt" && git push)
+
+      - name: Artefakt hochladen
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.' 
+
+      - name: Auf GitHub Pages veröffentlichen
+        uses: actions/deploy-pages@v4
