@@ -66,20 +66,20 @@ jobs:
               with urllib.request.urlopen(url) as response:
                   forecast_data = json.loads(response.read().decode())
                   
-                  # Robuste Übersetzung ohne eckige Klammern
+                  # Ausfallsichere WMO-Code-Übersetzung
                   def get_wetter_info(code):
                       c = int(code)
                       if c == 0:
                           return "☀️", "Klar"
-                      elif c == 1 or c == 2 or c == 3:
+                      elif c in [1, 2, 3]:
                           return "⛅", "Bewölkt"
-                      elif c == 45 or c == 48:
+                      elif c in [45, 48]:
                           return "🌫️", "Nebel"
-                      elif c == 51 or c == 53 or c == 55 or c == 61 or c == 63 or c == 65 or c == 80 or c == 81 or c == 82:
+                      elif c in [51, 53, 55, 61, 63, 65, 80, 81, 82]:
                           return "🌧️", "Regen"
-                      elif c == 71 or c == 73 or c == 75 or c == 77 or c == 85 or c == 86:
+                      elif c in [71, 73, 75, 77, 85, 86]:
                           return "🌨️", "Schnee"
-                      elif c == 95 or c == 96 or c == 99:
+                      elif c in [95, 96, 99]:
                           return "⛈️", "Gewitter"
                       else:
                           return "✨", "Wechselhaft"
@@ -95,7 +95,8 @@ jobs:
                           "temp_min": daily["temperature_2m_min"][i]
                       })
           except Exception as e:
-              prognose_liste = [{"datum": "N/A", "emoji": "❌", "zustand": "Fehler beim Laden", "temp_max": 0, "temp_min": 0} for _ in range(3)]
+              # Fallback bei Fehlern
+              prognose_liste = [{"datum": "N/A", "emoji": "❌", "zustand": "Fehler", "temp_max": 0, "temp_min": 0} for _ in range(3)]
 
           # 4. Neue API-Struktur aufbauen
           api_data = {
@@ -137,7 +138,7 @@ jobs:
           UV=$(jq -r '.messwerte.uv_index' wetterapi.json)
           LUX=$(jq -r '.messwerte.helligkeit_lux' wetterapi.json)
 
-          # Prognosedaten für HTML aufbereiten
+          # Präzise jq-Filter für die Arrays (Behebung des Auslese-Fehlers)
           P1_TAG=$(jq -r '.prognose_3_tage[0].datum' wetterapi.json | awk -F'-' '{print $3"."$2"."}')
           P1_EMOJI=$(jq -r '.prognose_3_tage[0].emoji' wetterapi.json)
           P1_TXT=$(jq -r '.prognose_3_tage[0].zustand' wetterapi.json)
@@ -196,3 +197,4 @@ jobs:
                     <div style="font-size: 11px; color: #777; margin-top: 3px;">$P1_TXT</div>
                   </div>
                   <div style="background: #f7f8fa; padding: 10px; border-radius: 10px; font-size: 14px;">
+                    <div style="color: #666; font-weight: bold;">$P2_TAG</div>
