@@ -102,18 +102,32 @@ jobs:
                   </div>
                 </div>
 
-                <div class="info">
-                  <div class="label">🌧 Regen heute</div>
+                <!-- Interaktive, aufklappbare Box für Regen heute -->
+                <div class="info" onclick="toggleRegenDetails()" title="Klicken für Details" style="grid-column: span 1;">
+                  <div class="label">🌧 Regen heute ▾</div>
                   <div class="value">
-                    ${{ github.event.client_payload.regen_heute }} mm
+                    ${{ github.event.client_payload.regen_heute }} L/m²
+                  </div>
+                  
+                  <!-- Versteckte Statistiken, die bei Klick aufklappen -->
+                  <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left; font-size: 15px; line-height: 1.6;">
+                    <div style="display: flex; justify-content: space-between;">
+                      <span>📅 14 Tage:</span> <strong>${{ github.event.client_payload.regen_14tage }} L/m²</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                      <span>📅 Monat:</span> <strong>${{ github.event.client_payload.regen_monat }} L/m²</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                      <span>📅 Jahr:</span> <strong>${{ github.event.client_payload.regen_jahr }} L/m²</strong>
+                    </div>
                   </div>
                 </div>
 
               </div>
 
               <div class="projekte">
-                <h2>🚀 Aktuelle Projekte</h2>
-                <a href="Wetterstation.html" class="projekt-link">
+                <h2>🚀 Weitere Projekte</h2>
+                <a href="projekte/Wetterstation.html" class="projekt-link">
                   🌦 Wetterstation
                 </a>
               </div>
@@ -123,6 +137,18 @@ jobs:
               </div>
 
             </div>
+
+            <!-- Skript für den Aufklapp-Effekt -->
+            <script>
+            function toggleRegenDetails() {
+              var details = document.getElementById("regen-details");
+              if (details.style.display === "none") {
+                details.style.display = "block";
+              } else {
+                details.style.display = "none";
+              }
+            }
+            </script>
           </body>
           </html>
           EOF
