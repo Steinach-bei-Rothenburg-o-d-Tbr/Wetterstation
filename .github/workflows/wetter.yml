@@ -26,32 +26,9 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: Debug Payload
-        run: |
-          echo "Temperatur='${{ github.event.client_payload.temperatur }}'"
-          echo "Regen heute='${{ github.event.client_payload.regen_heute }}'"
-          echo "Regen 14 Tage='${{ github.event.client_payload.regenvierzehntage }}'"
-          echo "Regen Monat='${{ github.event.client_payload.regenmonat }}'"
-          echo "Regen Jahr='${{ github.event.client_payload.regenjahr }}'"
-          echo "Zeit='${{ github.event.client_payload.zeit }}'"
-
       - name: HTML-Datei erstellen
-        env:
-          TEMPERATUR: ${{ github.event.client_payload.temperatur }}
-          LUFTFEUCHTIGKEIT: ${{ github.event.client_payload.luftfeuchtigkeit }}
-          WINDGESCHWINDIGKEIT: ${{ github.event.client_payload.windgeschwindigkeit }}
-          BOENGESCHWINDIGKEIT: ${{ github.event.client_payload.boengeschwindigkeit }}
-          WINDRICHTUNG: ${{ github.event.client_payload.windrichtung }}
-          LUFTDRUCK: ${{ github.event.client_payload.druck }}
-          UV_INDEX: ${{ github.event.client_payload.uv_index }}
-          HELLIGKEIT: ${{ github.event.client_payload.beleuchtungsstarke }}
-          REGEN_HEUTE: ${{ github.event.client_payload.regen_heute }}
-          REGENVIERZEHNTAGE: ${{ github.event.client_payload.regenvierzehntage }}
-          REGENMONAT: ${{ github.event.client_payload.regenmonat }}
-          REGENJAHR: ${{ github.event.client_payload.regenjahr }}
-          ZEIT: ${{ github.event.client_payload.zeit }}
         run: |
-          cat > index.html << EOF
+          cat > index.html << 'EOF'
           <!DOCTYPE html>
           <html lang="de">
           <head>
@@ -67,77 +44,77 @@ jobs:
                 📍 Steinach bei Rothenburg ob der Tauber
               </div>
               <div class="temp">
-                $TEMPERATUR °C
+                ${{ github.event.client_payload.temperatur }} °C
               </div>
               <div class="grid">
                 <div class="info">
                   <div class="label">💧 Luftfeuchtigkeit</div>
                   <div class="value">
-                    $LUFTFEUCHTIGKEIT %
+                    ${{ github.event.client_payload.luftfeuchtigkeit }} %
                   </div>
                 </div>
                 <div class="info">
                   <div class="label">🌬 Wind</div>
                   <div class="value">
-                    $WINDGESCHWINDIGKEIT km/h
+                    ${{ github.event.client_payload.windgeschwindigkeit }} km/h
                   </div>
                 </div>
                 <div class="info">
                   <div class="label">🌪 Böen</div>
                   <div class="value">
-                    $BOENGESCHWINDIGKEIT km/h
+                    ${{ github.event.client_payload.boengeschwindigkeit }} km/h
                   </div>
                 </div>
                 <div class="info">
                   <div class="label">🧭 Windrichtung</div>
                   <div class="value">
-                    $WINDRICHTUNG
+                    ${{ github.event.client_payload.windrichtung }}
                   </div>
                 </div>
                 <div class="info">
                   <div class="label">📈 Luftdruck</div>
                   <div class="value">
-                    $LUFTDRUCK hPa
+                    ${{ github.event.client_payload.druck }} hPa
                   </div>
                 </div>
                 <div class="info">
                   <div class="label">☀️ UV-Index</div>
                   <div class="value">
-                    $UV_INDEX
+                    ${{ github.event.client_payload.uv_index }}
                   </div>
                 </div>
                 <div class="info">
                   <div class="label">💡 Helligkeit</div>
                   <div class="value">
-                    $HELLIGKEIT lx
+                    ${{ github.event.client_payload.beleuchtungsstarke }} lx
                   </div>
                 </div>
                 <!-- Box: Regen heute -->
                 <div class="info">
                   <div class="label">🌧 Regen heute</div>
                   <div class="value">
-                    $REGEN_HEUTE L/m²
+                    ${{ github.event.client_payload.regen_heute }} L/m²
                   </div>
                 </div>
                 <!-- Box: Regen 14 Tage -->
                 <div class="info">
                   <div class="label">📅 Regen 14 Tage</div>
                   <div class="value">
-                    $REGENVIERZEHNTAGE L/m²
+                    ${{ github.event.client_payload.regenvierzehntage }} L/m²
                   </div>
                 </div>
                 <!-- Box: Regen Monat -->
                 <div class="info">
                   <div class="label">📅 Regen Monat</div>
                   <div class="value">
-                    $REGENMONAT L/m²
+                    ${{ github.event.client_payload.regenmonat }} L/m²
                   </div>
                 </div>
                 <!-- Box: Regen Jahr -->
                 <div class="info" style="grid-column: span 2;">
                   <div class="label">📅 Regen dieses Jahr</div>
                   <div class="value">
-                    $REGENJAHR L/m²
+                    ${{ github.event.client_payload.regenjahr }} L/m²
                   </div>
                 </div>
               </div>
@@ -148,7 +125,7 @@ jobs:
                 </a>
               </div>
               <div class="stand">
-                🕒 $ZEIT
+                🕒 ${{ github.event.client_payload.zeit }}
               </div>
             </div>
           </body>
