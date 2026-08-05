@@ -58,7 +58,7 @@ jobs:
                   except:
                       pass
 
-          # 3. Neue API-Struktur aufbauen (OHNE 14 TAGE)
+          # 3. Neue API-Struktur aufbauen
           api_data = {
               "station": "Bastians Wetterstation Steinach",
               "stand": zeit_neu,
@@ -128,7 +128,13 @@ jobs:
                   </div>
                 </div>
               </div>
-              <div class="projekte"><h2>🚀 Weitere Projekte</h2><a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a></div>
+              <div class="projekte">
+                <h2>🚀 Weitere Projekte</h2>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                  <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
+                  <a href="wetterapi.json" class="projekt-link" target="_blank" style="background-color: #24292e;">🌐 Wetter-API (JSON)</a>
+                </div>
+              </div>
               <div class="stand">🕒 $ZEIT</div>
             </div>
             <script>
@@ -149,7 +155,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add index.html wetterapi.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (Langzeitstatistik bereinigt)" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (API verlinkt)" && git push)
 
       - name: Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
