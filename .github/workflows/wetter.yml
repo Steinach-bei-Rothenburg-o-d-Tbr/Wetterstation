@@ -26,15 +26,14 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: Debug Regenwerte
-        env:
-          REGENVIERZEHNTAGE: ${{ github.event.client_payload.regenvierzehntage }}
-          REGENMONAT: ${{ github.event.client_payload.regenmonat }}
-          REGENJAHR: ${{ github.event.client_payload.regenjahr }}
+      - name: Debug Payload
         run: |
-          echo "14 Tage = '$REGENVIERZEHNTAGE'"
-          echo "Monat = '$REGENMONAT'"
-          echo "Jahr = '$REGENJAHR'"
+          echo "Temperatur='${{ github.event.client_payload.temperatur }}'"
+          echo "Regen heute='${{ github.event.client_payload.regen_heute }}'"
+          echo "Regen 14 Tage='${{ github.event.client_payload.regenvierzehntage }}'"
+          echo "Regen Monat='${{ github.event.client_payload.regenmonat }}'"
+          echo "Regen Jahr='${{ github.event.client_payload.regenjahr }}'"
+          echo "Zeit='${{ github.event.client_payload.zeit }}'"
 
       - name: HTML-Datei erstellen
         env:
@@ -136,28 +135,4 @@ jobs:
 
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
-                projekte/Wetterstation.html
-                  🌦 Wetterstation
-                </a>
-              </div>
-
-              <div class="stand">
-                🕒 $ZEIT
-              </div>
-
-            </div>
-          </body>
-          </html>
-          EOF
-
-      - name: Webseiten-Ordner für Pages vorbereiten
-        uses: actions/configure-pages@v5
-
-      - name: Artefakt hochladen
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - name: Auf GitHub Pages veröffentlichen
-        id: deployment
-        uses: actions/deploy-pages@v4
+                <a href="projekte/Wetterstation
