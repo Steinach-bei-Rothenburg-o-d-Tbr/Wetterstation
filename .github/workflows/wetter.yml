@@ -89,34 +89,28 @@ jobs:
                     ${{ github.event.client_payload.beleuchtungsstarke }} lx
                   </div>
                 </div>
-                <!-- Box: Regen heute -->
-                <div class="info">
-                  <div class="label">🌧 Regen heute</div>
+
+                <!-- Interaktive, aufklappbare Box für Regen heute -->
+                <div class="info" onclick="toggleRegenDetails()" title="Klicken für Details" style="grid-column: span 1;">
+                  <div class="label">🌧 Regen heute ▾</div>
                   <div class="value">
                     ${{ github.event.client_payload.regen_heute }} L/m²
                   </div>
-                </div>
-                <!-- Box: Regen 14 Tage -->
-                <div class="info">
-                  <div class="label">📅 Regen 14 Tage</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regenvierzehntage }} L/m²
+                  
+                  <!-- Versteckte Statistiken, die bei Klick aufklappen -->
+                  <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left; font-size: 15px; line-height: 1.6;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                      <span>📅 14 Tage:</span> <strong>${{ github.event.client_payload.regenvierzehntage }} L/m²</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                      <span>📅 Monat:</span> <strong>${{ github.event.client_payload.regenmonat }} L/m²</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                      <span>📅 Jahr:</span> <strong>${{ github.event.client_payload.regenjahr }} L/m²</strong>
+                    </div>
                   </div>
                 </div>
-                <!-- Box: Regen Monat -->
-                <div class="info">
-                  <div class="label">📅 Regen Monat</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regenmonat }} L/m²
-                  </div>
-                </div>
-                <!-- Box: Regen Jahr -->
-                <div class="info" style="grid-column: span 2;">
-                  <div class="label">📅 Regen dieses Jahr</div>
-                  <div class="value">
-                    ${{ github.event.client_payload.regenjahr }} L/m²
-                  </div>
-                </div>
+
               </div>
               <div class="projekte">
                 <h2>🚀 Weitere Projekte</h2>
@@ -128,6 +122,18 @@ jobs:
                 🕒 ${{ github.event.client_payload.zeit }}
               </div>
             </div>
+
+            <!-- Skript für den Aufklapp-Effekt -->
+            <script>
+            function toggleRegenDetails() {
+              var details = document.getElementById("regen-details");
+              if (details.style.display === "none") {
+                details.style.display = "block";
+              } else {
+                details.style.display = "none";
+              }
+            }
+            </script>
           </body>
           </html>
           EOF
