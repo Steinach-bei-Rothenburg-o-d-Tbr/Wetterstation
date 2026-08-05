@@ -17,7 +17,7 @@
     </div>
 
     <div class="temp">
-      __TEMPERATUR__ °C
+      $TEMPERATUR °C
     </div>
 
     <div class="grid">
@@ -25,69 +25,69 @@
       <div class="info">
         <div class="label">💧 Luftfeuchtigkeit</div>
         <div class="value">
-          __LUFTFEUCHTIGKEIT__ %
+          $LUFTFEUCHTIGKEIT %
         </div>
       </div>
 
       <div class="info">
         <div class="label">🌬 Wind</div>
         <div class="value">
-          __WINDGESCHWINDIGKEIT__ km/h
+          $WINDGESCHWINDIGKEIT km/h
         </div>
       </div>
 
       <div class="info">
         <div class="label">🌪 Böen</div>
         <div class="value">
-          __BOENGESCHWINDIGKEIT__ km/h
+          $BOENGESCHWINDIGKEIT km/h
         </div>
       </div>
 
       <div class="info">
         <div class="label">🧭 Windrichtung</div>
         <div class="value">
-          __WINDRICHTUNG__
+          $WINDRICHTUNG
         </div>
       </div>
 
       <div class="info">
         <div class="label">📈 Luftdruck</div>
         <div class="value">
-          __LUFTDRUCK__ hPa
+          $LUFTDRUCK hPa
         </div>
       </div>
 
       <div class="info">
         <div class="label">☀️ UV-Index</div>
         <div class="value">
-          __UV_INDEX__
+          $UV_INDEX
         </div>
       </div>
 
       <div class="info">
         <div class="label">💡 Helligkeit</div>
         <div class="value">
-          __HELLIGKEIT__ lx
+          $HELLIGKEIT lx
         </div>
       </div>
 
-      <!-- Erweiterbare Box für Regen heute -->
+      <!-- Interaktive, aufklappbare Box für Regen heute -->
       <div class="info" onclick="toggleRegenDetails()" title="Klicken für Details" style="grid-column: span 1;">
         <div class="label">🌧 Regen heute ▾</div>
         <div class="value">
-          __REGEN_HEUTE__ L/m²
+          $REGEN_HEUTE L/m²
         </div>
         
-        <!-- Dieser Bereich ist standardmäßig versteckt und klappt bei Klick auf -->
+        <!-- Versteckte Statistiken, die bei Klick aufklappen -->
         <div id="regen-details" style="display: none; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: left; font-size: 15px; line-height: 1.6;">
-          <div style="display: flex; justify-content: space-between;">
-            <span>📅 14 Tage:</span> <strong>__REGEN_14TAGE__ L/m²</strong>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <span>📅 14 Tage:</span> <strong>$REGENVIERZEHNTAGE L/m²</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <span>📅 Monat:</span> <strong>$REGENMONAT L/m²</strong>
           </div>
           <div style="display: flex; justify-content: space-between;">
-            <span>📅 Monat:</span> <strong>__REGEN_MONAT__ L/m²</strong>
-          </div>
-          <div style="display: flex; justify-content: space-between;">
-            <span>📅 Jahr:</span> <strong>__REGEN_JAHR__ L/m²</strong>
+            <span>📅 Jahr:</span> <strong>$REGENJAHR L/m²</strong>
           </div>
         </div>
       </div>
@@ -102,12 +102,12 @@
     </div>
 
     <div class="stand">
-      🕒 __ZEIT__
+      🕒 $ZEIT
     </div>
 
   </div>
 
-  <!-- Kurzes Skript für den Aufklapp-Effekt -->
+  <!-- Skript für den Aufklapp-Effekt -->
   <script>
   function toggleRegenDetails() {
     var details = document.getElementById("regen-details");
