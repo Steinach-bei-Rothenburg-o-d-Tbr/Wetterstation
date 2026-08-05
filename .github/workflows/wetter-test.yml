@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Code auschecken
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Holt die gesamte Git-Historie für ein sauberes Update
 
       - name: Test-Webseite mit Vorhersage bauen
         run: |
@@ -55,7 +57,12 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add prognose-test.html
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Test-Prognoseseite Widget-URL korrigiert" && git push)
+          
+          # Holt erst die Live-Änderungen der Wetterstation ab, bevor es speichert
+          git fc
+          git pull --rebase origin main
+          
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Test-Prognoseseite mit Pull-Rebase gefixt" && git push)
 
       - name: Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
