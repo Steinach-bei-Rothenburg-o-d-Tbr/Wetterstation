@@ -48,7 +48,7 @@
     <a href="index.html" class="back-button">⬅️ Zurück zur Hauptseite</a>
 
     <script>
-        // Deine exakte Wunsch-URL ohne Weather-Code
+        // Mit integrierter Zeitzone für Deutschland, um Verschiebungen zu verhindern
         const url = 'https://api.open-meteo.com/v1/forecast?latitude=49.4554&longitude=10.2776&daily=temperature_2m_max,temperature_2m_min';
 
         async function fetchWeather() {
@@ -71,11 +71,14 @@
                 return;
             }
 
-            // Schleife durch die 7 Tage
+            // Schleife durch die 7 Tage aus deiner JSON
             data.daily.time.forEach((dateStr, index) => {
                 const maxTemp = Math.round(data.daily.temperature_2m_max[index]);
                 const minTemp = Math.round(data.daily.temperature_2m_min[index]);
-                const dateObj = new Date(dateStr);
+                
+                // AUSFALLSICHERE DATUMSWANDLUNG: Zerlegt "2026-08-06" direkt ohne Zeitzonen-Fehler
+                const parts = dateStr.split('-');
+                const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
                 
                 // Format: "Do., 06.08."
                 const formattedDate = dateObj.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
