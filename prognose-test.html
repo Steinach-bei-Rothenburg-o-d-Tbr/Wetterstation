@@ -17,17 +17,55 @@
             border-radius: 12px; 
             box-shadow: 0 10px 15px rgba(0,0,0,0.15);
             color: white;
-            padding: 20px;
+            padding: 0; /* Auf 0 gesetzt für nahtlosen Header-Klick */
+            overflow: hidden;
+            text-align: left;
         }
         
-        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; }
+        /* Interaktiver Header zum Aufklappen */
+        .card-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 18px 20px; 
+            font-size: 16px; 
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+        .card-header:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .header-date { font-weight: bold; }
+        .header-temp { font-size: 15px; }
+        .arrow-icon { font-size: 12px; margin-left: 10px; transition: transform 0.3s ease; }
         
-        /* Zeilen-Layout für die Tagesübersicht ohne Icon */
+        /* Aufklappbarer Inhalt-Container */
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding: 0 20px;
+        }
+        
+        /* Zeilen-Layout für die weiteren Tage */
         .forecast-day { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .forecast-day:last-child { border: none; }
+        .forecast-day:last-child { border-bottom: none; }
         .date { font-weight: bold; width: 120px; text-align: left; font-size: 15px; }
         .temp { width: 240px; text-align: right; font-size: 15px; }
-        .max-temp { font-weight: bold; color: #ffb74d; margin-left: 8px; }
+        
+        .max-temp { font-weight: bold; color: #ffb74d; margin-right: 8px; }
+        .min-temp { color: #cbd5e0; }
+
+        /* API Hinweis ganz unten */
+        .api-footer {
+            padding: 10px 20px 15px 20px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
 
         .back-button { display: inline-block; padding: 10px 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-decoration: none; color: #2d3748; font-weight: 500; font-size: 14px; }
     </style>
@@ -38,17 +76,29 @@
     <div class="location">📍 Steinach bei Rothenburg o.d.Tbr. (Gallmersgarten)</div>
 
     <div class="weather-card">
-        <div class="card-header">
-            <span>📅 7-Tage-Trend (Temperaturen)</span>
-            <span>Live Open-Meteo API</span>
+        <!-- Der klickbare Header (wird per JS befüllt) -->
+        <div class="card-header" id="toggleHeader">
+            <div class="header-date" id="todayDate">Heute</div>
+            <div>
+                <span class="header-temp" id="todayTemp">Lädt...</span>
+                <span class="arrow-icon" id="arrowBtn">▼</span>
+            </div>
         </div>
-        <div id="weather">Wetterdaten werden geladen...</div>
+        
+        <!-- Die restlichen Tage im ausklappbaren Bereich -->
+        <div class="card-content" id="dropdownContent">
+            <div id="weather"></div>
+        </div>
+
+        <!-- API Daten Hinweis ganz unten in der Karte -->
+        <div class="api-footer">
+            API Daten von Open-Meteo
+        </div>
     </div>
 
     <a href="index.html" class="back-button">⬅️ Zurück zur Hauptseite</a>
 
     <script>
-        // Mit integrierter Zeitzone für Deutschland, um Verschiebungen zu verhindern
         const url = 'https://api.open-meteo.com/v1/forecast?latitude=49.4554&longitude=10.2776&daily=temperature_2m_max,temperature_2m_min';
 
         async function fetchWeather() {
@@ -57,6 +107,7 @@
                 const data = await response.json();
                 displayWeather(data);
             } catch (error) {
+                document.getElementById('todayTemp').innerText = 'Fehler';
                 document.getElementById('weather').innerText = 'Fehler beim Laden der Live-Daten.';
                 console.error(error);
             }
@@ -66,33 +117,59 @@
             const weatherDiv = document.getElementById('weather');
             weatherDiv.innerHTML = ''; 
 
-            if (!data || !data.daily || !data.daily.time) {
+            if (!data || !data.daily || !data.daily.time || data.daily.time.length === 0) {
+                document.getElementById('todayTemp').innerText = 'Fehler';
                 weatherDiv.innerText = 'Keine gültigen Wetterdaten gefunden.';
                 return;
             }
 
-            // Schleife durch die 7 Tage aus deiner JSON
-            data.daily.time.forEach((dateStr, index) => {
+            // --- 1. HEUTIGER TAG (Index 0) in den Header schreiben ---
+            const todayMax = Math.round(data.daily.temperature_2m_max[0]);
+            const todayMin = Math.round(data.daily.temperature_2m_min[0]);
+            
+            const todayParts = data.daily.time[0].split('-');
+            const todayObj = new Date(todayParts[0], todayParts[1] - 1, todayParts[2]);
+            const formattedToday = todayObj.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
+            
+            document.getElementById('todayDate').innerText = `Heute (${formattedDate})`;
+            document.getElementById('todayTemp').innerHTML = `<span class="max-temp">Max: ${todayMax}°C</span> / <span class="min-temp">Min: ${todayMin}°C</span>`;
+
+            // --- 2. DIE RESTLICHEN TAGE in die Dropdown-Liste schreiben ---
+            for (let index = 1; index < data.daily.time.length; index++) {
                 const maxTemp = Math.round(data.daily.temperature_2m_max[index]);
                 const minTemp = Math.round(data.daily.temperature_2m_min[index]);
+                const dateStr = data.daily.time[index];
                 
-                // AUSFALLSICHERE DATUMSWANDLUNG: Zerlegt "2026-08-06" direkt ohne Zeitzonen-Fehler
                 const parts = dateStr.split('-');
                 const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-                
-                // Format: "Do., 06.08."
                 const formattedDate = dateObj.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
 
                 const dayEl = document.createElement('div');
                 dayEl.className = 'forecast-day';
-                 // HIER REIHENFOLGE GETAUSCHT: Max steht jetzt links (orange) und Min rechts (hellgrau)
                 dayEl.innerHTML = `
                     <div class="date">${formattedDate}</div>
                     <div class="temp"><span class="max-temp">Max: ${maxTemp}°C</span> / <span class="min-temp">Min: ${minTemp}°C</span></div>
                 `;
                 weatherDiv.appendChild(dayEl);
-            });
+            }
         }
+
+        // --- 3. LOGIK FÜR DAS AUF- UND ZUKLAPPEN ---
+        const toggleHeader = document.getElementById('toggleHeader');
+        const dropdownContent = document.getElementById('dropdownContent');
+        const arrowBtn = document.getElementById('arrowBtn');
+
+        toggleHeader.addEventListener('click', () => {
+            if (dropdownContent.style.maxHeight && dropdownContent.style.maxHeight !== "0px") {
+                // Zuklappen
+                dropdownContent.style.maxHeight = "0px";
+                arrowBtn.style.transform = "rotate(0deg)";
+            } else {
+                // Aufklappen (stellt sich dynamisch auf die Höhe des Inhalts ein)
+                dropdownContent.style.maxHeight = dropdownContent.scrollHeight + "px";
+                arrowBtn.style.transform = "rotate(180deg)";
+            }
+        });
 
         fetchWeather();
     </script>
