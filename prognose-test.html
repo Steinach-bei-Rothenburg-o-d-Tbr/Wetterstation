@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wetterprognose Test</title>
+    <title>Wetterprognose Stündlich</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f8f9fa; text-align: center; padding: 20px; color: #333; }
         .header-title { font-size: 24px; font-weight: bold; color: #2d3748; margin-bottom: 5px; }
@@ -18,56 +18,44 @@
             box-shadow: 0 10px 15px rgba(0,0,0,0.15);
             color: white;
             padding: 20px;
-            overflow: hidden;
         }
         
         .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; }
         
-        /* Zeilen-Layout für die Tage */
-        .forecast-day { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .forecast-day:last-child { border: none; }
-        .date { font-weight: bold; width: 80px; text-align: left; }
-        .icon { font-size: 1.6rem; width: 40px; text-align: center; }
-        .temp { width: 160px; text-align: center; font-size: 15px; }
-        .rain { width: 70px; text-align: right; color: #9cdbff; font-size: 14px; }
+        /* Scrollbare Box für die vielen Stundenwerte */
+        .hourly-container { max-height: 400px; overflow-y: auto; padding-right: 5px; }
         
-        /* Button */
+        /* Layout für die Stunden-Zeilen */
+        .forecast-hour { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .forecast-hour:last-child { border: none; }
+        .time { font-weight: bold; width: 140px; text-align: left; font-size: 14px; }
+        .temp { width: 100px; text-align: right; font-size: 16px; font-weight: bold; }
+        
+        /* Scrollbar-Design */
+        .hourly-container::-webkit-scrollbar { width: 6px; }
+        .hourly-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
         .back-button { display: inline-block; padding: 10px 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-decoration: none; color: #2d3748; font-weight: 500; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <div class="header-title">🔮 Wetterprognose Test</div>
-    <div class="location">📍 Steinach bei Rothenburg o.d.Tbr. (Gallmersgarten)</div>
+    <div class="location">📍 Steinach (49.4554 / 10.2776)</div>
 
     <div class="weather-card">
         <div class="card-header">
-            <span>✨ Live-Prognose</span>
-            <span>Open-Meteo API</span>
+            <span>⏰ Stündlicher Verlauf</span>
+            <span>Live Open-Meteo API</span>
         </div>
-        <div id="weather">Wetterdaten werden geladen...</div>
+        <div id="weather" class="hourly-container">Wetterdaten werden geladen...</div>
     </div>
 
     <a href="index.html" class="back-button">⬅️ Zurück zur Hauptseite</a>
 
     <script>
-        // Geografische Koordinaten: Höhenweg 16, 91605 Gallmersgarten
-        const lat = 49.4497;
-        const lon = 10.2635;
-        const days = 5; // Anzahl der Tage, die angezeigt werden sollen
-
-        const url = `https://open-meteo.com{lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=${days}`;
-
-        // Wandelt WMO-Codes in Emojis um
-        function getWeatherEmoji(code) {
-            if (code === 0) return "☀️";
-            if (code >= 1 && code <= 3) return "⛅";
-            if (code >= 45 && code <= 48) return "🌫️";
-            if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "🌧️";
-            if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return "❄️";
-            if (code >= 95 && code <= 99) return "⛈️";
-            return "☁️";
-        }
+        // Deine exakte Wunsch-URL von Open-Meteo
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=49.4554&longitude=10.2776&hourly=temperature_2m';
 
         async function fetchWeather() {
             try {
@@ -84,24 +72,25 @@
             const weatherDiv = document.getElementById('weather');
             weatherDiv.innerHTML = ''; 
 
-            data.daily.time.forEach((date, index) => {
-                const maxTemp = Math.round(data.daily.temperature_2m_max[index]);
-                const minTemp = Math.round(data.daily.temperature_2m_min[index]);
-                const rainProb = data.daily.precipitation_probability_max[index];
-                const emoji = getWeatherEmoji(data.daily.weather_code[index]);
+            // Schleife durch alle stündlichen Zeitstempel
+            data.hourly.time.forEach((timeStr, index) => {
+                const temp = data.hourly.temperature_2m[index];
                 
-                // Formatiert das Datum zu "Mo., 15."
-                const formattedDate = new Date(date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit' });
+                // Wandelt das API-Datum ("2026-08-06T00:00") in deutsches Format um
+                const dateObj = new Date(timeStr);
+                
+                // Format: "Do., 06.08. - 00:00"
+                const formattedTime = dateObj.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' }) + 
+                                      " - " + 
+                                      dateObj.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 
-                const dayEl = document.createElement('div');
-                dayEl.className = 'forecast-day';
-                dayEl.innerHTML = `
-                    <div class="date">${formattedDate}</div>
-                    <div class="icon">${emoji}</div>
-                    <div class="temp">Max: ${maxTemp}°C / Min: ${minTemp}°C</div>
-                    <div class="rain">💧 ${rainProb}%</div>
+                const hourEl = document.createElement('div');
+                hourEl.className = 'forecast-hour';
+                hourEl.innerHTML = `
+                    <div class="time">${formattedTime}</div>
+                    <div class="temp">${temp.toFixed(1)} °C</div>
                 `;
-                weatherDiv.appendChild(dayEl);
+                weatherDiv.appendChild(hourEl);
             });
         }
 
