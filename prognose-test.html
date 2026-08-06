@@ -41,7 +41,7 @@
 <body>
 
     <div class="header-title">🔮 Wetterprognose Test</div>
-    <div class="location">📍 Steinach (49.4554 / 10.2776)</div>
+    <div class="location">📍 Steinach bei Rothenburg o.d.Tbr. (Gallmersgarten)</div>
 
     <div class="weather-card">
         <div class="card-header">
@@ -54,16 +54,17 @@
     <a href="index.html" class="back-button">⬅️ Zurück zur Hauptseite</a>
 
     <script>
-        // Deine exakte Wunsch-URL von Open-Meteo
+        // Deine exakte Wunsch-URL aus dem Konfigurator
         const url = 'https://api.open-meteo.com/v1/forecast?latitude=49.4554&longitude=10.2776&hourly=temperature_2m';
 
         async function fetchWeather() {
             try {
+                // Extrem simpler Abruf ohne störende Zusatzparameter
                 const response = await fetch(url);
                 const data = await response.json();
                 displayWeather(data);
             } catch (error) {
-                document.getElementById('weather').innerText = 'Fehler beim Laden der Daten.';
+                document.getElementById('weather').innerText = 'Fehler beim Laden der Live-Daten.';
                 console.error(error);
             }
         }
@@ -72,11 +73,14 @@
             const weatherDiv = document.getElementById('weather');
             weatherDiv.innerHTML = ''; 
 
+            if (!data || !data.hourly || !data.hourly.time) {
+                weatherDiv.innerText = 'Keine gültigen Wetterdaten gefunden.';
+                return;
+            }
+
             // Schleife durch alle stündlichen Zeitstempel
             data.hourly.time.forEach((timeStr, index) => {
                 const temp = data.hourly.temperature_2m[index];
-                
-                // Wandelt das API-Datum ("2026-08-06T00:00") in deutsches Format um
                 const dateObj = new Date(timeStr);
                 
                 // Format: "Do., 06.08. - 00:00"
