@@ -85,9 +85,10 @@
 
                 const dayEl = document.createElement('div');
                 dayEl.className = 'forecast-day';
+                 // HIER REIHENFOLGE GETAUSCHT: Max steht jetzt links (orange) und Min rechts (hellgrau)
                 dayEl.innerHTML = `
                     <div class="date">${formattedDate}</div>
-                    <div class="temp">Min: ${minTemp}°C / <span class="max-temp">Max: ${maxTemp}°C</span></div>
+                    <div class="temp"><span class="max-temp">Max: ${maxTemp}°C</span> / <span class="min-temp">Min: ${minTemp}°C</span></div>
                 `;
                 weatherDiv.appendChild(dayEl);
             });
