@@ -3,7 +3,7 @@ name: Deploy Static Content to Pages
 on:
   push:
     branches: ["main"] # Falls dein Haupt-Branch "master" heißt, hier "master" eintragen
-  workflow_dispatch: # Ermöglicht es dir, den Build manuell bei GitHub zu starten
+  workflow_dispatch: # Erlaubt es dir, den Build manuell unter dem Reiter "Actions" zu starten
 
 permissions:
   contents: read
@@ -30,7 +30,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.' # Lädt alle Dateien im Hauptverzeichnis hoch
+          path: '.' # Lädt alle Dateien aus dem Hauptverzeichnis hoch
 
       - name: Deploy to GitHub Pages
         id: deployment
