@@ -1,72 +1,109 @@
-name: TEST Wetter-Vorhersage
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wetterprognose Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f9fa; text-align: center; padding: 20px; color: #333; }
+        .header-title { font-size: 24px; font-weight: bold; color: #2d3748; margin-bottom: 5px; }
+        .location { font-size: 14px; color: #718096; margin-bottom: 20px; }
+        
+        /* Das dunkelblaue Karten-Design aus deinem Screenshot */
+        .weather-card { 
+            max-width: 500px; 
+            margin: 0 auto 25px auto; 
+            background: linear-gradient(180deg, #0f2b46 0%, #1a5694 100%); 
+            border-radius: 12px; 
+            box-shadow: 0 10px 15px rgba(0,0,0,0.15);
+            color: white;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; }
+        
+        /* Vorhersage-Zeilen */
+        .forecast-day { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .forecast-day:last-child { border: none; }
+        .date { font-weight: bold; width: 80px; text-align: left; }
+        .icon { font-size: 1.6rem; width: 40px; text-align: center; }
+        .temp { width: 160px; text-align: center; font-size: 15px; }
+        .rain { width: 70px; text-align: right; color: #9cdbff; font-size: 14px; }
+        
+        /* Button unten */
+        .back-button { display: inline-block; padding: 10px 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-decoration: none; color: #2d3748; font-weight: 500; font-size: 14px; }
+    </style>
+</head>
+<body>
 
-on:
-  workflow_dispatch: 
+    <div class="header-title">🔮 Wetterprognose Test</div>
+    <div class="location">📍 Steinach bei Rothenburg o.d.Tbr. (Gallmersgarten)</div>
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
+    <!-- Die interaktive Wetter-Karte -->
+    <div class="weather-card">
+        <div class="card-header">
+            <span>✨ Live-Prognose</span>
+            <span>Open-Meteo API</span>
+        </div>
+        <div id="weather">Wetterdaten werden geladen...</div>
+    </div>
 
-jobs:
-  test-prognose:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Code auschecken
-        uses: actions/checkout@v4
+    <a href="index.html" class="back-button">⬅️ Zurück zur Hauptseite</a>
 
-      - name: Test-Webseite mit Vorhersage bauen
-        run: |
-          cat > prognose-test.html << 'EOF'
-          <!DOCTYPE html>
-          <html lang="de">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Test Vorhersage Steinach</title>
-            <link rel="stylesheet" href="css/style.css">
-          </head>
-          <body>
-            <div class="card">
-              <h1>🔮 Wetterprognose Test</h1>
-              <div class="ort">📍 Steinach bei Rothenburg o.d.Tbr.</div>
-              
-              <!-- Das echte, kompakte Wetter-Widget für deine Koordinaten -->
-              <div style="width: 100%; max-width: 450px; margin: 20px auto; overflow: hidden; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <iframe 
-                  src="https://open-meteo.com" 
-                  style="width: 100%; height: 320px; border: none; display: block;">
-                </iframe>
-              </div>
+    <script>
+        // Koordinaten für Höhenweg 16, 91605 Gallmersgarten (Steinach)
+        const lat = 49.4497;
+        const lon = 10.2635;
+        const days = 5; // Zeigt die nächsten 5 Tage an
 
-              <div class="projekte" style="margin-top: 20px;">
-                <a href="index.html" class="projekt-link">⬅️ Zurück zur Hauptseite</a>
-              </div>
-            </div>
-          </body>
-          </html>
-          EOF
+        const url = `https://open-meteo.com{lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=${days}`;
 
-      - name: Webseiten-Ordner für Pages vorbereiten
-        uses: actions/configure-pages@v5
+        function getWeatherEmoji(code) {
+            if (code === 0) return "☀️";
+            if (code >= 1 && code <= 3) return "⛅";
+            if (code >= 45 && code <= 48) return "🌫️";
+            if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "🌧️";
+            if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return "❄️";
+            if (code >= 95 && code <= 99) return "⛈️";
+            return "☁️";
+        }
 
-      - name: Testseite im Repo speichern
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add prognose-test.html
-          
-          # Wir holen erst den aktuellen Stand der echten Wetterstation
-          git fetch origin main
-          git reset --soft origin/main
-          
-          # Speichern und mit Gewalt pushen, falls Home Assistant zeitgleich gesendet hat
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Test-Prognoseseite mit Force-Push" && git push --force origin main)
+        async function fetchWeather() {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                displayWeather(data);
+            } catch (error) {
+                document.getElementById('weather').innerText = 'Fehler beim Laden der Daten.';
+                console.error(error);
+            }
+        }
 
-      - name: Artefakt hochladen
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.' 
+        function displayWeather(data) {
+            const weatherDiv = document.getElementById('weather');
+            weatherDiv.innerHTML = ''; 
 
-      - name: Auf GitHub Pages veröffentlichen
-        uses: actions/deploy-pages@v4
+            data.daily.time.forEach((date, index) => {
+                const maxTemp = Math.round(data.daily.temperature_2m_max[index]);
+                const minTemp = Math.round(data.daily.temperature_2m_min[index]);
+                const rainProb = data.daily.precipitation_probability_max[index];
+                const emoji = getWeatherEmoji(data.daily.weather_code[index]);
+                const formattedDate = new Date(date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit' });
+
+                const dayEl = document.createElement('div');
+                dayEl.className = 'forecast-day';
+                dayEl.innerHTML = `
+                    <div class="date">${formattedDate}</div>
+                    <div class="icon">${emoji}</div>
+                    <div class="temp">Max: ${maxTemp}°C / Min: ${minTemp}°C</div>
+                    <div class="rain">💧 ${rainProb}%</div>
+                `;
+                weatherDiv.appendChild(dayEl);
+            });
+        }
+
+        fetchWeather();
+    </script>
+</body>
+</html>
