@@ -17,7 +17,7 @@
             border-radius: 12px; 
             box-shadow: 0 10px 15px rgba(0,0,0,0.15);
             color: white;
-            padding: 0; /* Auf 0 gesetzt für nahtlosen Header-Klick */
+            padding: 0; 
             overflow: hidden;
             text-align: left;
         }
@@ -60,11 +60,12 @@
 
         /* API Hinweis ganz unten */
         .api-footer {
-            padding: 10px 20px 15px 20px;
+            padding: 12px 20px;
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.4);
             text-align: center;
             border-top: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0, 0, 0, 0.05);
         }
 
         .back-button { display: inline-block; padding: 10px 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-decoration: none; color: #2d3748; font-weight: 500; font-size: 14px; }
@@ -76,11 +77,11 @@
     <div class="location">📍 Steinach bei Rothenburg o.d.Tbr. (Gallmersgarten)</div>
 
     <div class="weather-card">
-        <!-- Der klickbare Header (wird per JS befüllt) -->
+        <!-- Der klickbare Header -->
         <div class="card-header" id="toggleHeader">
             <div class="header-date" id="todayDate">Heute</div>
             <div>
-                <span class="header-temp" id="todayTemp">Lädt...</span>
+                <span class="header-temp" id="todayTemp">Wetterdaten laden...</span>
                 <span class="arrow-icon" id="arrowBtn">▼</span>
             </div>
         </div>
@@ -90,7 +91,7 @@
             <div id="weather"></div>
         </div>
 
-        <!-- API Daten Hinweis ganz unten in der Karte -->
+        <!-- API Daten Hinweis ganz unten -->
         <div class="api-footer">
             API Daten von Open-Meteo
         </div>
@@ -99,6 +100,7 @@
     <a href="index.html" class="back-button">⬅️ Zurück zur Hauptseite</a>
 
     <script>
+        // Deine funktionierende Wunsch-URL bleibt absolut unangetastet
         const url = 'https://api.open-meteo.com/v1/forecast?latitude=49.4554&longitude=10.2776&daily=temperature_2m_max,temperature_2m_min';
 
         async function fetchWeather() {
@@ -123,18 +125,19 @@
                 return;
             }
 
-            // --- 1. HEUTIGER TAG (Index 0) in den Header schreiben ---
+            // --- 1. HEUTIGER TAG (Index 0) KORRIGIERT: Jetzt mit [0] am Ende! ---
             const todayMax = Math.round(data.daily.temperature_2m_max[0]);
             const todayMin = Math.round(data.daily.temperature_2m_min[0]);
+            const todayDateStr = data.daily.time[0];
             
-            const todayParts = data.daily.time[0].split('-');
+            const todayParts = todayDateStr.split('-');
             const todayObj = new Date(todayParts[0], todayParts[1] - 1, todayParts[2]);
             const formattedToday = todayObj.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
             
-            document.getElementById('todayDate').innerText = `Heute (${formattedDate})`;
+            document.getElementById('todayDate').innerText = `Heute (${formattedToday})`;
             document.getElementById('todayTemp').innerHTML = `<span class="max-temp">Max: ${todayMax}°C</span> / <span class="min-temp">Min: ${todayMin}°C</span>`;
 
-            // --- 2. DIE RESTLICHEN TAGE in die Dropdown-Liste schreiben ---
+            // --- 2. DIE RESTLICHEN TAGE (ab Index 1) ---
             for (let index = 1; index < data.daily.time.length; index++) {
                 const maxTemp = Math.round(data.daily.temperature_2m_max[index]);
                 const minTemp = Math.round(data.daily.temperature_2m_min[index]);
@@ -161,11 +164,9 @@
 
         toggleHeader.addEventListener('click', () => {
             if (dropdownContent.style.maxHeight && dropdownContent.style.maxHeight !== "0px") {
-                // Zuklappen
                 dropdownContent.style.maxHeight = "0px";
                 arrowBtn.style.transform = "rotate(0deg)";
             } else {
-                // Aufklappen (stellt sich dynamisch auf die Höhe des Inhalts ein)
                 dropdownContent.style.maxHeight = dropdownContent.scrollHeight + "px";
                 arrowBtn.style.transform = "rotate(180deg)";
             }
