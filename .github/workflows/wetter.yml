@@ -1,4 +1,9 @@
-name: Wetter-Webseite bauen und deployen
+# =========================================================================
+# INFO: Die Wetterdaten werden vollständig von HAOS (Home Assistant OS) 
+# verarbeitet und per REST-API an diesen GitHub-Workflow übergeben.
+# =========================================================================
+
+name: Wetter-Webseite bauen und deployen (HAOS verarbeitet)
 
 on:
   repository_dispatch:
@@ -24,6 +29,10 @@ jobs:
     steps:
       - name: Code auschecken
         uses: actions/checkout@v4
+
+      - name: Info - HAOS Datenverarbeitung
+        run: |
+          echo "Die Wetterdaten wurden erfolgreich von HAOS (Home Assistant OS) verarbeitet und empfangen."
 
       - name: Wetterdaten in wetterapi.json schreiben
         run: |
@@ -54,7 +63,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add wetterapi.json
-          git commit -m "Wetterdaten aktualisiert" || echo "Keine Änderungen zum Speichern"
+          git commit -m "Wetterdaten aktualisiert (HAOS verarbeitet)" || echo "Keine Änderungen zum Speichern"
           git push
 
       - name: GitHub Pages einrichten
