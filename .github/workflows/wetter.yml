@@ -25,10 +25,6 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: Wettervorhersage direkt von Open-Meteo abrufen
-        run: |
-          curl -s "https://api.open-meteo.com/v1/forecast?latitude=49.4554&longitude=10.2776&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin" > forecast.json
-
       - name: Wetterdaten in wetterapi.json schreiben
         run: |
           cat <<EOF > wetterapi.json
@@ -49,8 +45,7 @@ jobs:
               "heute": "${{ github.event.client_payload.regen_heute }}",
               "aktueller_monat": "1.6",
               "aktuelles_jahr": "1.6"
-            },
-            "vorhersage": $(cat forecast.json)
+            }
           }
           EOF
 
@@ -59,7 +54,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add wetterapi.json
-          git commit -m "Wetterdaten und Vorhersage aktualisiert" || echo "Keine Änderungen zum Speichern"
+          git commit -m "Wetterdaten aktualisiert" || echo "Keine Änderungen zum Speichern"
           git push
 
       - name: GitHub Pages einrichten
