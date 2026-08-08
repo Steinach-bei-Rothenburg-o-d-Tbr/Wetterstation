@@ -4,7 +4,7 @@ on:
   repository_dispatch:
     types:
       - wetter_update
-  workflow_dispatch: 
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -21,153 +21,50 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
     steps:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: Wetterdaten verarbeiten und Dateien schreiben
-        shell: python
+      - name: Wetterdaten in wetterapi.json schreiben
         run: |
-          import json
-          import os
-
-          # 1. Daten vom Home Assistant Webhook holen
-          temp = "${{ github.event.client_payload.temperatur || '0' }}"
-          humid = "${{ github.event.client_payload.luftfeuchtigkeit || '0' }}"
-          wind = "${{ github.event.client_payload.windgeschwindigkeit || '0' }}"
-          boeen = "${{ github.event.client_payload.boengeschwindigkeit || '0' }}"
-          richtung = "${{ github.event.client_payload.windrichtung || 'N/A' }}"
-          druck = "${{ github.event.client_payload.druck || '0' }}"
-          uv = "${{ github.event.client_payload.uv_index || '0' }}"
-          lux = "${{ github.event.client_payload.beleuchtungsstarke || '0' }}"
-          regen_heute = float("${{ github.event.client_payload.regen_heute || '0' }}")
-          zeit_neu = "${{ github.event.client_payload.zeit || 'Unbekannt' }}"
-
-          # 2. Langzeit-Regenwerte verarbeiten (Startwert 1.6)
-          regen_m = 1.6  
-          regen_j = 1.6  
-
-          if os.path.exists("wetterapi.json"):
-              with open("wetterapi.json", "r") as f:
-                  try:
-                      old_data = json.load(f)
-                      regen_m = float(old_data["niederschlag_lm2"]["aktueller_monat"])
-                      regen_j = float(old_data["niederschlag_lm2"]["aktuelles_jahr"])
-                      old_heute = float(old_data["niederschlag_lm2"]["heute"])
-
-                      if regen_heute > old_heute:
-                          differenz = regen_heute - old_heute
-                          regen_m += differenz
-                          regen_j += differenz
-                      elif regen_heute < old_heute:
-                          regen_m += regen_heute
-                          regen_j += regen_heute
-                  except:
-                      pass
-
-          # 3. wetterapi.json schreiben
-          api_data = {
-              "station": "Bastians Wetterstation Steinach",
-              "stand": zeit_neu,
-              "messwerte": {
-                  "temperatur_celsius": temp,
-                  "luftfeuchtigkeit_prozent": humid,
-                  "windgeschwindigkeit_kmh": wind,
-                  "boengeschwindigkeit_kmh": boeen,
-                  "windrichtung": richtung,
-                  "luftdruck_hpa": druck,
-                  "uv_index": uv,
-                  "helligkeit_lux": lux
-              },
-              "niederschlag_lm2": {
-                  "heute": str(round(regen_heute, 1)),
-                  "aktueller_monat": str(round(regen_m, 1)),
-                  "aktuelles_jahr": str(round(regen_j, 1))
-              }
+          cat <<EOF > wetterapi.json
+          {
+            "station": "Bastians Wetterstation Steinach",
+            "stand": "${{ github.event.client_payload.zeit }}",
+            "messwerte": {
+              "temperatur_celsius": "${{ github.event.client_payload.temperatur }}",
+              "luftfeuchtigkeit_prozent": "${{ github.event.client_payload.luftfeuchtigkeit }}",
+              "windgeschwindigkeit_kmh": "${{ github.event.client_payload.windgeschwindigkeit }}",
+              "boengeschwindigkeit_kmh": "${{ github.event.client_payload.boengeschwindigkeit }}",
+              "windrichtung": "${{ github.event.client_payload.windrichtung }}",
+              "luftdruck_hpa": "${{ github.event.client_payload.druck }}",
+              "uv_index": "${{ github.event.client_payload.uv_index }}",
+              "helligkeit_lux": "${{ github.event.client_payload.beleuchtungsstarke }}"
+            },
+            "niederschlag_lm2": {
+              "heute": "${{ github.event.client_payload.regen_heute }}",
+              "aktueller_monat": "1.6",
+              "aktuelles_jahr": "1.6"
+            },
+            "vorhersage": ${{ toJson(github.event.client_payload.vorhersage) }}
           }
+          EOF
 
-          with open("wetterapi.json", "w") as f:
-              json.dump(api_data, f, indent=2)
-
-          # 4. HTML-Webseite (index.html) direkt bauen
-          html_content = f"""<!DOCTYPE html>
-          <html lang="de">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Bastians Wetterstation | Steinach bei Rothenburg</title>
-            <link rel="stylesheet" href="css/style.css">
-          </head>
-          <body>
-            <div class="card">
-              <h1>🌦 Bastians Wetterstation</h1>
-              <div class="ort">📍 Steinach bei Rothenburg ob der Tauber</div>
-              <div class="temp">{temp} °C</div>
-              <div class="grid">
-                <div class="info"><div class="label">💧 Luftfeuchtigkeit</div><div class="value">{humid} %</div></div>
-                <div class="info"><div class="label">🌬 Wind</div><div class="value">{wind} km/h</div></div>
-                <div class="info"><div class="label">🌪 Böen</div><div class="value">{boeen} km/h</div></div>
-                <div class="info"><div class="label">🧭 Windrichtung</div><div class="value">{richtung}</div></div>
-                <div class="info"><div class="label">📈 Luftdruck</div><div class="value">{druck} hPa</div></div>
-                <div class="info"><div class="label">☀️ UV-Index</div><div class="value">{uv}</div></div>
-                <div class="info"><div class="label">💡 Helligkeit</div><div class="value">{lux} lx</div></div>
-                <div class="info" onclick="openModal()" title="Klicken für Details" style="grid-column: span 1;">
-                  <div class="label">🌧 Regen heute ▾</div>
-                  <div class="value">{round(regen_heute, 1)} L/m²</div>
-                </div>
-              </div>
-              
-              <div class="projekte">
-                <h2>🚀 Weitere Projekte</h2>
-                <a href="Wetterstation.html" class="projekt-link">🌦 Wetterstation</a>
-                <a href="wetterapi.json" class="projekt-link" target="_blank">🌐 Wetter-API (JSON)</a>
-              </div>
-              <div class="stand">🕒 {zeit_neu}</div>
-            </div>
-
-            <!-- MODAL POPUP -->
-            <div id="regenModal" class="modal">
-              <div class="modal-content">
-                <span class="close-btn" onclick="closeModal()">&times;</span>
-                <h2>📊 Regen-Statistiken</h2>
-                <hr>
-                <ul>
-                  <li><span>🌧 Heute:</span> <strong>{round(regen_heute, 1)} L/m²</strong></li>
-                  <li><span>📅 Dieser Monat:</span> <strong>{round(regen_m, 1)} L/m²</strong></li>
-                  <li><span>📅 Dieses Jahr:</span> <strong>{round(regen_j, 1)} L/m²</strong></li>
-                </ul>
-              </div>
-            </div>
-
-            <script>
-            function openModal() {{ document.getElementById("regenModal").style.display = "block"; }}
-            function closeModal() {{ document.getElementById("regenModal").style.display = "none"; }}
-            window.onclick = function(event) {{
-              var modal = document.getElementById("regenModal");
-              if (event.target == modal) {{ modal.style.display = "none"; }}
-            }}
-            </script>
-          </body>
-          </html>"""
-
-          with open("index.html", "w", encoding="utf-8") as f:
-              f.write(html_content)
-
-      - name: Webseiten-Ordner für Pages vorbereiten
-        uses: actions/configure-pages@v5
-
-      - name: Änderungen im Repository保存 (Commit)
+      - name: Änderungen speichern (Commit & Push)
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add index.html wetterapi.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Wetterdaten aktualisiert (Böen Klammer-Fix)" && git push)
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add wetterapi.json
+          git commit -m "Wetterdaten und Vorhersage aktualisiert" || echo "Keine Änderungen zum Speichern"
+          git push
 
-      - name: Artefakt hochladen
+      - name: GitHub Pages einrichten
+        uses: actions/configure-pages@v4
+
+      - name: Webseite als Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.' 
+          path: '.'
 
       - name: Auf GitHub Pages veröffentlichen
         id: deployment
