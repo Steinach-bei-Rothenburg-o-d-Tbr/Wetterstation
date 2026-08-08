@@ -1,117 +1,47 @@
-# =========================================================================
-# INFO: Die Wetterdaten werden vollständig von HAOS (Home Assistant OS) 
-# verarbeitet und per REST-API an diesen GitHub-Workflow übergeben.
-# =========================================================================
+name: Wetterdaten aktualisieren
 
-# Der Name des Workflows, wie er dir auf GitHub unter dem Reiter "Actions" angezeigt wird
-name: Wetter-Webseite bauen und deployen (HAOS verarbeitet)
-
-# Hier wird festgelegt, wann (durch welches Ereignis) dieser Workflow gestartet wird
+# Der Workflow wird durch den REST-Aufruf (repository_dispatch) aus Home Assistant getriggert
 on:
-  # Trigger 1: Wartet auf ein externes Signal (API-Aufruf), das von HAOS gesendet wird [1]
   repository_dispatch:
-    types:
-      # Der Workflow startet nur, wenn HAOS das Signal mit dem Namen "wetter_update" sendet [1, 2]
-      - wetter_update
-  # Trigger 2: Erlaubt es dir, den Workflow manuell auf GitHub per Knopfdruck zu starten [1]
-  workflow_dispatch:
+    types: [wetter_update]
 
-# Hier definieren wir die Zugriffsrechte, die dieser Workflow auf deinem Repository hat [1]
+# Gewährt dem GitHub-Token die notwendigen Schreibrechte, um die aktualisierte Datei ins Repo zu pushen
 permissions:
-  # Erlaubt dem Workflow, die aktualisierte "wetterapi.json" wieder in dein Repository zu schreiben [1]
   contents: write
-  # Erlaubt das Veröffentlichen (Deployen) der Webseite auf GitHub Pages [1]
-  pages: write
-  # Erlaubt eine sichere Identitätsprüfung für den Veröffentlichungsprozess [1]
-  id-token: write
 
-# Verhindert, dass sich mehrere Aktualisierungen überschneiden [1]
-concurrency:
-  group: "pages"
-  # Wenn HAOS schnell hintereinander Daten sendet, wird das alte, noch laufende Deployment
-  # abgebrochen und sofort das neueste gestartet [1].
-  cancel-in-progress: true
-
-# Hier beginnt die eigentliche Arbeit (Jobs), die auf einem virtuellen Ubuntu-Linux-Server läuft [1]
 jobs:
-  build-and-deploy:
-    # Setzt die Umgebung für das Deployment auf GitHub Pages fest [1]
-    environment:
-      name: github-pages
-      # Holt sich automatisch die finale Webadresse (URL) deiner Wetterseite [1]
-      url: ${{ steps.deployment.outputs.page_url }}
-    # Bestimmt das Betriebssystem des virtuellen GitHub-Servers (aktuelles Ubuntu Linux) [1]
+  update-wetter:
     runs-on: ubuntu-latest
-    
-    # Die einzelnen Schritte (Steps), die nacheinander abgearbeitet werden
+
     steps:
-      # 1. SCHRITT: Lädt alle Dateien deines Repositories (HTML, CSS, JSON) auf den virtuellen Server [1]
+      # 1. Repository auschecken
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      # 2. SCHRITT: Schreibt eine reine Info-Zeile in das GitHub-Protokoll, damit du im Log siehst, dass HAOS am Werk war
-      - name: Info - HAOS Datenverarbeitung
+      # 2. Wetterdaten aus dem client_payload in eine JSON-Datei schreiben
+      - name: Wetterdaten aktualisieren
         run: |
-          echo "Die Wetterdaten wurden erfolgreich von HAOS (Home Assistant OS) verarbeitet und empfangen."
-
-      # 3. SCHRITT: Erstellt die "wetterapi.json" neu und befüllt sie mit den echten Live-Werten aus HAOS [3]
-      - name: Wetterdaten in wetterapi.json schreiben
-        run: |
-          # "cat <<EOF > wetterapi.json" bedeutet: Erstelle eine leere "wetterapi.json" und schreibe
-          # alles hinein, was bis zum Wort "EOF" am Ende folgt.
-          # Die Ausdrücke mit "${{ github.event.client_payload... }}" werden automatisch durch die 
-          # echten Messwerte ersetzt, die HAOS gerade an die API gesendet hat [2, 4].
-          cat <<EOF > wetterapi.json
+          cat <<EOF > wetterdaten.json
           {
-            "station": "Bastians Wetterstation Steinach",
-            "stand": "${{ github.event.client_payload.zeit }}",
-            "messwerte": {
-              "temperatur_celsius": "${{ github.event.client_payload.temperatur }}",
-              "luftfeuchtigkeit_prozent": "${{ github.event.client_payload.luftfeuchtigkeit }}",
-              "windgeschwindigkeit_kmh": "${{ github.event.client_payload.windgeschwindigkeit }}",
-              "boengeschwindigkeit_kmh": "${{ github.event.client_payload.boengeschwindigkeit }}",
-              "windrichtung": "${{ github.event.client_payload.windrichtung }}",
-              "luftdruck_hpa": "${{ github.event.client_payload.druck }}",
-              "uv_index": "${{ github.event.client_payload.uv_index }}",
-              "helligkeit_lux": "${{ github.event.client_payload.beleuchtungsstarke }}"
-            },
-            "niederschlag_lm2": {
-              "heute": "${{ github.event.client_payload.regen_heute }}",
-              "aktueller_monat": "1.6",
-              "aktuelles_jahr": "1.6"
-            }
+            "zeit": "${{ github.event.client_payload.zeit }}",
+            "temperatur": "${{ github.event.client_payload.temperatur }}",
+            "luftfeuchtigkeit": "${{ github.event.client_payload.luftfeuchtigkeit }}",
+            "windgeschwindigkeit": "${{ github.event.client_payload.windgeschwindigkeit }}",
+            "boengeschwindigkeit": "${{ github.event.client_payload.boengeschwindigkeit }}",
+            "windrichtung": "${{ github.event.client_payload.windrichtung }}",
+            "druck": "${{ github.event.client_payload.druck }}",
+            "uv_index": "${{ github.event.client_payload.uv_index }}",
+            "beleuchtungsstarke": "${{ github.event.client_payload.beleuchtungsstarke }}",
+            "regen_heute": "${{ github.event.client_payload.regen_heute }}"
           }
           EOF
 
-      # 4. SCHRITT: Speichert (committet) die neue "wetterapi.json" dauerhaft in deinem GitHub-Repository
-      - name: Änderungen speichern (Commit & Push)
+      # 3. Änderungen committen und pushen
+      - name: Änderungen committen und pushen
         run: |
-          # Richtet einen virtuellen GitHub-Bot ein, damit Git weiß, wer die Änderung vorgenommen hat
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          # Fügt die geänderte "wetterapi.json" zur Liste der zu speichernden Dateien hinzu
-          git add wetterapi.json
-          
-          # Speichert die Datei ab. Das "|| echo..." sorgt dafür, dass kein Fehler entsteht, 
-          # falls die Daten absolut identisch waren und es nichts Neues zu speichern gab.
-          git commit -m "Wetterdaten aktualisiert (HAOS verarbeitet)" || echo "Keine Änderungen zum Speichern"
-          
-          # Lädt die geänderte Datei wieder hoch in dein Repository auf GitHub
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add wetterdaten.json
+          # Commit nur ausführen, wenn sich die Daten tatsächlich geändert haben
+          git diff --quiet && git diff --staged --quiet || git commit -m "Wetterdaten aktualisiert: ${{ github.event.client_payload.zeit }}"
           git push
-
-      # 5. SCHRITT: Bereitet die GitHub-Pages-Umgebung auf dem virtuellen Server vor
-      - name: GitHub Pages einrichten
-        uses: actions/configure-pages@v4
-
-      # 6. SCHRITT: Packt deine Dateien (index.html, wetterapi.json etc.) für das Web-Hosting zusammen
-      - name: Webseite als Artefakt hochladen
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Der Punkt "." sagt: Lade alle Dateien aus dem aktuellen Hauptordner hoch
-          path: '.'
-
-      # 7. SCHRITT: Bringt die verpackte Webseite live ins Internet auf deine GitHub Pages Domain
-      - name: Auf GitHub Pages veröffentlichen
-        id: deployment
-        uses: actions/deploy-pages@v4
