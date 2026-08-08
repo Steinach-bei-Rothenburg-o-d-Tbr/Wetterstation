@@ -1,12 +1,12 @@
 {
-  "zeit": "08.08.2026 20:00 Uhr",
-  "temperatur": "28.0",
-  "luftfeuchtigkeit": "26.0",
-  "windgeschwindigkeit": "6.84",
-  "boengeschwindigkeit": "8.64",
-  "windrichtung": "O",
+  "zeit": "08.08.2026 20:15 Uhr",
+  "temperatur": "27.0",
+  "luftfeuchtigkeit": "27.0",
+  "windgeschwindigkeit": "3.6",
+  "boengeschwindigkeit": "3.96",
+  "windrichtung": "N",
   "druck": "974",
   "uv_index": "0.0",
-  "beleuchtungsstarke": "4949",
+  "beleuchtungsstarke": "2429",
   "regen_heute": "0.0"
 }
