@@ -1,12 +1,12 @@
 {
-  "zeit": "09.08.2026 14:30 Uhr",
-  "temperatur": "32.9",
-  "luftfeuchtigkeit": "25.0",
-  "windgeschwindigkeit": "5.4",
-  "boengeschwindigkeit": "6.48",
-  "windrichtung": "SW",
-  "druck": "971",
-  "uv_index": "4.0",
-  "beleuchtungsstarke": "55629",
+  "zeit": "09.08.2026 14:45 Uhr",
+  "temperatur": "unavailable",
+  "luftfeuchtigkeit": "unavailable",
+  "windgeschwindigkeit": "unavailable",
+  "boengeschwindigkeit": "unavailable",
+  "windrichtung": "unavailable",
+  "druck": "unavailable",
+  "uv_index": "unavailable",
+  "beleuchtungsstarke": "unavailable",
   "regen_heute": "0.0"
 }
