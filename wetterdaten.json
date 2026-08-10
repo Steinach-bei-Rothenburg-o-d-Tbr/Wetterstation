@@ -1,12 +1,12 @@
 {
-  "zeit": "10.08.2026 15:00 Uhr",
-  "temperatur": "unavailable",
-  "luftfeuchtigkeit": "unavailable",
-  "windgeschwindigkeit": "unavailable",
-  "boengeschwindigkeit": "unavailable",
-  "windrichtung": "unavailable",
-  "druck": "unavailable",
-  "uv_index": "unavailable",
-  "beleuchtungsstarke": "unavailable",
+  "zeit": "10.08.2026 15:15 Uhr",
+  "temperatur": "33.0",
+  "luftfeuchtigkeit": "25.0",
+  "windgeschwindigkeit": "18.0",
+  "boengeschwindigkeit": "27.36",
+  "windrichtung": "NW",
+  "druck": "971",
+  "uv_index": "3.0",
+  "beleuchtungsstarke": "84996",
   "regen_heute": "0.0"
 }
