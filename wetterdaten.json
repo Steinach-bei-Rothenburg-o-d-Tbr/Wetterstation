@@ -1,12 +1,12 @@
 {
-  "zeit": "11.08.2026 20:30 Uhr",
-  "temperatur": "24.5",
-  "luftfeuchtigkeit": "26.0",
-  "windgeschwindigkeit": "5.76",
-  "boengeschwindigkeit": "7.56",
-  "windrichtung": "O",
-  "druck": "978",
-  "uv_index": "0.0",
-  "beleuchtungsstarke": "1289",
+  "zeit": "11.08.2026 20:45 Uhr",
+  "temperatur": "unavailable",
+  "luftfeuchtigkeit": "unavailable",
+  "windgeschwindigkeit": "unavailable",
+  "boengeschwindigkeit": "unavailable",
+  "windrichtung": "unavailable",
+  "druck": "unavailable",
+  "uv_index": "unavailable",
+  "beleuchtungsstarke": "unavailable",
   "regen_heute": "0.0"
 }
