@@ -1,12 +1,12 @@
 {
-  "zeit": "11.08.2026 18:00 Uhr",
+  "zeit": "11.08.2026 18:15 Uhr",
   "temperatur": "28.5",
   "luftfeuchtigkeit": "25.0",
-  "windgeschwindigkeit": "5.76",
-  "boengeschwindigkeit": "7.92",
-  "windrichtung": "O",
-  "druck": "977",
+  "windgeschwindigkeit": "1.8",
+  "boengeschwindigkeit": "6.48",
+  "windrichtung": "NO",
+  "druck": "978",
   "uv_index": "2.0",
-  "beleuchtungsstarke": "32961",
+  "beleuchtungsstarke": "27791",
   "regen_heute": "0.0"
 }
