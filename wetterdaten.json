@@ -1,12 +1,12 @@
 {
-  "zeit": "12.08.2026 08:00 Uhr",
-  "temperatur": "15.4",
-  "luftfeuchtigkeit": "50.0",
-  "windgeschwindigkeit": "3.96",
-  "boengeschwindigkeit": "10.08",
+  "zeit": "12.08.2026 08:15 Uhr",
+  "temperatur": "15.9",
+  "luftfeuchtigkeit": "48.0",
+  "windgeschwindigkeit": "5.76",
+  "boengeschwindigkeit": "7.92",
   "windrichtung": "NO",
-  "druck": "982",
-  "uv_index": "1.0",
-  "beleuchtungsstarke": "23610",
+  "druck": "981",
+  "uv_index": "2.0",
+  "beleuchtungsstarke": "28767",
   "regen_heute": "0.0"
 }
