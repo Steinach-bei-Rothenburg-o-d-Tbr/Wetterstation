@@ -15,7 +15,7 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      # Schreibt die Daten exakt in der verschachtelten Struktur, die index.html erwartet
+     # Schreibt die Daten exakt in der verschachtelten Struktur, die index.html erwartet
       - name: Wetterdaten aktualisieren
         run: |
           cat <<EOF > wetterapi.json
@@ -34,12 +34,12 @@ jobs:
             },
             "niederschlag_lm2": {
               "heute": "${{ github.event.client_payload.regen_heute }}",
-              "aktueller_monat": "1.6",
-              "aktuelles_jahr": "1.6"
+              "aktueller_monat": "${{ github.event.client_payload.regen_monat }}",
+              "aktuelles_jahr": "${{ github.event.client_payload.regen_jahr }}"
             }
           }
           EOF
-
+          
       - name: Änderungen committen und pushen
         run: |
           git config --local user.email "actions@github.com"
