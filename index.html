@@ -26,209 +26,211 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between font-sans antialiased">
 
-    <!-- Hauptinhalt -->
-    <main class="container mx-auto px-4 py-8 max-w-5xl flex-grow">
-        
-        <!-- Header -->
-        <header class="text-center mb-10">
-            <h1 id="station-title" class="text-3xl md:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-400">
-                Wetterstation
-            </h1>
-            <p class="text-slate-400 mt-2 flex items-center justify-center gap-2 text-sm md:text-base">
-                <i data-lucide="clock" class="w-4 h-4 text-blue-400"></i>
-                Messung vom: <span id="last-update" class="font-medium text-slate-300">Lade Daten...</span>
-            </p>
-        </header>
+<!-- Hauptinhalt -->
+<main class="container mx-auto px-4 py-8 max-w-5xl flex-grow">
 
-        <!-- Lade-Indikator -->
-        <div id="loading" class="flex flex-col items-center justify-center py-20">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
-            <p id="loading-text" class="text-slate-400 mt-4 font-medium">Wetterdaten werden geladen...</p>
-        </div>
+    <!-- Header -->
+    <header class="text-center mb-10">
+        <h1 id="station-title" class="text-3xl md:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-400">
+            Wetterstation
+        </h1>
+        <p class="text-slate-400 mt-2 flex items-center justify-center gap-2 text-sm md:text-base">
+            <i data-lucide="clock" class="w-4 h-4 text-blue-400"></i>
+            Messung vom: <span id="last-update" class="font-medium text-slate-300">Lade Daten...</span>
+        </p>
+    </header>
 
-        <!-- Dashboard-Grid (Standardmäßig ausgeblendet, bis Daten geladen sind) -->
-        <div id="weather-dashboard" class="hidden space-y-6">
-            
-            <!-- Haupt-Werte (Temperatur & Feuchtigkeit) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- Temperatur-Hauptkarte -->
-                <div class="glass-card md:col-span-2 rounded-3xl p-6 md:p-8 flex items-center justify-between">
+    <!-- Lade-Indikator -->
+    <div id="loading" class="flex flex-col items-center justify-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
+        <p id="loading-text" class="text-slate-400 mt-4 font-medium">Wetterdaten werden geladen...</p>
+    </div>
+
+    <!-- Dashboard-Grid (Standardmäßig ausgeblendet, bis Daten geladen sind) -->
+    <div id="weather-dashboard" class="hidden space-y-6">
+
+        <!-- Haupt-Werte (Temperatur & Feuchtigkeit) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- Temperatur-Hauptkarte -->
+            <div class="glass-card md:col-span-2 rounded-3xl p-6 md:p-8 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold tracking-wider text-blue-400 uppercase">Aktuelle Temperatur</p>
+                    <div class="flex items-baseline mt-2">
+                        <span id="temp" class="text-6xl md:text-7xl font-black tracking-tighter">--.-</span>
+                        <span class="text-3xl md:text-4xl font-light text-slate-400 ml-1">°C</span>
+                    </div>
+                </div>
+                <div class="p-4 bg-blue-500/10 rounded-2xl text-blue-400">
+                    <i data-lucide="thermometer" class="w-16 h-16 md:w-20 md:h-20"></i>
+                </div>
+            </div>
+
+            <!-- Luftfeuchtigkeit -->
+            <div class="glass-card rounded-3xl p-6 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-sm font-semibold tracking-wider text-blue-400 uppercase">Aktuelle Temperatur</p>
-                        <div class="flex items-baseline mt-2">
-                            <span id="temp" class="text-6xl md:text-7xl font-black tracking-tighter">--.-</span>
-                            <span class="text-3xl md:text-4xl font-light text-slate-400 ml-1">°C</span>
-                        </div>
+                        <p class="text-sm font-semibold tracking-wider text-teal-400 uppercase">Luftfeuchte</p>
+                        <h3 class="text-4xl font-bold mt-2"><span id="humidity">--</span><span class="text-2xl font-light text-slate-400 ml-1">%</span></h3>
                     </div>
-                    <div class="p-4 bg-blue-500/10 rounded-2xl text-blue-400">
-                        <i data-lucide="thermometer" class="w-16 h-16 md:w-20 md:h-20"></i>
+                    <div class="p-3 bg-teal-500/10 rounded-xl text-teal-400">
+                        <i data-lucide="droplets" class="w-8 h-8"></i>
                     </div>
                 </div>
-
-                <!-- Luftfeuchtigkeit -->
-                <div class="glass-card rounded-3xl p-6 flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-semibold tracking-wider text-teal-400 uppercase">Luftfeuchte</p>
-                            <h3 class="text-4xl font-bold mt-2"><span id="humidity">--</span><span class="text-2xl font-light text-slate-400 ml-1">%</span></h3>
-                        </div>
-                        <div class="p-3 bg-teal-500/10 rounded-xl text-teal-400">
-                            <i data-lucide="droplets" class="w-8 h-8"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-slate-400 mt-4">Relative Luftfeuchtigkeit im Außenbereich</p>
-                </div>
-
-            </div>
-
-            <!-- Detailwerte-Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-
-                <!-- Wind -->
-                <div class="glass-card rounded-3xl p-6 flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-semibold tracking-wider text-sky-400 uppercase">Wind</p>
-                            <div class="mt-2 space-y-1">
-                                <p class="text-2xl font-bold"><span id="wind-speed">--.-</span> <span class="text-sm font-light text-slate-400">km/h</span></p>
-                                <p class="text-sm text-slate-400">Böen: <span id="wind-gusts" class="font-semibold text-slate-200">--.-</span> km/h</p>
-                            </div>
-                        </div>
-                        <div class="p-3 bg-sky-500/10 rounded-xl text-sky-400">
-                            <i data-lucide="wind" class="w-8 h-8"></i>
-                        </div>
-                    </div>
-                    <div class="border-t border-slate-700/50 mt-4 pt-3 flex justify-between text-xs text-slate-400">
-                        <span>Richtung:</span>
-                        <span id="wind-dir" class="font-bold text-sky-400">--</span>
-                    </div>
-                </div>
-
-                <!-- Luftdruck -->
-                <div class="glass-card rounded-3xl p-6 flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-semibold tracking-wider text-indigo-400 uppercase">Luftdruck</p>
-                            <h3 class="text-2xl font-bold mt-2"><span id="pressure">----</span> <span class="text-sm font-light text-slate-400">hPa</span></h3>
-                        </div>
-                        <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
-                            <i data-lucide="gauge" class="w-8 h-8"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-slate-400 mt-4">Reduzierter Luftdruck auf Meereshöhe</p>
-                </div>
-
-                <!-- UV & Helligkeit -->
-                <div class="glass-card rounded-3xl p-6 flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-semibold tracking-wider text-amber-400 uppercase">Sonne</p>
-                            <div class="mt-2 space-y-1">
-                                <p class="text-2xl font-bold">UV-Index: <span id="uv">--</span></p>
-                                <p class="text-sm text-slate-400"><span id="brightness">--</span> Lux</p>
-                            </div>
-                        </div>
-                        <div class="p-3 bg-amber-500/10 rounded-xl text-amber-400">
-                            <i data-lucide="sun" class="w-8 h-8"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-slate-400 mt-4">Aktuelle Sonnenstrahlung & Helligkeit</p>
-                </div>
-
-            </div>
-
-            <!-- Niederschlagskarte -->
-            <div class="glass-card rounded-3xl p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400">
-                            <i data-lucide="cloud-rain" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-lg font-bold">Niederschlag</h2>
-                            <p class="text-xs text-slate-400">Regenmengen-Statistik</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-4 text-center">
-                    <div class="bg-slate-800/40 rounded-2xl p-3">
-                        <p class="text-xs text-slate-400">Heute</p>
-                        <p class="text-lg font-bold text-blue-400 mt-1"><span id="rain-today">--</span> <span class="text-xs font-normal">l/m²</span></p>
-                    </div>
-                    <div class="bg-slate-800/40 rounded-2xl p-3">
-                        <p class="text-xs text-slate-400">Monat</p>
-                        <p class="text-lg font-bold text-blue-400 mt-1"><span id="rain-month">--</span> <span class="text-xs font-normal">l/m²</span></p>
-                    </div>
-                    <div class="bg-slate-800/40 rounded-2xl p-3">
-                        <p class="text-xs text-slate-400">Jahr</p>
-                        <p class="text-lg font-bold text-blue-400 mt-1"><span id="rain-year">--</span> <span class="text-xs font-normal">l/m²</span></p>
-                    </div>
-                </div>
+                <p class="text-xs text-slate-400 mt-4">Relative Luftfeuchtigkeit im Außenbereich</p>
             </div>
 
         </div>
 
-    </main>
+        <!-- Detailwerte-Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
-    <!-- Footer -->
-    <footer class="w-full text-center py-6 text-xs text-slate-500 border-t border-slate-800/60 bg-slate-950/20">
-        <p>© 2026 Wetterstation Steinach bei Rothenburg o.d.Tbr.</p>
-        <p class="mt-1">Bereitgestellt via GitHub Pages & Home Assistant</p>
-    </footer>
+            <!-- Wind -->
+            <div class="glass-card rounded-3xl p-6 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-semibold tracking-wider text-sky-400 uppercase">Wind</p>
+                        <div class="mt-2 space-y-1">
+                            <p class="text-2xl font-bold"><span id="wind-speed">--.-</span> <span class="text-sm font-light text-slate-400">km/h</span></p>
+                            <p class="text-sm text-slate-400">Böen: <span id="wind-gusts" class="font-semibold text-slate-200">--.-</span> km/h</p>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-sky-500/10 rounded-xl text-sky-400">
+                        <i data-lucide="wind" class="w-8 h-8"></i>
+                    </div>
+                </div>
+                <div class="border-t border-slate-700/50 mt-4 pt-3 flex justify-between text-xs text-slate-400">
+                    <span>Richtung:</span>
+                    <span id="wind-dir" class="font-bold text-sky-400">--</span>
+                </div>
+            </div>
 
-    <!-- JavaScript zum Laden der JSON-Daten -->
-    <script>
-        async function fetchWeatherData() {
-            try {
-                // Holt die wetterapi.json aus dem gleichen Ordner
-                const response = await fetch('wetterapi.json');
-                if (!response.ok) {
-                    throw new Error('Netzwerk-Antwort war nicht OK');
-                }
-                const data = await response.json();
+            <!-- Luftdruck -->
+            <div class="glass-card rounded-3xl p-6 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-semibold tracking-wider text-indigo-400 uppercase">Luftdruck</p>
+                        <h3 class="text-2xl font-bold mt-2"><span id="pressure">----</span> <span class="text-sm font-light text-slate-400">hPa</span></h3>
+                    </div>
+                    <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
+                        <i data-lucide="gauge" class="w-8 h-8"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-400 mt-4">Reduzierter Luftdruck auf Meereshöhe</p>
+            </div>
 
-                // Daten in die HTML-Elemente schreiben
-                document.getElementById('station-title').innerText = data.station;
-                document.getElementById('last-update').innerText = data.stand;
-                
-                // Messwerte
-                document.getElementById('temp').innerText = data.messwerte.temperatur_celsius;
-                document.getElementById('humidity').innerText = data.messwerte.luftfeuchtigkeit_prozent;
-                document.getElementById('wind-speed').innerText = data.messwerte.windgeschwindigkeit_kmh;
-                document.getElementById('wind-gusts').innerText = data.messwerte.boengeschwindigkeit_kmh;
-                document.getElementById('wind-dir').innerText = data.messwerte.windrichtung;
-                document.getElementById('pressure').innerText = data.messwerte.luftdruck_hpa;
-                document.getElementById('uv').innerText = data.messwerte.uv_index;
-                
-                // Lux-Wert mit Tausender-Trennzeichen formatieren
-                const lux = parseFloat(data.messwerte.helligkeit_lux);
-                document.getElementById('brightness').innerText = isNaN(lux) ? data.messwerte.helligkeit_lux : lux.toLocaleString('de-DE');
+            <!-- UV & Helligkeit -->
+            <div class="glass-card rounded-3xl p-6 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-semibold tracking-wider text-amber-400 uppercase">Sonne</p>
+                        <div class="mt-2 space-y-1">
+                            <p class="text-2xl font-bold">UV-Index: <span id="uv">--</span></p>
+                            <p class="text-sm text-slate-400"><span id="brightness">--</span> Lux</p>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-amber-500/10 rounded-xl text-amber-400">
+                        <i data-lucide="sun" class="w-8 h-8"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-400 mt-4">Aktuelle Sonnenstrahlung & Helligkeit</p>
+            </div>
 
-                // Niederschlag
-                document.getElementById('rain-today').innerText = data.niederschlag_lm2.heute;
-                document.getElementById('rain-month').innerText = data.niederschlag_lm2.aktueller_monat;
-                document.getElementById('rain-year').innerText = data.niederschlag_lm2.aktuelles_jahr;
+        </div>
 
-                // Lade-Indikator ausblenden, Dashboard einblenden
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('weather-dashboard').classList.remove('hidden');
+        <!-- Niederschlagskarte -->
+        <div class="glass-card rounded-3xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400">
+                        <i data-lucide="cloud-rain" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold">Niederschlag</h2>
+                        <p class="text-xs text-slate-400">Regenmengen-Statistik</p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="bg-slate-800/40 rounded-2xl p-3">
+                    <p class="text-xs text-slate-400">Heute</p>
+                    <p class="text-lg font-bold text-blue-400 mt-1"><span id="rain-today">--</span> <span class="text-xs font-normal">l/m²</span></p>
+                </div>
+                <div class="bg-slate-800/40 rounded-2xl p-3">
+                    <p class="text-xs text-slate-400">Monat</p>
+                    <p class="text-lg font-bold text-blue-400 mt-1"><span id="rain-month">--</span> <span class="text-xs font-normal">l/m²</span></p>
+                </div>
+                <div class="bg-slate-800/40 rounded-2xl p-3">
+                    <p class="text-xs text-slate-400">Jahr</p>
+                    <p class="text-lg font-bold text-blue-400 mt-1"><span id="rain-year">--</span> <span class="text-xs font-normal">l/m²</span></p>
+                </div>
+            </div>
+        </div>
 
-                // Lucide Icons initialisieren
-                lucide.createIcons();
+    </div>
 
-            } catch (error) {
-                console.error('Fehler beim Laden der Wetterdaten:', error);
-                document.getElementById('loading-text').innerHTML = 
-                    `<span class="text-red-400 font-bold">Fehler beim Laden der Wetterdaten!</span><br>` +
-                    `<span class="text-xs text-slate-500">Stelle sicher, dass die "wetterapi.json" im selben Verzeichnis liegt.</span>`;
-                // Trotzdem Icons für das Fehler-Layout laden
-                lucide.createIcons();
-            }
+</main>
+
+<!-- Footer -->
+<footer class="w-full text-center py-6 text-xs text-slate-500 border-t border-slate-800/60 bg-slate-950/20">
+    <p>© 2026 Wetterstation Steinach bei Rothenburg o.d.Tbr.</p>
+    <p class="mt-1">Bereitgestellt via GitHub Pages & Home Assistant</p>
+</footer>
+
+<!-- JavaScript zum Laden der JSON-Daten -->
+<script>
+async function fetchWeatherData() {
+    try {
+        // Holt die wetterapi.json mit einem Zeitstempel, um den Cache zu umgehen (Cache-Busting)
+        const response = await fetch('wetterapi.json?t=' + Date.now());
+        if (!response.ok) {
+            throw new Error('Netzwerk-Antwort war nicht OK');
         }
+        const data = await response.json();
 
-        // Starte das Laden der Daten beim Seitenaufruf
-        window.onload = fetchWeatherData;
-    </script>
+        // Daten in die HTML-Elemente schreiben
+        document.getElementById('station-title').innerText = data.station;
+        document.getElementById('last-update').innerText = data.stand;
+
+        // Messwerte
+        document.getElementById('temp').innerText = data.messwerte.temperatur_celsius;
+        document.getElementById('humidity').innerText = data.messwerte.luftfeuchtigkeit_prozent;
+        document.getElementById('wind-speed').innerText = data.messwerte.windgeschwindigkeit_kmh;
+        document.getElementById('wind-gusts').innerText = data.messwerte.boengeschwindigkeit_kmh;
+        document.getElementById('wind-dir').innerText = data.messwerte.windrichtung;
+        document.getElementById('pressure').innerText = data.messwerte.luftdruck_hpa;
+        document.getElementById('uv').innerText = data.messwerte.uv_index;
+
+        // Lux-Wert mit Tausender-Trennzeichen formatieren
+        const lux = parseFloat(data.messwerte.helligkeit_lux);
+        document.getElementById('brightness').innerText = isNaN(lux) ? data.messwerte.helligkeit_lux : lux.toLocaleString('de-DE');
+
+        // Niederschlag
+        document.getElementById('rain-today').innerText = data.niederschlag_lm2.heute;
+        document.getElementById('rain-month').innerText = data.niederschlag_lm2.aktueller_monat;
+        document.getElementById('rain-year').innerText = data.niederschlag_lm2.aktuelles_jahr;
+
+        // Lade-Indikator ausblenden, Dashboard einblenden
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('weather-dashboard').classList.remove('hidden');
+
+        // Lucide Icons initialisieren
+        lucide.createIcons();
+
+    } catch (error) {
+        console.error('Fehler beim Laden der Wetterdaten:', error);
+        document.getElementById('loading-text').innerHTML =
+            `<span class="text-red-400 font-bold">Fehler beim Laden der Wetterdaten!</span><br>` +
+            `<span class="text-xs text-slate-500">Stelle sicher, dass die "wetterapi.json" im selben Verzeichnis liegt.</span>`;
+        
+        // Trotzdem Icons für das Fehler-Layout laden
+        lucide.createIcons();
+    }
+}
+
+// Starte das Laden der Daten beim Seitenaufruf
+window.onload = fetchWeatherData;
+</script>
+
 </body>
 </html>
