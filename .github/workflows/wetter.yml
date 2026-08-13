@@ -1,11 +1,9 @@
 name: Wetterdaten aktualisieren
 
-# Der Workflow wird durch den REST-Aufruf (repository_dispatch) aus Home Assistant getriggert
 on:
   repository_dispatch:
     types: [wetter_update]
 
-# Gewährt dem GitHub-Token die notwendigen Schreibrechte, um die aktualisierte Datei ins Repo zu pushen
 permissions:
   contents: write
 
@@ -14,34 +12,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Repository auschecken
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      # 2. Wetterdaten aus dem client_payload in eine JSON-Datei schreiben
+      # Schreibt die Daten exakt in der verschachtelten Struktur, die index.html erwartet
       - name: Wetterdaten aktualisieren
         run: |
-          cat <<EOF > wetterdaten.json
+          cat <<EOF > wetterapi.json
           {
-            "zeit": "${{ github.event.client_payload.zeit }}",
-            "temperatur": "${{ github.event.client_payload.temperatur }}",
-            "luftfeuchtigkeit": "${{ github.event.client_payload.luftfeuchtigkeit }}",
-            "windgeschwindigkeit": "${{ github.event.client_payload.windgeschwindigkeit }}",
-            "boengeschwindigkeit": "${{ github.event.client_payload.boengeschwindigkeit }}",
-            "windrichtung": "${{ github.event.client_payload.windrichtung }}",
-            "druck": "${{ github.event.client_payload.druck }}",
-            "uv_index": "${{ github.event.client_payload.uv_index }}",
-            "beleuchtungsstarke": "${{ github.event.client_payload.beleuchtungsstarke }}",
-            "regen_heute": "${{ github.event.client_payload.regen_heute }}"
+            "station": "Bastians Wetterstation Steinach",
+            "stand": "${{ github.event.client_payload.zeit }}",
+            "messwerte": {
+              "temperatur_celsius": "${{ github.event.client_payload.temperatur }}",
+              "luftfeuchtigkeit_prozent": "${{ github.event.client_payload.luftfeuchtigkeit }}",
+              "windgeschwindigkeit_kmh": "${{ github.event.client_payload.windgeschwindigkeit }}",
+              "boengeschwindigkeit_kmh": "${{ github.event.client_payload.boengeschwindigkeit }}",
+              "windrichtung": "${{ github.event.client_payload.windrichtung }}",
+              "luftdruck_hpa": "${{ github.event.client_payload.druck }}",
+              "uv_index": "${{ github.event.client_payload.uv_index }}",
+              "helligkeit_lux": "${{ github.event.client_payload.beleuchtungsstarke }}"
+            },
+            "niederschlag_lm2": {
+              "heute": "${{ github.event.client_payload.regen_heute }}",
+              "aktueller_monat": "1.6",
+              "aktuelles_jahr": "1.6"
+            }
           }
           EOF
 
-      # 3. Änderungen committen und pushen
       - name: Änderungen committen und pushen
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add wetterdaten.json
-          # Commit nur ausführen, wenn sich die Daten tatsächlich geändert haben
+          git add wetterapi.json
           git diff --quiet && git diff --staged --quiet || git commit -m "Wetterdaten aktualisiert: ${{ github.event.client_payload.zeit }}"
           git push
