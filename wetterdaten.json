@@ -1,12 +1,12 @@
 {
-  "zeit": "13.08.2026 14:45 Uhr",
-  "temperatur": "30.9",
-  "luftfeuchtigkeit": "18.0",
-  "windgeschwindigkeit": "15.84",
-  "boengeschwindigkeit": "18.72",
-  "windrichtung": "NO",
-  "druck": "980",
-  "uv_index": "6.0",
-  "beleuchtungsstarke": "91306",
+  "zeit": "13.08.2026 15:00 Uhr",
+  "temperatur": "unavailable",
+  "luftfeuchtigkeit": "unavailable",
+  "windgeschwindigkeit": "unavailable",
+  "boengeschwindigkeit": "unavailable",
+  "windrichtung": "unavailable",
+  "druck": "unavailable",
+  "uv_index": "unavailable",
+  "beleuchtungsstarke": "unavailable",
   "regen_heute": "0.0"
 }
