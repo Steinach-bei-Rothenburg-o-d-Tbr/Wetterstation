@@ -18,30 +18,45 @@ jobs:
           ref: main 
 
       - name: Wetterdaten aktualisieren
+        env:
+          ZEIT: ${{ github.event.client_payload.zeit }}
+          TEMPERATUR: ${{ github.event.client_payload.temperatur }}
+          FEUCHTIGKEIT: ${{ github.event.client_payload.luftfeuchtigkeit }}
+          WIND: ${{ github.event.client_payload.windgeschwindigkeit }}
+          BOE: ${{ github.event.client_payload.boengeschwindigkeit }}
+          RICHTUNG: ${{ github.event.client_payload.windrichtung }}
+          DRUCK: ${{ github.event.client_payload.druck }}
+          UV: ${{ github.event.client_payload.uv_index }}
+          HELLIGKEIT: ${{ github.event.client_payload.beleuchtungsstarke }}
+          REGEN_HEUTE: ${{ github.event.client_payload.regen_heute }}
+          REGEN_MONAT: ${{ github.event.client_payload.regen_monat }}
+          REGEN_JAHR: ${{ github.event.client_payload.regen_jahr }}
         run: |
           cat << EOF > wetterapi.json
           {
             "station": "Bastians Wetterstation Steinach",
-            "stand": "${{ github.event.client_payload.zeit }}",
+            "stand": "$ZEIT",
             "messwerte": {
-              "temperatur_celsius": ${{ github.event.client_payload.temperatur }},
-              "luftfeuchtigkeit_prozent": ${{ github.event.client_payload.luftfeuchtigkeit }},
-              "windgeschwindigkeit_kmh": ${{ github.event.client_payload.windgeschwindigkeit }},
-              "boengeschwindigkeit_kmh": ${{ github.event.client_payload.boengeschwindigkeit }},
-              "windrichtung": "${{ github.event.client_payload.windrichtung }}",
-              "luftdruck_hpa": ${{ github.event.client_payload.druck }},
-              "uv_index": ${{ github.event.client_payload.uv_index }},
-              "helligkeit_lux": ${{ github.event.client_payload.beleuchtungsstarke }}
+              "temperatur_celsius": $TEMPERATUR,
+              "luftfeuchtigkeit_prozent": $FEUCHTIGKEIT,
+              "windgeschwindigkeit_kmh": $WIND,
+              "boengeschwindigkeit_kmh": $BOE,
+              "windrichtung": "$RICHTUNG",
+              "luftdruck_hpa": $DRUCK,
+              "uv_index": $UV,
+              "helligkeit_lux": $HELLIGKEIT
             },
             "niederschlag_lm2": {
-              "heute": ${{ github.event.client_payload.regen_heute }},
-              "aktueller_monat": ${{ github.event.client_payload.regen_monat }},
-              "aktuelles_jahr": ${{ github.event.client_payload.regen_jahr }}
+              "heute": $REGEN_HEUTE,
+              "aktueller_monat": $REGEN_MONAT,
+              "aktuelles_jahr": $REGEN_JAHR
             }
           }
           EOF
 
       - name: Änderungen committen und pushen
+        env:
+          ZEIT: ${{ github.event.client_payload.zeit }}
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
@@ -49,6 +64,6 @@ jobs:
           if git diff --quiet && git diff --staged --quiet; then
             echo "Keine Änderungen an den Wetterdaten."
           else
-            git commit -m "Wetterdaten aktualisiert: ${{ github.event.client_payload.zeit }}"
+            git commit -m "Wetterdaten aktualisiert: $ZEIT"
             git push origin main
           fi
