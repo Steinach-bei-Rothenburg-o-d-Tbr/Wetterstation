@@ -14,10 +14,14 @@ jobs:
     steps:
       - name: Code auschecken
         uses: actions/checkout@v4
+        with:
+          # Falls du einen PAT nutzt, trage ihn hier als Secret ein (z.B. ${{ secrets.WETTER_PAT }})
+          # Ohne PAT werden nachfolgende Pages-Workflows evtl. nicht ausgelöst!
+          ref: main 
 
       - name: Wetterdaten aktualisieren
         run: |
-          cat <<EOF > wetterapi.json
+          cat << 'EOF' > wetterapi.json
           {
             "station": "Bastians Wetterstation Steinach",
             "stand": "${{ github.event.client_payload.zeit }}",
@@ -44,5 +48,10 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add wetterapi.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "Wetterdaten aktualisiert: ${{ github.event.client_payload.zeit }}"
-          git push
+          # Verhindert Fehler, falls sich die Daten mal nicht geändert haben
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "Keine Änderungen an den Wetterdaten."
+          else
+            git commit -m "Wetterdaten aktualisiert: ${{ github.event.client_payload.zeit }}"
+            git push origin main
+          fi
