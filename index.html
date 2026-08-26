@@ -49,34 +49,38 @@
 
         <!-- Dashboard-Grid -->
         <div id="weather-dashboard" class="hidden space-y-6">
-            <!-- Haupt-Werte (Temperatur & Feuchtigkeit) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Temperatur-Hauptkarte -->
-                <div class="weather-card md:col-span-2 p-6 md:p-8 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold tracking-wider text-slate-400 uppercase">Aktuelle Temperatur</p>
-                        <div class="flex items-baseline mt-2">
-                            <span id="temp" class="text-6xl md:text-7xl font-bold tracking-tight text-slate-900">--.-</span>
-                            <span class="text-3xl md:text-4xl font-light text-slate-400 ml-1">°C</span>
-                        </div>
+            
+            <!-- NEU: Kombinierte Klima-Hauptkarte für Temperatur & Feuchtigkeit -->
+            <div class="weather-card p-6 md:p-8 flex flex-col sm:flex-row items-center justify-around gap-6">
+                <!-- Temperatur -->
+                <div class="flex items-center gap-4 md:gap-6 self-start sm:self-auto">
+                    <div class="p-4 bg-amber-50 rounded-2xl text-amber-500 shrink-0">
+                        <i data-lucide="thermometer" class="w-12 h-12 md:w-16 md:h-16"></i>
                     </div>
-                    <div class="p-4 bg-amber-50 rounded-2xl text-amber-500">
-                        <i data-lucide="thermometer" class="w-16 h-16 md:w-20 md:h-20"></i>
+                    <div>
+                        <p class="text-xs font-bold tracking-wider text-slate-400 uppercase">Temperatur</p>
+                        <div class="flex items-baseline mt-1">
+                            <span id="temp" class="text-5xl md:text-6xl font-bold tracking-tight text-slate-900">--.-</span>
+                            <span class="text-2xl md:text-3xl font-light text-slate-400 ml-1">°C</span>
+                        </div>
                     </div>
                 </div>
-
+                
+                <!-- Trennlinie (nur sichtbar auf Tablets/Desktops) -->
+                <div class="hidden sm:block w-px h-16 bg-slate-200"></div>
+                
                 <!-- Luftfeuchtigkeit -->
-                <div class="weather-card p-6 flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs font-bold tracking-wider text-slate-400 uppercase">Luftfeuchte</p>
-                            <h3 class="text-4xl font-bold text-slate-900 mt-2"><span id="humidity">--</span><span class="text-2xl font-light text-slate-400 ml-1">%</span></h3>
-                        </div>
-                        <div class="p-3 bg-blue-50 rounded-xl text-blue-500">
-                            <i data-lucide="droplets" class="w-8 h-8"></i>
+                <div class="flex items-center gap-4 md:gap-6 self-start sm:self-auto">
+                    <div class="p-4 bg-blue-50 rounded-2xl text-blue-500 shrink-0">
+                        <i data-lucide="droplets" class="w-12 h-12 md:w-16 md:h-16"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold tracking-wider text-slate-400 uppercase">Luftfeuchtigkeit</p>
+                        <div class="flex items-baseline mt-1">
+                            <span id="humidity" class="text-5xl md:text-6xl font-bold tracking-tight text-slate-900">--</span>
+                            <span class="text-2xl md:text-3xl font-light text-slate-400 ml-1">%</span>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400 mt-4">Relative Feuchte im Außenbereich</p>
                 </div>
             </div>
 
