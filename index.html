@@ -15,14 +15,18 @@
         .weather-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 1.5rem;
+            border-radius: 2rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
         }
-        .weather-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.08);
-            border-color: #cbd5e1;
+        .detail-tile {
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .detail-tile:hover {
+            transform: translateY(-1px);
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
         }
     </style>
 </head>
@@ -31,7 +35,7 @@
     <!-- Hauptinhalt -->
     <main class="container mx-auto px-4 py-8 max-w-5xl flex-grow">
         <!-- Header -->
-        <header class="text-center mb-10">
+        <header class="text-center mb-8">
             <h1 id="station-title" class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
                 Wetterstation
             </h1>
@@ -50,143 +54,122 @@
         <!-- Dashboard-Grid -->
         <div id="weather-dashboard" class="hidden space-y-6">
             
-            <!-- NEU: Kombinierte Klima-Hauptkarte für Temperatur & Feuchtigkeit -->
-            <div class="weather-card p-6 md:p-8 flex flex-col sm:flex-row items-center justify-around gap-6">
-                <!-- Temperatur -->
-                <div class="flex items-center gap-4 md:gap-6 self-start sm:self-auto">
-                    <div class="p-4 bg-amber-50 rounded-2xl text-amber-500 shrink-0">
-                        <i data-lucide="thermometer" class="w-12 h-12 md:w-16 md:h-16"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold tracking-wider text-slate-400 uppercase">Temperatur</p>
-                        <div class="flex items-baseline mt-1">
-                            <span id="temp" class="text-5xl md:text-6xl font-bold tracking-tight text-slate-900">--.-</span>
-                            <span class="text-2xl md:text-3xl font-light text-slate-400 ml-1">°C</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Trennlinie (nur sichtbar auf Tablets/Desktops) -->
-                <div class="hidden sm:block w-px h-16 bg-slate-200"></div>
-                
-                <!-- Luftfeuchtigkeit -->
-                <div class="flex items-center gap-4 md:gap-6 self-start sm:self-auto">
-                    <div class="p-4 bg-blue-50 rounded-2xl text-blue-500 shrink-0">
-                        <i data-lucide="droplets" class="w-12 h-12 md:w-16 md:h-16"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold tracking-wider text-slate-400 uppercase">Luftfeuchtigkeit</p>
-                        <div class="flex items-baseline mt-1">
-                            <span id="humidity" class="text-5xl md:text-6xl font-bold tracking-tight text-slate-900">--</span>
-                            <span class="text-2xl md:text-3xl font-light text-slate-400 ml-1">%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Detailwerte-Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                <!-- Wind -->
-                <div class="weather-card p-6 flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs font-bold tracking-wider text-slate-400 uppercase">Wind</p>
-                            <div class="mt-2 space-y-1">
-                                <p class="text-2xl font-bold text-slate-900"><span id="wind-speed">--.-</span> <span class="text-sm font-light text-slate-400">km/h</span></p>
-                                <p class="text-xs text-slate-500">Böen: <span id="wind-gusts" class="font-semibold text-slate-700">--.-</span> km/h</p>
-                            </div>
-                        </div>
-                        <div class="p-3 bg-slate-100 rounded-xl text-slate-600">
-                            <i data-lucide="wind" class="w-8 h-8"></i>
-                        </div>
-                    </div>
-                    <div class="border-t border-slate-100 mt-4 pt-3 flex justify-between text-xs text-slate-400">
-                        <span>Richtung:</span>
-                        <span id="wind-dir" class="font-bold text-slate-700">--</span>
-                    </div>
-                </div>
-
-                <!-- Luftdruck -->
-                <div class="weather-card p-6 flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs font-bold tracking-wider text-slate-400 uppercase">Luftdruck</p>
-                            <h3 class="text-2xl font-bold text-slate-900 mt-2"><span id="pressure">----</span> <span class="text-sm font-light text-slate-400">hPa</span></h3>
-                        </div>
-                        <div class="p-3 bg-emerald-50 rounded-xl text-emerald-600">
-                            <i data-lucide="gauge" class="w-8 h-8"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-slate-400 mt-4">Reduziert auf Meereshöhe</p>
-                </div>
-
-                <!-- UV & Helligkeit -->
-                <div class="weather-card p-6 flex flex-col justify-between">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs font-bold tracking-wider text-slate-400 uppercase">Sonne</p>
-                            <div class="mt-2 space-y-1">
-                                <p class="text-2xl font-bold text-slate-900">UV-Index: <span id="uv">--</span></p>
-                                <p class="text-xs text-slate-500"><span id="brightness">--</span> Lux</p>
-                            </div>
-                        </div>
-                        <div class="p-3 bg-orange-50 rounded-xl text-orange-500">
-                            <i data-lucide="sun" class="w-8 h-8"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-slate-400 mt-4">UV-Belastung & Helligkeitswert</p>
-                </div>
-            </div>
-
-            <!-- Niederschlag & Vorhersage -->
-            <div class="grid grid-cols-1 gap-6">
-                <!-- Niederschlagskarte -->
-                <div class="weather-card p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="p-3 bg-sky-50 rounded-xl text-sky-600">
-                                <i data-lucide="cloud-rain" class="w-6 h-6"></i>
+            <!-- 1. DIE LIVE-DATEN HAUPTKARTE (Alle Messwerte vereint) -->
+            <div class="weather-card p-6 md:p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Linke Spalte: Die beiden Hauptklimawerte (Groß) -->
+                    <div class="lg:col-span-5 flex flex-col justify-center space-y-6 sm:space-y-8 py-2">
+                        <h2 class="text-sm font-bold tracking-wider text-slate-400 uppercase">Aktuelles Klima</h2>
+                        
+                        <!-- Temperatur -->
+                        <div class="flex items-center gap-4 md:gap-6">
+                            <div class="p-4 bg-amber-50 rounded-2xl text-amber-500 shrink-0">
+                                <i data-lucide="thermometer" class="w-12 h-12 md:w-14 md:h-14"></i>
                             </div>
                             <div>
-                                <h2 class="text-lg font-bold text-slate-900">Niederschlag</h2>
-                                <p class="text-xs text-slate-400">Regenmengen-Statistik</p>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Temperatur</p>
+                                <div class="flex items-baseline mt-0.5">
+                                    <span id="temp" class="text-5xl md:text-6xl font-bold tracking-tight text-slate-900">--.-</span>
+                                    <span class="text-2xl md:text-3xl font-light text-slate-400 ml-1">°C</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4 text-center">
-                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3">
-                            <p class="text-xs text-slate-400 font-medium">Heute</p>
-                            <p class="text-lg font-bold text-sky-600 mt-1"><span id="rain-today">--</span> <span class="text-xs font-normal text-slate-400">l/m²</span></p>
-                        </div>
-                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3">
-                            <p class="text-xs text-slate-400 font-medium">Monat</p>
-                            <p class="text-lg font-bold text-sky-600 mt-1"><span id="rain-month">--</span> <span class="text-xs font-normal text-slate-400">l/m²</span></p>
-                        </div>
-                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3">
-                            <p class="text-xs text-slate-400 font-medium">Jahr</p>
-                            <p class="text-lg font-bold text-sky-600 mt-1"><span id="rain-year">--</span> <span class="text-xs font-normal text-slate-400">l/m²</span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 7-Tage-Vorhersage (Open-Meteo) -->
-                <div class="weather-card p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center gap-3">
-                            <div class="p-3 bg-teal-50 rounded-xl text-teal-600">
-                                <i data-lucide="calendar" class="w-6 h-6"></i>
+                        
+                        <!-- Luftfeuchtigkeit -->
+                        <div class="flex items-center gap-4 md:gap-6">
+                            <div class="p-4 bg-blue-50 rounded-2xl text-blue-500 shrink-0">
+                                <i data-lucide="droplets" class="w-12 h-12 md:w-14 md:h-14"></i>
                             </div>
                             <div>
-                                <h2 class="text-lg font-bold text-slate-900">7-Tage-Vorhersage</h2>
-                                <p class="text-xs text-slate-400">Regionale Prognose (Open-Meteo)</p>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Luftfeuchte</p>
+                                <div class="flex items-baseline mt-0.5">
+                                    <span id="humidity" class="text-5xl md:text-6xl font-bold tracking-tight text-slate-900">--</span>
+                                    <span class="text-2xl md:text-3xl font-light text-slate-400 ml-1">%</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div id="forecast-container" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
-                        <!-- Wird dynamisch befüllt -->
+                    
+                    <!-- Trennlinie auf großen Screens -->
+                    <div class="hidden lg:block lg:col-span-1 w-px h-full bg-slate-100 justify-self-center"></div>
+                    
+                    <!-- Rechte Spalte: Die Detailwerte im feinen Raster -->
+                    <div class="lg:col-span-6 flex flex-col justify-between space-y-6">
+                        <h2 class="text-sm font-bold tracking-wider text-slate-400 uppercase">Details & Sensorik</h2>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Wind -->
+                            <div class="detail-tile rounded-2xl p-4 flex items-start gap-3">
+                                <div class="p-2 bg-slate-100 rounded-xl text-slate-600">
+                                    <i data-lucide="wind" class="w-5 h-5"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-xs font-semibold text-slate-400 uppercase">Wind</p>
+                                    <p class="text-base font-bold text-slate-800"><span id="wind-speed">--.-</span> <span class="text-xs font-normal text-slate-500">km/h</span></p>
+                                    <p class="text-[11px] text-slate-500">Böen: <span id="wind-gusts" class="font-semibold text-slate-700">--.-</span> km/h</p>
+                                    <p class="text-[11px] text-slate-500">Richtung: <span id="wind-dir" class="font-bold text-slate-700">--</span></p>
+                                </div>
+                            </div>
+
+                            <!-- Luftdruck -->
+                            <div class="detail-tile rounded-2xl p-4 flex items-start gap-3">
+                                <div class="p-2 bg-emerald-50 rounded-xl text-emerald-600">
+                                    <i data-lucide="gauge" class="w-5 h-5"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-xs font-semibold text-slate-400 uppercase">Luftdruck</p>
+                                    <p class="text-base font-bold text-slate-800"><span id="pressure">----</span> <span class="text-xs font-normal text-slate-500">hPa</span></p>
+                                    <p class="text-[11px] text-slate-500">Reduziert auf Meereshöhe</p>
+                                </div>
+                            </div>
+
+                            <!-- Sonne (UV & Lux) -->
+                            <div class="detail-tile rounded-2xl p-4 flex items-start gap-3">
+                                <div class="p-2 bg-orange-50 rounded-xl text-orange-500">
+                                    <i data-lucide="sun" class="w-5 h-5"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-xs font-semibold text-slate-400 uppercase">Sonne</p>
+                                    <p class="text-base font-bold text-slate-800">UV: <span id="uv">--</span></p>
+                                    <p class="text-[11px] text-slate-500"><span id="brightness">--</span> Lux</p>
+                                </div>
+                            </div>
+
+                            <!-- Niederschlag -->
+                            <div class="detail-tile rounded-2xl p-4 flex items-start gap-3">
+                                <div class="p-2 bg-sky-50 rounded-xl text-sky-600">
+                                    <i data-lucide="cloud-rain" class="w-5 h-5"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-xs font-semibold text-slate-400 uppercase">Regenmenge</p>
+                                    <p class="text-[11px] text-slate-600">Heute: <span id="rain-today" class="font-bold text-sky-600">--</span> l/m²</p>
+                                    <p class="text-[11px] text-slate-500">Monat: <span id="rain-month" class="font-semibold text-slate-700">--</span> l/m²</p>
+                                    <p class="text-[11px] text-slate-500">Jahr: <span id="rain-year" class="font-semibold text-slate-700">--</span> l/m²</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    
                 </div>
             </div>
+
+            <!-- 2. DIE 7-TAGE-VORHERSAGE -->
+            <div class="weather-card p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-teal-50 rounded-xl text-teal-600">
+                        <i data-lucide="calendar" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">7-Tage-Vorhersage</h2>
+                        <p class="text-xs text-slate-400">Regionale Prognose (Open-Meteo)</p>
+                    </div>
+                </div>
+                <div id="forecast-container" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+                    <!-- Wird dynamisch befüllt -->
+                </div>
+            </div>
+            
         </div>
     </main>
 
