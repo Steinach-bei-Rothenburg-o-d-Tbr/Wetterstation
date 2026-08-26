@@ -173,58 +173,35 @@
         </div>
     </main>
 
-<!-- Fußzeile mit PayPal-Button, Impressum und Datenschutz -->
-<footer style="text-align: center; padding: 40px 15px; font-size: 0.85em; color: #555; background-color: #f9f9f9; border-top: 1px solid #eee; line-height: 1.6; font-family: sans-serif;">
+<footer style="text-align: center; padding: 30px 15px; font-size: 0.85em; color: #555; background-color: #f9f9f9; border-top: 1px solid #eee; font-family: sans-serif;">
     <div style="max-width: 800px; margin: 0 auto;">
         
-        <!-- ☕ PAYPAL SPENDEN-BUTTON -->
-        <div style="margin-bottom: 35px; text-align: center;">
-            <p style="font-size: 1.1em; color: #333; margin-bottom: 12px; font-weight: bold;">Dir gefällt die Wetterstation Steinach?</p>
-            <a href="https://paypal.me/Wetterstation91605" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; background-color: #0070ba; color: white; text-decoration: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; font-size: 1em; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.2s;">
-                <span style="margin-right: 8px; font-size: 1.2em;">☕</span> 
-                Unterstütze die Kaffeekasse via PayPal
+        <!-- ☕ PAYPAL BUTTON (Bleibt sichtbar) -->
+        <div style="margin-bottom: 20px;">
+            <a href="https://paypal.me" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; background-color: #0070ba; color: white; text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: bold;">
+                <span style="margin-right: 8px;">☕</span> Kaffeekasse via PayPal
             </a>
-            <p style="font-size: 0.85em; color: #777; margin-top: 8px;">(Jeder Cent fließt in den Erhalt und die Wartung der Sensoren)</p>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid #ddd; margin: 30px 0;">
+        <!-- 🔗 DIE BUTTONS ZUM ÖFFNEN -->
+        <p style="margin-bottom: 15px;">
+            <a href="javascript:void(0)" onclick="document.getElementById('legal-info').style.display = document.getElementById('legal-info').style.display === 'none' ? 'block' : 'none'" style="color: #0070ba; text-decoration: none; font-weight: bold; margin: 0 10px;">➔ Impressum & Datenschutz anzeigen</a>
+        </p>
 
-        <!-- RECHTLICHER BEREICH (Linksbündig) -->
-        <div style="text-align: left;">
-            <h3 style="margin-top: 0; color: #333; font-size: 1.1em;">Impressum</h3>
-            <p>
-                <strong>Betreiber der Website:</strong><br>
-                Bastian Walther<br>
-                Höhenweg 16<br>
-                91605 Gallmersgarten (Steinach bei Rothenburg o.d.Tbr.)
-            </p>
-            <p>
-                <strong>Kontakt:</strong><br>
-                E-Mail: bastianwalther1987@gmail.com
-            </p>
-            <p style="font-size: 0.9em; color: #777;">
-                <em>Hinweis nach § 5 DDG: Aufgrund der Bereitstellung eines PayPal-Zahlungslinks (Spenden/Kaffeekasse) wird diese Seite als geschäftsmäßig eingestuft, weshalb eine Anbieterkennzeichnung verpflichtend ist.</em>
-            </p>
-
-            <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
-
-            <h3 style="color: #333; font-size: 1.1em;">Datenschutzerklärung</h3>
-            
-            <h4 style="font-size: 1em; margin-bottom: 5px;">1. Allgemeine Hinweise</h4>
-            <p>Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
-
-            <h4 style="font-size: 1em; margin-bottom: 5px;">2. Hosting über GitHub Pages</h4>
-            <p>Diese Website wird über GitHub Pages gehostet, einen Dienst der GitHub Inc. (88 Colin P. Kelly Jr. St, San Francisco, CA 94107, USA). Wenn Sie diese Webseite aufrufen, erhebt GitHub automatisch Daten in sogenannten Server-Logfiles (u.a. IP-Adresse, Datum/Uhrzeit des Zugriffs, Browsertyp). Dies ist technisch notwendig, um die Stabilität und Sicherheit der Seite zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO).</p>
-
-            <h4 style="font-size: 1em; margin-bottom: 5px;">3. Nutzung des PayPal-Links</h4>
-            <p>Auf dieser Webseite ist ein Link zum Zahlungsdienstleister PayPal (PayPal Europe S.à r.l. et Cie, S.C.A., 22-24 Boulevard Royal, L-2449 Luxembourg) eingebunden. Wenn Sie diesen Link anklicken, verlassen Sie unsere Webseite. PayPal erhebt und verarbeitet eigenverantwortlich Daten für die Abwicklung der Zahlung. Details entnehmen Sie der Datenschutzerklärung von PayPal.</p>
+        <!-- 🙈 VERSTECKTER BEREICH (Öffnet sich nur bei Klick) -->
+        <div id="legal-info" style="display: none; text-align: left; background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 5px; margin-top: 15px;">
+            <h3 style="margin-top: 0;">Impressum</h3>
+            <p><strong>Betreiber:</strong> Bastian Walther, Höhenweg 16, 91605 Gallmersgarten</p>
+            <p><strong>Kontakt:</strong> bastianwalther1987@gmail.com</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+            <h3>Datenschutzerklärung</h3>
+            <p>Unsere Website wird über GitHub Pages gehostet (GitHub Inc., USA). Dabei werden technisch bedingt IP-Adressen in Server-Logfiles verarbeitet. Bei Klick auf den PayPal-Link werden Daten an PayPal übertragen.</p>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid #ddd; margin: 30px 0;">
-        
-        <p style="text-align: center; margin: 0; color: #999;">© 2026 Wetterstation Steinach bei Rothenburg o.d.Tbr.</p>
+        <p style="margin-top: 20px; color: #999;">© 2026 Wetterstation Steinach</p>
     </div>
 </footer>
+
 
     <!-- JavaScript zum Laden der JSON-Daten -->
     <script>
