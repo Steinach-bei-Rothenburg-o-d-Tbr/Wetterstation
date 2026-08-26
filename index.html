@@ -10,33 +10,33 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
-      /* Wunderschöner, weicher blau-grüner Verlauf exakt nach deiner Bildvorlage */
-      background: linear-gradient(180deg, #4fa3e3 0%, #3d929b 35%, #3e8fc5 70%, #226fae 100%);
+      /* Heller, freundlicher blau-grüner Pastell-Verlauf für optimalen Lesekontrast */
+      background: linear-gradient(180deg, #cde6f7 0%, #ccece7 35%, #cde8f7 70%, #a9cfea 100%);
       background-attachment: fixed;
     }
     
-    /* Etwas deckenderer Glassmorphism für perfekten Kontrast mit dunkler Schrift */
+    /* Perfekt abgestimmte Glaskarten mit optimaler Transparenz */
     .weather-card {
       background: rgba(255, 255, 255, 0.45);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       border-radius: 2.25rem;
-      box-shadow: 0 10px 32px 0 rgba(15, 23, 42, 0.12);
+      box-shadow: 0 10px 32px 0 rgba(15, 23, 42, 0.08);
     }
     
-    /* Detail-Tiles mit erhöhtem Kontrast */
+    /* Detail-Tiles für die Sensorwerte */
     .detail-tile {
-      background: rgba(255, 255, 255, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     }
     
     .detail-tile:hover {
       transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.45);
-      border-color: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      background: rgba(255, 255, 255, 0.5);
+      border-color: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     }
   </style>
 </head>
@@ -47,19 +47,19 @@
     
     <!-- Header -->
     <header class="text-center mb-10">
-      <h1 id="station-title" class="text-3xl md:text-4xl font-bold tracking-tight text-white drop-shadow-md">
+      <h1 id="station-title" class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 drop-shadow-sm">
         Wetterstation
       </h1>
-      <p class="text-white/90 mt-2 flex items-center justify-center gap-2 text-sm md:text-base">
-        <i data-lucide="clock" class="w-4 h-4 text-white/80"></i>
-        Messung vom: <span id="last-update" class="font-semibold text-white">Lade Daten...</span>
+      <p class="text-slate-700 mt-2 flex items-center justify-center gap-2 text-sm md:text-base">
+        <i data-lucide="clock" class="w-4 h-4 text-slate-500"></i>
+        Messung vom: <span id="last-update" class="font-semibold text-slate-800">Lade Daten...</span>
       </p>
     </header>
 
     <!-- Lade-Indikator -->
     <div id="loading" class="flex flex-col items-center justify-center py-20">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-      <p id="loading-text" class="text-white mt-4 font-medium">Wetterdaten werden geladen...</p>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-700"></div>
+      <p id="loading-text" class="text-slate-700 mt-4 font-medium">Wetterdaten werden geladen...</p>
     </div>
 
     <!-- Dashboard-Grid -->
@@ -71,7 +71,7 @@
           
           <!-- Linke Spalte: Die beiden Hauptklimawerte (Groß) -->
           <div class="lg:col-span-5 flex flex-col justify-center space-y-6 sm:space-y-8 py-2">
-            <h2 class="text-xs font-bold tracking-wider text-slate-600 uppercase">Aktuelles Klima</h2>
+            <h2 class="text-xs font-bold tracking-wider text-slate-500 uppercase">Aktuelles Klima</h2>
             
             <!-- Temperatur -->
             <div class="flex items-center gap-4 md:gap-6">
@@ -107,7 +107,7 @@
           
           <!-- Rechte Spalte: Die Detailwerte im feinen Raster -->
           <div class="lg:col-span-6 flex flex-col justify-between space-y-6">
-            <h2 class="text-xs font-bold tracking-wider text-slate-600 uppercase">Details & Sensorik</h2>
+            <h2 class="text-xs font-bold tracking-wider text-slate-500 uppercase">Details & Sensorik</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               
               <!-- Wind -->
@@ -177,7 +177,7 @@
           </div>
         </div>
         
-        <!-- Listendesign mit feinen, halbtransparenten dunklen Linien -->
+        <!-- Listendesign mit feinen, weichen Trennlinien -->
         <div id="forecast-container" class="flex flex-col divide-y divide-black/5 bg-white/20 rounded-3xl p-2 border border-white/30 shadow-inner">
           <!-- Wird dynamisch befüllt -->
         </div>
@@ -187,20 +187,20 @@
   </main>
 
   <!-- Elegant integrierter Footer -->
-  <footer style="text-align: center; padding: 40px 15px; font-size: 0.85em; color: rgba(15, 23, 42, 0.85); background-color: rgba(255, 255, 255, 0.45); backdrop-filter: blur(16px); border-top: 1px solid rgba(255, 255, 255, 0.3); line-height: 1.6; font-family: sans-serif;">
+  <footer style="text-align: center; padding: 40px 15px; font-size: 0.85em; color: #1e293b; background-color: rgba(255, 255, 255, 0.45); backdrop-filter: blur(16px); border-top: 1px solid rgba(255, 255, 255, 0.4); line-height: 1.6; font-family: sans-serif;">
     <div style="max-width: 800px; margin: 0 auto;">
       
       <!-- ☕ PAYPAL SPENDEN-BUTTON (Immer sichtbar) -->
       <div style="margin-bottom: 30px; text-align: center;">
         <p style="font-size: 1.1em; color: #0f172a; margin-bottom: 12px; font-weight: bold;">Dir gefällt die Wetterstation Steinach?</p>
-        <a href="https://paypal.me/Wetterstation91605" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; background-color: #0070ba; color: white; text-decoration: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; font-size: 1em; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: background-color 0.2s;">
+        <a href="https://paypal.me/Wetterstation91605" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; background-color: #0070ba; color: white; text-decoration: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; font-size: 1em; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: background-color 0.2s;">
           <span style="margin-right: 8px; font-size: 1.2em;">☕</span>
           Unterstütze die Kaffeekasse via PayPal
         </a>
-        <p style="font-size: 0.85em; color: rgba(15, 23, 42, 0.65); margin-top: 8px;">(Jeder Cent fließt in den Erhalt und die Wartung der Sensoren)</p>
+        <p style="font-size: 0.85em; color: #334155; margin-top: 8px;">(Jeder Cent fließt in den Erhalt und die Wartung der Sensoren)</p>
       </div>
       
-      <hr style="border: 0; border-top: 1px solid rgba(15, 23, 42, 0.15); margin: 25px 0;">
+      <hr style="border: 0; border-top: 1px solid rgba(15, 23, 42, 0.1); margin: 25px 0;">
       
       <!-- 🔗 INTERAKTIVER LINK (Versteckt/Zeigt Rechtstexte) -->
       <p style="margin-bottom: 10px;">
@@ -210,7 +210,7 @@
       </p>
       
       <!-- 🙈 VERSTECKTER BEREICH (Öffnet sich nur bei Klick) -->
-      <div id="legal-info-box" style="display: none; text-align: left; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(15, 23, 42, 0.15); border-radius: 12px; padding: 25px; margin-top: 20px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.05); color: #1e293b;">
+      <div id="legal-info-box" style="display: none; text-align: left; background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(15, 23, 42, 0.15); border-radius: 12px; padding: 25px; margin-top: 20px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.05); color: #1e293b;">
         <!-- IMPRESSUM -->
         <h2 style="margin-top: 0; color: #0f172a; font-size: 1.3em; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Impressum</h2>
         <p style="margin-top: 10px;">
@@ -221,34 +221,34 @@
           E-Mail: <a href="mailto:bastianwalther1987@gmail.com" style="color: #0284c7;">bastianwalther1987@gmail.com</a>
         </p>
         <p style="font-size: 0.9em; color: rgba(15, 23, 42, 0.6); font-style: italic; margin-top: 10px;">
-          Hinweis nach § 5 DDG: Aufgrund der Bereitstellung eines PayPal-Zahlungslinks wird diese Seite als geschäftsmäßig eingestuft, weshalb eine Anbieterkennzeichnung verpflichtend ist [8].
+          Hinweis nach § 5 DDG: Aufgrund der Bereitstellung eines PayPal-Zahlungslinks wird diese Seite als geschäftsmäßig eingestuft, weshalb eine Anbieterkennzeichnung verpflichtend ist.
         </p>
         
         <h2 style="margin-top: 30px; color: #0f172a; font-size: 1.3em; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Datenschutzerklärung</h2>
         <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">1. Allgemeine Hinweise</h3>
-        <p>Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website kann grundsätzlich ohne Registrierung besucht werden. Der Verantwortliche für die Datenverarbeitung ist oben im Impressum genannt [9].</p>
+        <p>Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website kann grundsätzlich ohne Registrierung besucht werden. Der Verantwortliche für die Datenverarbeitung ist oben im Impressum genannt.</p>
         
         <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">2. Hosting über GitHub Pages</h3>
-        <p>Diese Website wird über GitHub Pages, einen Dienst der GitHub Inc. (88 Colin P. Kelly Jr. St., San Francisco, CA 94107, USA), bereitgestellt. Beim Aufruf der Website werden technisch notwendige Daten verarbeitet, insbesondere: IP-Adresse, Datum und Uhrzeit des Zugriffs, Browsertyp und Browserversion, Betriebssystem, Referrer-URL sowie aufgerufene Dateien. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO zur Bereitstellung und Sicherheit der Website [10]. Weitere Informationen findest du in der <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" style="color: #0284c7;">Allgemeinen Datenschutzerklärung für GitHub</a> [10].</p>
+        <p>Diese Website wird über GitHub Pages, einen Dienst der GitHub Inc. (88 Colin P. Kelly Jr. St., San Francisco, CA 94107, USA), bereitgestellt. Beim Aufruf der Website werden technisch notwendige Daten verarbeitet, insbesondere: IP-Adresse, Datum und Uhrzeit des Zugriffs, Browsertyp und Browserversion, Betriebssystem, Referrer-URL sowie aufgerufene Dateien. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO zur Bereitstellung und Sicherheit der Website. Weitere Informationen findest du in der <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" style="color: #0284c7;">Allgemeinen Datenschutzerklärung für GitHub</a>.</p>
         
         <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">3. Wetterdaten und Open-Meteo</h3>
-        <p>Die Wettervorhersagen dieser Website stammen vom Dienst Open-Meteo. Beim Abruf von Wetterdaten können technische Verbindungen zu Servern von Open-Meteo hergestellt werden. Dabei können insbesondere IP-Adresse und technische Verbindungsdaten verarbeitet werden. Weitere Informationen finden Sie in den Datenschutzbestimmungen von Open-Meteo [11].</p>
+        <p>Die Wettervorhersagen dieser Website stammen vom Dienst Open-Meteo. Beim Abruf von Wetterdaten können technische Verbindungen zu Servern von Open-Meteo hergestellt werden. Dabei können insbesondere IP-Adresse und technische Verbindungsdaten verarbeitet werden. Weitere Informationen finden Sie in den Datenschutzbestimmungen von Open-Meteo.</p>
         
         <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">4. Externer Link zu PayPal</h3>
-        <p>Auf dieser Website befindet sich ein Link zum Zahlungsdienstleister PayPal. Erst durch Anklicken des Links werden Sie zu PayPal weitergeleitet. Dabei können personenbezogene Daten, insbesondere Ihre IP-Adresse, an PayPal übermittelt werden. Informationen zum Datenschutz bei PayPal findest du in der <a href="https://www.paypal.com/de/legalhub/privacy-full" target="_blank" rel="noopener" style="color: #0284c7;">PayPal-Datenschutzerklärung</a> [12].</p>
+        <p>Auf dieser Website befindet sich ein Link zum Zahlungsdienstleister PayPal. Erst durch Anklicken des Links werden Sie zu PayPal weitergeleitet. Dabei können personenbezogene Daten, insbesondere Ihre IP-Adresse, an PayPal übermittelt werden. Informationen zum Datenschutz bei PayPal findest du in der <a href="https://www.paypal.com/de/legalhub/privacy-full" target="_blank" rel="noopener" style="color: #0284c7;">PayPal-Datenschutzerklärung</a>.</p>
         
         <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">5. Cookies</h3>
-        <p>Diese Website verwendet keine Cookies zu Analyse- oder Werbezwecken [13].</p>
+        <p>Diese Website verwendet keine Cookies zu Analyse- oder Werbezwecken.</p>
         
         <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">6. Ihre Rechte</h3>
-        <p>Sie haben nach der DSGVO insbesondere folgende Rechte: Auskunft über gespeicherte Daten, Berichtigung unrichtiger Daten, Löschung Ihrer Daten, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch gegen die Verarbeitung. Außerdem haben Sie das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschweren [13].</p>
+        <p>Sie haben nach der DSGVO insbesondere folgende Rechte: Auskunft über gespeicherte Daten, Berichtigung unrichtiger Daten, Löschung Ihrer Daten, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch gegen die Verarbeitung. Außerdem haben Sie das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschweren.</p>
         
         <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">7. Änderung dieser Datenschutzerklärung</h3>
-        <p>Diese Datenschutzerklärung kann angepasst werden, wenn sich technische oder rechtliche Anforderungen ändern [14].</p>
+        <p>Diese Datenschutzerklärung kann angepasst werden, wenn sich technische oder rechtliche Anforderungen ändern.</p>
       </div>
       
-      <hr style="border: 0; border-top: 1px solid rgba(15, 23, 42, 0.15); margin: 25px 0;">
-      <p style="margin: 0; color: rgba(15, 23, 42, 0.5); font-size: 0.9em;">© 2026 Wetterstation Steinach bei Rothenburg o.d.Tbr. [14]</p>
+      <hr style="border: 0; border-top: 1px solid rgba(15, 23, 42, 0.1); margin: 25px 0;">
+      <p style="margin: 0; color: #475569; font-size: 0.9em;">© 2026 Wetterstation Steinach bei Rothenburg o.d.Tbr.</p>
     </div>
   </footer>
 
