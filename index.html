@@ -15,43 +15,43 @@
       background-attachment: fixed;
     }
     
-    /* Moderne Glassmorphism-Karten (Frosted Glass-Effekt) */
+    /* Etwas deckenderer Glassmorphism für perfekten Kontrast mit dunkler Schrift */
     .weather-card {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.45);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 2.25rem;
-      box-shadow: 0 10px 32px 0 rgba(15, 23, 42, 0.15);
+      box-shadow: 0 10px 32px 0 rgba(15, 23, 42, 0.12);
     }
     
-    /* Filigrane, transparente Kacheln für die Sensorwerte */
+    /* Detail-Tiles mit erhöhtem Kontrast */
     .detail-tile {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     }
     
     .detail-tile:hover {
       transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.25);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      background: rgba(255, 255, 255, 0.45);
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     }
   </style>
 </head>
-<body class="text-white min-h-screen flex flex-col justify-between font-sans antialiased">
+<body class="text-slate-900 min-h-screen flex flex-col justify-between font-sans antialiased">
 
   <!-- Hauptinhalt -->
   <main class="container mx-auto px-4 py-8 max-w-5xl flex-grow">
     
     <!-- Header -->
     <header class="text-center mb-10">
-      <h1 id="station-title" class="text-3xl md:text-4xl font-bold tracking-tight text-white drop-shadow-sm">
+      <h1 id="station-title" class="text-3xl md:text-4xl font-bold tracking-tight text-white drop-shadow-md">
         Wetterstation
       </h1>
-      <p class="text-blue-100/80 mt-2 flex items-center justify-center gap-2 text-sm md:text-base">
-        <i data-lucide="clock" class="w-4 h-4 text-blue-200/60"></i>
+      <p class="text-white/90 mt-2 flex items-center justify-center gap-2 text-sm md:text-base">
+        <i data-lucide="clock" class="w-4 h-4 text-white/80"></i>
         Messung vom: <span id="last-update" class="font-semibold text-white">Lade Daten...</span>
       </p>
     </header>
@@ -59,7 +59,7 @@
     <!-- Lade-Indikator -->
     <div id="loading" class="flex flex-col items-center justify-center py-20">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-      <p id="loading-text" class="text-blue-100 mt-4 font-medium">Wetterdaten werden geladen...</p>
+      <p id="loading-text" class="text-white mt-4 font-medium">Wetterdaten werden geladen...</p>
     </div>
 
     <!-- Dashboard-Grid -->
@@ -71,92 +71,92 @@
           
           <!-- Linke Spalte: Die beiden Hauptklimawerte (Groß) -->
           <div class="lg:col-span-5 flex flex-col justify-center space-y-6 sm:space-y-8 py-2">
-            <h2 class="text-xs font-bold tracking-wider text-blue-200/70 uppercase">Aktuelles Klima</h2>
+            <h2 class="text-xs font-bold tracking-wider text-slate-600 uppercase">Aktuelles Klima</h2>
             
             <!-- Temperatur -->
             <div class="flex items-center gap-4 md:gap-6">
-              <div class="p-4 bg-amber-400/20 rounded-2xl text-amber-300 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]">
+              <div class="p-4 bg-amber-500/20 rounded-2xl text-amber-600 shrink-0">
                 <i data-lucide="thermometer" class="w-12 h-12 md:w-14 md:h-14"></i>
               </div>
               <div>
-                <p class="text-xs font-bold text-blue-100/70 uppercase tracking-wide">Temperatur</p>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide">Temperatur</p>
                 <div class="flex items-baseline mt-0.5">
-                  <span id="temp" class="text-5xl md:text-6xl font-bold tracking-tight text-white">--.-</span>
-                  <span class="text-2xl md:text-3xl font-light text-blue-200 ml-1">°C</span>
+                  <span id="temp" class="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900">--.-</span>
+                  <span class="text-2xl md:text-3xl font-medium text-slate-600 ml-1">°C</span>
                 </div>
               </div>
             </div>
             
             <!-- Luftfeuchtigkeit -->
             <div class="flex items-center gap-4 md:gap-6">
-              <div class="p-4 bg-sky-400/20 rounded-2xl text-sky-200 shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.3)]">
+              <div class="p-4 bg-sky-500/20 rounded-2xl text-sky-600 shrink-0">
                 <i data-lucide="droplets" class="w-12 h-12 md:w-14 md:h-14"></i>
               </div>
               <div>
-                <p class="text-xs font-bold text-blue-100/70 uppercase tracking-wide">Luftfeuchte</p>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide">Luftfeuchte</p>
                 <div class="flex items-baseline mt-0.5">
-                  <span id="humidity" class="text-5xl md:text-6xl font-bold tracking-tight text-white">--</span>
-                  <span class="text-2xl md:text-3xl font-light text-blue-200 ml-1">%</span>
+                  <span id="humidity" class="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900">--</span>
+                  <span class="text-2xl md:text-3xl font-medium text-slate-600 ml-1">%</span>
                 </div>
               </div>
             </div>
           </div>
           
           <!-- Trennlinie auf großen Screens -->
-          <div class="hidden lg:block lg:col-span-1 w-px h-full bg-white/15 justify-self-center"></div>
+          <div class="hidden lg:block lg:col-span-1 w-px h-full bg-slate-400/20 justify-self-center"></div>
           
           <!-- Rechte Spalte: Die Detailwerte im feinen Raster -->
           <div class="lg:col-span-6 flex flex-col justify-between space-y-6">
-            <h2 class="text-xs font-bold tracking-wider text-blue-200/70 uppercase">Details & Sensorik</h2>
+            <h2 class="text-xs font-bold tracking-wider text-slate-600 uppercase">Details & Sensorik</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               
               <!-- Wind -->
               <div class="detail-tile rounded-2xl p-4 flex items-start gap-3">
-                <div class="p-2.5 bg-white/10 rounded-xl text-white">
+                <div class="p-2.5 bg-slate-900/10 rounded-xl text-slate-700">
                   <i data-lucide="wind" class="w-5 h-5"></i>
                 </div>
                 <div class="space-y-1">
-                  <p class="text-xs font-semibold text-blue-200/60 uppercase">Wind</p>
-                  <p class="text-base font-bold text-white"><span id="wind-speed">--.-</span> <span class="text-xs font-normal text-blue-200">km/h</span></p>
-                  <p class="text-[11px] text-blue-100/70">Böen: <span id="wind-gusts" class="font-semibold text-white">--.-</span> km/h</p>
-                  <p class="text-[11px] text-blue-100/70">Richtung: <span id="wind-dir" class="font-bold text-white">--</span></p>
+                  <p class="text-xs font-bold text-slate-500 uppercase">Wind</p>
+                  <p class="text-base font-extrabold text-slate-900"><span id="wind-speed">--.-</span> <span class="text-xs font-normal text-slate-600">km/h</span></p>
+                  <p class="text-[11px] text-slate-600">Böen: <span id="wind-gusts" class="font-semibold text-slate-800">--.-</span> km/h</p>
+                  <p class="text-[11px] text-slate-600">Richtung: <span id="wind-dir" class="font-bold text-slate-800">--</span></p>
                 </div>
               </div>
               
               <!-- Luftdruck -->
               <div class="detail-tile rounded-2xl p-4 flex items-start gap-3">
-                <div class="p-2.5 bg-emerald-400/20 rounded-xl text-emerald-300">
+                <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-700">
                   <i data-lucide="gauge" class="w-5 h-5"></i>
                 </div>
                 <div class="space-y-1">
-                  <p class="text-xs font-semibold text-blue-200/60 uppercase">Luftdruck</p>
-                  <p class="text-base font-bold text-white"><span id="pressure">----</span> <span class="text-xs font-normal text-blue-200">hPa</span></p>
-                  <p class="text-[11px] text-blue-100/70">Reduziert auf Meereshöhe</p>
+                  <p class="text-xs font-bold text-slate-500 uppercase">Luftdruck</p>
+                  <p class="text-base font-extrabold text-slate-900"><span id="pressure">----</span> <span class="text-xs font-normal text-slate-600">hPa</span></p>
+                  <p class="text-[11px] text-slate-600">Reduziert auf Meereshöhe</p>
                 </div>
               </div>
               
               <!-- Sonne (UV & Lux) -->
               <div class="detail-tile rounded-2xl p-4 flex items-start gap-3">
-                <div class="p-2.5 bg-amber-400/20 rounded-xl text-amber-300">
+                <div class="p-2.5 bg-amber-500/10 rounded-xl text-amber-700">
                   <i data-lucide="sun" class="w-5 h-5"></i>
                 </div>
                 <div class="space-y-1">
-                  <p class="text-xs font-semibold text-blue-200/60 uppercase">Sonne</p>
-                  <p class="text-base font-bold text-white">UV: <span id="uv">--</span></p>
-                  <p class="text-[11px] text-blue-100/70"><span id="brightness">--</span> Lux</p>
+                  <p class="text-xs font-bold text-slate-500 uppercase">Sonne</p>
+                  <p class="text-base font-extrabold text-slate-900">UV: <span id="uv">--</span></p>
+                  <p class="text-[11px] text-slate-600"><span id="brightness">--</span> Lux</p>
                 </div>
               </div>
               
               <!-- Niederschlag -->
               <div class="detail-tile rounded-2xl p-4 flex items-start gap-3">
-                <div class="p-2.5 bg-sky-400/20 rounded-xl text-sky-300">
+                <div class="p-2.5 bg-sky-500/10 rounded-xl text-sky-700">
                   <i data-lucide="cloud-rain" class="w-5 h-5"></i>
                 </div>
                 <div class="space-y-1">
-                  <p class="text-xs font-semibold text-blue-200/60 uppercase">Regenmenge</p>
-                  <p class="text-[11px] text-sky-200">Heute: <span id="rain-today" class="font-bold text-sky-300">--</span> l/m²</p>
-                  <p class="text-[11px] text-blue-100/70">Monat: <span id="rain-month" class="font-semibold text-white">--</span> l/m²</p>
-                  <p class="text-[11px] text-blue-100/70">Jahr: <span id="rain-year" class="font-semibold text-white">--</span> l/m²</p>
+                  <p class="text-xs font-bold text-slate-500 uppercase">Regenmenge</p>
+                  <p class="text-[11px] text-sky-700 font-semibold">Heute: <span id="rain-today" class="font-bold text-sky-800">--</span> l/m²</p>
+                  <p class="text-[11px] text-slate-600">Monat: <span id="rain-month" class="font-semibold text-slate-800">--</span> l/m²</p>
+                  <p class="text-[11px] text-slate-600">Jahr: <span id="rain-year" class="font-semibold text-slate-800">--</span> l/m²</p>
                 </div>
               </div>
               
@@ -168,17 +168,17 @@
       <!-- 2. DIE 7-TAGE-VORHERSAGE -->
       <div class="weather-card p-6 md:p-8">
         <div class="flex items-center gap-3 mb-6">
-          <div class="p-3 bg-teal-400/20 rounded-xl text-teal-300">
+          <div class="p-3 bg-teal-500/10 rounded-xl text-teal-700">
             <i data-lucide="calendar" class="w-6 h-6"></i>
           </div>
           <div>
-            <h2 class="text-lg font-bold text-white">7-Tage-Vorhersage</h2>
-            <p class="text-xs text-blue-200/70">Regionale Prognose (Open-Meteo)</p>
+            <h2 class="text-lg font-bold text-slate-900">7-Tage-Vorhersage</h2>
+            <p class="text-xs text-slate-500">Regionale Prognose (Open-Meteo)</p>
           </div>
         </div>
         
-        <!-- Listendesign mit feinen, halbtransparenten weißen Linien -->
-        <div id="forecast-container" class="flex flex-col divide-y divide-white/10 bg-white/10 rounded-3xl p-2 border border-white/15 shadow-inner">
+        <!-- Listendesign mit feinen, halbtransparenten dunklen Linien -->
+        <div id="forecast-container" class="flex flex-col divide-y divide-black/5 bg-white/20 rounded-3xl p-2 border border-white/30 shadow-inner">
           <!-- Wird dynamisch befüllt -->
         </div>
       </div>
@@ -186,69 +186,69 @@
     </div>
   </main>
 
-  <!-- Elegant dunkel-integrierter Footer -->
-  <footer style="text-align: center; padding: 40px 15px; font-size: 0.85em; color: rgba(255, 255, 255, 0.75); background-color: rgba(15, 23, 42, 0.35); backdrop-filter: blur(16px); border-top: 1px solid rgba(255, 255, 255, 0.15); line-height: 1.6; font-family: sans-serif;">
+  <!-- Elegant integrierter Footer -->
+  <footer style="text-align: center; padding: 40px 15px; font-size: 0.85em; color: rgba(15, 23, 42, 0.85); background-color: rgba(255, 255, 255, 0.45); backdrop-filter: blur(16px); border-top: 1px solid rgba(255, 255, 255, 0.3); line-height: 1.6; font-family: sans-serif;">
     <div style="max-width: 800px; margin: 0 auto;">
       
       <!-- ☕ PAYPAL SPENDEN-BUTTON (Immer sichtbar) -->
       <div style="margin-bottom: 30px; text-align: center;">
-        <p style="font-size: 1.1em; color: #ffffff; margin-bottom: 12px; font-weight: bold;">Dir gefällt die Wetterstation Steinach?</p>
-        <a href="https://paypal.me/Wetterstation91605" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; background-color: #0070ba; color: white; text-decoration: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; font-size: 1em; box-shadow: 0 4px 12px rgba(0,0,0,0.25); transition: background-color 0.2s;">
+        <p style="font-size: 1.1em; color: #0f172a; margin-bottom: 12px; font-weight: bold;">Dir gefällt die Wetterstation Steinach?</p>
+        <a href="https://paypal.me/Wetterstation91605" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; background-color: #0070ba; color: white; text-decoration: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; font-size: 1em; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: background-color 0.2s;">
           <span style="margin-right: 8px; font-size: 1.2em;">☕</span>
           Unterstütze die Kaffeekasse via PayPal
         </a>
-        <p style="font-size: 0.85em; color: rgba(255, 255, 255, 0.6); margin-top: 8px;">(Jeder Cent fließt in den Erhalt und die Wartung der Sensoren)</p>
+        <p style="font-size: 0.85em; color: rgba(15, 23, 42, 0.65); margin-top: 8px;">(Jeder Cent fließt in den Erhalt und die Wartung der Sensoren)</p>
       </div>
       
-      <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.15); margin: 25px 0;">
+      <hr style="border: 0; border-top: 1px solid rgba(15, 23, 42, 0.15); margin: 25px 0;">
       
       <!-- 🔗 INTERAKTIVER LINK (Versteckt/Zeigt Rechtstexte) -->
       <p style="margin-bottom: 10px;">
-        <a href="javascript:void(0)" onclick="const el = document.getElementById('legal-info-box'); el.style.display = el.style.display === 'none' ? 'block' : 'none';" style="color: #38bdf8; text-decoration: none; font-weight: bold; font-size: 1.05em;">
+        <a href="javascript:void(0)" onclick="const el = document.getElementById('legal-info-box'); el.style.display = el.style.display === 'none' ? 'block' : 'none';" style="color: #0284c7; text-decoration: none; font-weight: bold; font-size: 1.05em;">
           ➔ Impressum & Datenschutzerklärung anzeigen / ausblenden
         </a>
       </p>
       
       <!-- 🙈 VERSTECKTER BEREICH (Öffnet sich nur bei Klick) -->
-      <div id="legal-info-box" style="display: none; text-align: left; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 25px; margin-top: 20px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.2); color: rgba(255, 255, 255, 0.85);">
+      <div id="legal-info-box" style="display: none; text-align: left; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(15, 23, 42, 0.15); border-radius: 12px; padding: 25px; margin-top: 20px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.05); color: #1e293b;">
         <!-- IMPRESSUM -->
-        <h2 style="margin-top: 0; color: #ffffff; font-size: 1.3em; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 5px;">Impressum</h2>
+        <h2 style="margin-top: 0; color: #0f172a; font-size: 1.3em; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Impressum</h2>
         <p style="margin-top: 10px;">
           <strong>Betreiber der Website & Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:</strong><br>
           Bastian Walther<br>
           Höhenweg 16<br>
           91605 Gallmersgarten<br>
-          E-Mail: <a href="mailto:bastianwalther1987@gmail.com" style="color: #38bdf8;">bastianwalther1987@gmail.com</a>
+          E-Mail: <a href="mailto:bastianwalther1987@gmail.com" style="color: #0284c7;">bastianwalther1987@gmail.com</a>
         </p>
-        <p style="font-size: 0.9em; color: rgba(255, 255, 255, 0.6); font-style: italic; margin-top: 10px;">
-          Hinweis nach § 5 DDG: Aufgrund der Bereitstellung eines PayPal-Zahlungslinks wird diese Seite als geschäftsmäßig eingestuft, weshalb eine Anbieterkennzeichnung verpflichtend ist.
+        <p style="font-size: 0.9em; color: rgba(15, 23, 42, 0.6); font-style: italic; margin-top: 10px;">
+          Hinweis nach § 5 DDG: Aufgrund der Bereitstellung eines PayPal-Zahlungslinks wird diese Seite als geschäftsmäßig eingestuft, weshalb eine Anbieterkennzeichnung verpflichtend ist [8].
         </p>
         
-        <h2 style="margin-top: 30px; color: #ffffff; font-size: 1.3em; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 5px;">Datenschutzerklärung</h2>
-        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #ffffff;">1. Allgemeine Hinweise</h3>
-        <p>Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website kann grundsätzlich ohne Registrierung besucht werden. Der Verantwortliche für die Datenverarbeitung ist oben im Impressum genannt.</p>
+        <h2 style="margin-top: 30px; color: #0f172a; font-size: 1.3em; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Datenschutzerklärung</h2>
+        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">1. Allgemeine Hinweise</h3>
+        <p>Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website kann grundsätzlich ohne Registrierung besucht werden. Der Verantwortliche für die Datenverarbeitung ist oben im Impressum genannt [9].</p>
         
-        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #ffffff;">2. Hosting über GitHub Pages</h3>
-        <p>Diese Website wird über GitHub Pages, einen Dienst der GitHub Inc. (88 Colin P. Kelly Jr. St., San Francisco, CA 94107, USA), bereitgestellt. Beim Aufruf der Website werden technisch notwendige Daten verarbeitet, insbesondere: IP-Adresse, Datum und Uhrzeit des Zugriffs, Browsertyp und Browserversion, Betriebssystem, Referrer-URL sowie aufgerufene Dateien. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO zur Bereitstellung und Sicherheit der Website. Weitere Informationen findest du in der <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" style="color: #38bdf8;">Allgemeinen Datenschutzerklärung für GitHub</a>.</p>
+        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">2. Hosting über GitHub Pages</h3>
+        <p>Diese Website wird über GitHub Pages, einen Dienst der GitHub Inc. (88 Colin P. Kelly Jr. St., San Francisco, CA 94107, USA), bereitgestellt. Beim Aufruf der Website werden technisch notwendige Daten verarbeitet, insbesondere: IP-Adresse, Datum und Uhrzeit des Zugriffs, Browsertyp und Browserversion, Betriebssystem, Referrer-URL sowie aufgerufene Dateien. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO zur Bereitstellung und Sicherheit der Website [10]. Weitere Informationen findest du in der <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" style="color: #0284c7;">Allgemeinen Datenschutzerklärung für GitHub</a> [10].</p>
         
-        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #ffffff;">3. Wetterdaten und Open-Meteo</h3>
-        <p>Die Wettervorhersagen dieser Website stammen vom Dienst Open-Meteo. Beim Abruf von Wetterdaten können technische Verbindungen zu Servern von Open-Meteo hergestellt werden. Dabei können insbesondere IP-Adresse und technische Verbindungsdaten verarbeitet werden. Weitere Informationen finden Sie in den Datenschutzbestimmungen von Open-Meteo.</p>
+        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">3. Wetterdaten und Open-Meteo</h3>
+        <p>Die Wettervorhersagen dieser Website stammen vom Dienst Open-Meteo. Beim Abruf von Wetterdaten können technische Verbindungen zu Servern von Open-Meteo hergestellt werden. Dabei können insbesondere IP-Adresse und technische Verbindungsdaten verarbeitet werden. Weitere Informationen finden Sie in den Datenschutzbestimmungen von Open-Meteo [11].</p>
         
-        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #ffffff;">4. Externer Link zu PayPal</h3>
-        <p>Auf dieser Website befindet sich ein Link zum Zahlungsdienstleister PayPal. Erst durch Anklicken des Links werden Sie zu PayPal weitergeleitet. Dabei können personenbezogene Daten, insbesondere Ihre IP-Adresse, an PayPal übermittelt werden. Informationen zum Datenschutz bei PayPal findest du in der <a href="https://www.paypal.com/de/legalhub/privacy-full" target="_blank" rel="noopener" style="color: #38bdf8;">PayPal-Datenschutzerklärung</a>.</p>
+        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">4. Externer Link zu PayPal</h3>
+        <p>Auf dieser Website befindet sich ein Link zum Zahlungsdienstleister PayPal. Erst durch Anklicken des Links werden Sie zu PayPal weitergeleitet. Dabei können personenbezogene Daten, insbesondere Ihre IP-Adresse, an PayPal übermittelt werden. Informationen zum Datenschutz bei PayPal findest du in der <a href="https://www.paypal.com/de/legalhub/privacy-full" target="_blank" rel="noopener" style="color: #0284c7;">PayPal-Datenschutzerklärung</a> [12].</p>
         
-        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #ffffff;">5. Cookies</h3>
-        <p>Diese Website verwendet keine Cookies zu Analyse- oder Werbezwecken.</p>
+        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">5. Cookies</h3>
+        <p>Diese Website verwendet keine Cookies zu Analyse- oder Werbezwecken [13].</p>
         
-        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #ffffff;">6. Ihre Rechte</h3>
-        <p>Sie haben nach der DSGVO insbesondere folgende Rechte: Auskunft über gespeicherte Daten, Berichtigung unrichtiger Daten, Löschung Ihrer Daten, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch gegen die Verarbeitung. Außerdem haben Sie das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschweren.</p>
+        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">6. Ihre Rechte</h3>
+        <p>Sie haben nach der DSGVO insbesondere folgende Rechte: Auskunft über gespeicherte Daten, Berichtigung unrichtiger Daten, Löschung Ihrer Daten, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch gegen die Verarbeitung. Außerdem haben Sie das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschweren [13].</p>
         
-        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #ffffff;">7. Änderung dieser Datenschutzerklärung</h3>
-        <p>Diese Datenschutzerklärung kann angepasst werden, wenn sich technische oder rechtliche Anforderungen ändern.</p>
+        <h3 style="font-size: 1.05em; margin-top: 15px; margin-bottom: 5px; color: #0f172a;">7. Änderung dieser Datenschutzerklärung</h3>
+        <p>Diese Datenschutzerklärung kann angepasst werden, wenn sich technische oder rechtliche Anforderungen ändern [14].</p>
       </div>
       
-      <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.15); margin: 25px 0;">
-      <p style="margin: 0; color: rgba(255, 255, 255, 0.5); font-size: 0.9em;">© 2026 Wetterstation Steinach bei Rothenburg o.d.Tbr.</p>
+      <hr style="border: 0; border-top: 1px solid rgba(15, 23, 42, 0.15); margin: 25px 0;">
+      <p style="margin: 0; color: rgba(15, 23, 42, 0.5); font-size: 0.9em;">© 2026 Wetterstation Steinach bei Rothenburg o.d.Tbr. [14]</p>
     </div>
   </footer>
 
@@ -302,29 +302,29 @@
 
             // Symbole & Farben für das Glas-Thema optimiert
             let weatherIcon = 'sun';
-            let iconColorClass = 'text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]';
+            let iconColorClass = 'text-amber-600 drop-shadow-[0_0_2px_rgba(217,119,6,0.2)]';
             
             if (rainProb > 60) {
               weatherIcon = 'cloud-rain';
-              iconColorClass = 'text-sky-300 drop-shadow-[0_0_6px_rgba(56,189,248,0.4)]';
+              iconColorClass = 'text-sky-600 drop-shadow-[0_0_2px_rgba(2,132,199,0.2)]';
             } else if (rainProb > 25) {
               weatherIcon = 'cloud-sun';
-              iconColorClass = 'text-blue-200';
+              iconColorClass = 'text-slate-500';
             }
 
             // Generiere das neue Zeilen-HTML (TAG | % | SYMBOL | MAX / MIN)
             const cardHtml = `
-              <div class="flex items-center justify-between py-3.5 px-3 sm:px-5 hover:bg-white/10 transition-all rounded-2xl first:border-t-0">
+              <div class="flex items-center justify-between py-3.5 px-3 sm:px-5 hover:bg-black/5 transition-all rounded-2xl first:border-t-0">
                 
                 <!-- 1. TAG (Wochentag & Datum) -->
                 <div class="w-24 text-left shrink-0">
-                  <p class="text-sm font-bold text-white">${dayName}</p>
-                  <p class="text-[10px] text-white/60 mt-0.5">${formattedDate}</p>
+                  <p class="text-sm font-bold text-slate-950">${dayName}</p>
+                  <p class="text-[10px] text-slate-600 mt-0.5">${formattedDate}</p>
                 </div>
 
                 <!-- 2. REGENWAHRSCHEINLICHKEIT -->
-                <div class="flex items-center gap-1 w-16 shrink-0 text-sky-200 font-semibold text-xs justify-start">
-                  <i data-lucide="droplets" class="w-3.5 h-3.5 text-sky-300"></i>
+                <div class="flex items-center gap-1 w-16 shrink-0 text-sky-700 font-bold text-xs justify-start">
+                  <i data-lucide="droplets" class="w-3.5 h-3.5 text-sky-600"></i>
                   <span>${rainProb}%</span>
                 </div>
 
@@ -335,8 +335,8 @@
 
                 <!-- 4. TEMPERATUR (Tag & Nacht rechtsbündig) -->
                 <div class="w-24 text-right flex justify-end gap-3.5 text-sm shrink-0">
-                  <span class="font-bold text-white">${tempMax}°</span>
-                  <span class="text-white/60 font-medium">${tempMin}°</span>
+                  <span class="font-extrabold text-slate-950">${tempMax}°</span>
+                  <span class="text-slate-600 font-bold">${tempMin}°</span>
                 </div>
 
               </div>
@@ -345,7 +345,7 @@
           }
         } else {
           document.getElementById('forecast-container').innerHTML =
-            '<p class="text-xs text-red-300 col-span-full text-center">Vorhersage konnte nicht geladen werden.</p>';
+            '<p class="text-xs text-red-600 col-span-full text-center">Vorhersage konnte nicht geladen werden.</p>';
         }
         
         // Lade-Indikator ausblenden, Dashboard einblenden
@@ -357,8 +357,8 @@
       } catch (error) {
         console.error('Fehler beim Laden der Wetterdaten:', error);
         document.getElementById('loading-text').innerHTML =
-          `<span class="text-red-400 font-bold">Fehler beim Laden der Wetterdaten!</span><br>` +
-          `<span class="text-xs text-blue-200/80 mt-2 block">Bitte überprüfe die Dateipfade.</span>`;
+          `<span class="text-red-600 font-bold">Fehler beim Laden der Wetterdaten!</span><br>` +
+          `<span class="text-xs text-slate-600 mt-2 block">Bitte überprüfe die Dateipfade.</span>`;
         lucide.createIcons();
       }
     }
