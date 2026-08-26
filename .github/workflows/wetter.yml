@@ -32,27 +32,40 @@ jobs:
           REGEN_MONAT: ${{ github.event.client_payload.wetterdaten.regen_monat }}
           REGEN_JAHR: ${{ github.event.client_payload.wetterdaten.regen_jahr }}
         run: |
-          cat << EOF > wetterapi.json
-          {
-            "station": "Bastians Wetterstation Steinach",
-            "stand": "$ZEIT",
-            "messwerte": {
-              "temperatur_celsius": $TEMPERATUR,
-              "luftfeuchtigkeit_prozent": $FEUCHTIGKEIT,
-              "windgeschwindigkeit_kmh": $WIND,
-              "boengeschwindigkeit_kmh": $BOE,
-              "windrichtung": "$RICHTUNG",
-              "luftdruck_hpa": $DRUCK,
-              "uv_index": $UV,
-              "helligkeit_lux": $HELLIGKEIT
-            },
-            "niederschlag_lm2": {
-              "heute": $REGEN_HEUTE,
-              "aktueller_monat": $REGEN_MONAT,
-              "aktuelles_jahr": $REGEN_JAHR
-            }
-          }
-          EOF
+          # Erstellt ein valides JSON via jq, um Syntaxfehler im Browser zu verhindern
+          jq -n \
+            --arg station "Bastians Wetterstation Steinach" \
+            --arg stand "$ZEIT" \
+            --arg temp "$TEMPERATUR" \
+            --arg feucht "$FEUCHTIGKEIT" \
+            --arg wind "$WIND" \
+            --arg boe "$BOE" \
+            --arg richtung "$RICHTUNG" \
+            --arg druck "$DRUCK" \
+            --arg uv "$UV" \
+            --arg hell "$HELLIGKEIT" \
+            --arg heute "$REGEN_HEUTE" \
+            --arg monat "$REGEN_MONAT" \
+            --arg jahr "$REGEN_JAHR" \
+            '{
+              station: $station,
+              stand: $stand,
+              messwerte: {
+                temperatur_celsius: ($temp | tonumber? // $temp),
+                luftfeuchtigkeit_prozent: ($feucht | tonumber? // $feucht),
+                windgeschwindigkeit_kmh: ($wind | tonumber? // $wind),
+                boengeschwindigkeit_kmh: ($boe | tonumber? // $boe),
+                windrichtung: $richtung,
+                luftdruck_hpa: ($druck | tonumber? // $druck),
+                uv_index: ($uv | tonumber? // $uv),
+                helligkeit_lux: ($hell | tonumber? // $hell)
+              },
+              niederschlag_lm2: {
+                heute: ($heute | tonumber? // $heute),
+                aktueller_monat: ($monat | tonumber? // $monat),
+                aktuelles_jahr: ($jahr | tonumber? // $jahr)
+              }
+            }' > wetterapi.json
 
       - name: Änderungen committen und pushen
         env:
