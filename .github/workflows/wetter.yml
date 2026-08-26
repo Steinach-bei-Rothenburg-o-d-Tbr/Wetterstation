@@ -19,18 +19,18 @@ jobs:
 
       - name: Wetterdaten aktualisieren
         env:
-          ZEIT: ${{ github.event.client_payload.zeit }}
-          TEMPERATUR: ${{ github.event.client_payload.temperatur }}
-          FEUCHTIGKEIT: ${{ github.event.client_payload.luftfeuchtigkeit }}
-          WIND: ${{ github.event.client_payload.windgeschwindigkeit }}
-          BOE: ${{ github.event.client_payload.boengeschwindigkeit }}
-          RICHTUNG: ${{ github.event.client_payload.windrichtung }}
-          DRUCK: ${{ github.event.client_payload.druck }}
-          UV: ${{ github.event.client_payload.uv_index }}
-          HELLIGKEIT: ${{ github.event.client_payload.beleuchtungsstarke }}
-          REGEN_HEUTE: ${{ github.event.client_payload.regen_heute }}
-          REGEN_MONAT: ${{ github.event.client_payload.regen_monat }}
-          REGEN_JAHR: ${{ github.event.client_payload.regen_jahr }}
+          ZEIT: ${{ github.event.client_payload.wetterdaten.zeit }}
+          TEMPERATUR: ${{ github.event.client_payload.wetterdaten.temperatur }}
+          FEUCHTIGKEIT: ${{ github.event.client_payload.wetterdaten.luftfeuchtigkeit }}
+          WIND: ${{ github.event.client_payload.wetterdaten.windgeschwindigkeit }}
+          BOE: ${{ github.event.client_payload.wetterdaten.boengeschwindigkeit }}
+          RICHTUNG: ${{ github.event.client_payload.wetterdaten.windrichtung }}
+          DRUCK: ${{ github.event.client_payload.wetterdaten.druck }}
+          UV: ${{ github.event.client_payload.wetterdaten.uv_index }}
+          HELLIGKEIT: ${{ github.event.client_payload.wetterdaten.beleuchtungsstarke }}
+          REGEN_HEUTE: ${{ github.event.client_payload.wetterdaten.regen_heute }}
+          REGEN_MONAT: ${{ github.event.client_payload.wetterdaten.regen_monat }}
+          REGEN_JAHR: ${{ github.event.client_payload.wetterdaten.regen_jahr }}
         run: |
           cat << EOF > wetterapi.json
           {
@@ -56,7 +56,7 @@ jobs:
 
       - name: Änderungen committen und pushen
         env:
-          ZEIT: ${{ github.event.client_payload.zeit }}
+          ZEIT: ${{ github.event.client_payload.wetterdaten.zeit }}
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
