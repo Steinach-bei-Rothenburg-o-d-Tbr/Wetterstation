@@ -1,15 +1,15 @@
 {
   "station": "Bastians Wetterstation Steinach",
-  "stand": "30.08.2026 07:30 Uhr",
+  "stand": "30.08.2026 07:45 Uhr",
   "messwerte": {
     "temperatur_celsius": 18.4,
     "luftfeuchtigkeit_prozent": 71,
-    "windgeschwindigkeit_kmh": 12.6,
-    "boengeschwindigkeit_kmh": 14.4,
-    "windrichtung": "West",
+    "windgeschwindigkeit_kmh": 7.2,
+    "boengeschwindigkeit_kmh": 12.6,
+    "windrichtung": "Süd",
     "luftdruck_hpa": 1013.7,
-    "uv_index": 0,
-    "helligkeit_lux": 8987
+    "uv_index": 1,
+    "helligkeit_lux": 13636
   },
   "niederschlag_lm2": {
     "heute": 0,
