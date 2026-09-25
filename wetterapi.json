@@ -1,15 +1,15 @@
 {
   "station": "Bastians Wetterstation Steinach",
-  "stand": "25.09.2026 09:15 Uhr",
+  "stand": "25.09.2026 09:30 Uhr",
   "messwerte": {
-    "temperatur_celsius": 11.5,
-    "luftfeuchtigkeit_prozent": 63,
+    "temperatur_celsius": 12.3,
+    "luftfeuchtigkeit_prozent": 59,
     "windgeschwindigkeit_kmh": 0,
-    "boengeschwindigkeit_kmh": 2.88,
-    "windrichtung": "Ost",
+    "boengeschwindigkeit_kmh": 0,
+    "windrichtung": "Süd",
     "luftdruck_hpa": 1021.7,
     "uv_index": 2,
-    "helligkeit_lux": 31536
+    "helligkeit_lux": 36585
   },
   "niederschlag_lm2": {
     "heute": 0,
