@@ -1,12 +1,12 @@
 {
   "station": "Bastians Wetterstation Steinach",
-  "stand": "25.10.2026 00:00 Uhr",
+  "stand": "25.10.2026 00:15 Uhr",
   "messwerte": {
-    "temperatur_celsius": 8.3,
-    "luftfeuchtigkeit_prozent": 75,
-    "windgeschwindigkeit_kmh": 16.56,
-    "boengeschwindigkeit_kmh": 21.24,
-    "windrichtung": "West",
+    "temperatur_celsius": 8,
+    "luftfeuchtigkeit_prozent": 77,
+    "windgeschwindigkeit_kmh": 16.92,
+    "boengeschwindigkeit_kmh": 20.16,
+    "windrichtung": "Süd",
     "luftdruck_hpa": 1011.7,
     "uv_index": 0,
     "helligkeit_lux": 0
