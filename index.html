@@ -280,10 +280,6 @@ async function fetchWeatherData() {
         const lux = parseFloat(data.messwerte.helligkeit_lux);
         document.getElementById('brightness').innerText = isNaN(lux) ? data.messwerte.helligkeit_lux : lux.toLocaleString('de-DE');
 
-        document.getElementById('rain-today').innerText = data.niederschlag_lm2.heute;
-        document.getElementById('rain-month').innerText = data.niederschlag_lm2.aktueller_monat;
-        document.getElementById('rain-year').innerText = data.niederschlag_lm2.aktuelles_jahr;
-
         // 2. Open-Meteo Vorhersagedaten verarbeiten und anzeigen
         if (forecastResponse.ok) {
             const forecastData = await forecastResponse.json();
