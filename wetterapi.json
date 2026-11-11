@@ -1,18 +1,18 @@
 {
   "station": "Bastians Wetterstation Steinach",
-  "stand": "11.11.2026 08:30 Uhr",
+  "stand": "11.11.2026 08:45 Uhr",
   "messwerte": {
     "temperatur_celsius": 7.1,
     "luftfeuchtigkeit_prozent": 96,
-    "windgeschwindigkeit_kmh": 3.24,
-    "boengeschwindigkeit_kmh": 5.4,
-    "windrichtung": "Süd",
+    "windgeschwindigkeit_kmh": 5.4,
+    "boengeschwindigkeit_kmh": 5.76,
+    "windrichtung": "West",
     "luftdruck_hpa": 1002.7,
     "uv_index": 0,
-    "helligkeit_lux": 660
+    "helligkeit_lux": 800
   },
   "niederschlag_lm2": {
-    "heute": 4.5,
+    "heute": 5.4,
     "aktueller_monat": 0,
     "aktuelles_jahr": 0
   }
